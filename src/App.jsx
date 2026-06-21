@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthProvider'
 import { useAuth } from './contexts/useAuth'
+import ProfilePage from './pages/dashboard/ProfilePage'
 
 // public pages
 import HomePage from './pages/public/HomePage'
@@ -27,12 +28,6 @@ function ProtectedRoute({ children, requiredRole }) {
   return children
 }
 
-function RoleSelectGuard({ children }) {
-  const { token, activeRole } = useAuth()
-  if (!token) return <Navigate to="/login" />
-  if (activeRole) return <Navigate to={`/dashboard/${activeRole.toLowerCase()}`} />
-  return children
-}
 
 export default function App() {
   return (
@@ -48,7 +43,7 @@ export default function App() {
 
             {/* role selection */}
             <Route path="/select-role" element={
-              <RoleSelectGuard><SelectRolePage /></RoleSelectGuard>
+              <ProtectedRoute><SelectRolePage /></ProtectedRoute>
             } />
 
             {/* dashboards */}
@@ -63,6 +58,9 @@ export default function App() {
             } />
             <Route path="/dashboard/admin" element={
               <ProtectedRoute requiredRole="ADMIN"><AdminDashboard /></ProtectedRoute>
+            } />
+            <Route path="/profile" element={
+              <ProtectedRoute><ProfilePage /></ProtectedRoute>
             } />
           <Route path="*" element={<NotFound />} />
           </Routes>

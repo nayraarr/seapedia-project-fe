@@ -62,9 +62,9 @@ export default function Navbar() {
                                 </span>
                             )}
 
-                            <span className="text-blue-800 font-semibold text-sm">
+                            <Link to="/profile" className="text-blue-800 font-semibold text-sm hover:text-blue-600 transition">
                                 {decoded?.username}
-                            </span>
+                            </Link>
 
                             <Link to={getDashboardLink()} className="text-slate-500 hover:text-blue-600 font-medium transition">
                                 Dashboard
