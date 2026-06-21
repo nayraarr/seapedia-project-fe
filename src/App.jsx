@@ -17,6 +17,7 @@ import BuyerDashboard from './pages/dashboard/buyer/BuyerDashboard'
 import SellerDashboard from './pages/dashboard/seller/SellerDashboard'
 import DriverDashboard from './pages/dashboard/driver/DriverDashboard'
 import AdminDashboard from './pages/dashboard/admin/AdminDashboard'
+import NotFound from './pages/NotFound'
 
 // route guards
 function ProtectedRoute({ children, requiredRole }) {
@@ -63,6 +64,7 @@ export default function App() {
             <Route path="/dashboard/admin" element={
               <ProtectedRoute requiredRole="ADMIN"><AdminDashboard /></ProtectedRoute>
             } />
+          <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
