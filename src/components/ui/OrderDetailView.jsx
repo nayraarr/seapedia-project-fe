@@ -1,0 +1,127 @@
+import { Link } from 'react-router-dom'
+
+function formatRupiah(amount) {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+    }).format(amount ?? 0)
+}
+
+function formatDate(iso) {
+    if (!iso) return '-'
+    return new Date(iso).toLocaleString('id-ID', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+    })
+}
+
+export default function OrderDetailView({ order, title, subtitle, backLink, backLabel }) {
+    if (!order) return null
+
+    return (
+        <div className="space-y-6">
+            <div className="flex items-start justify-between gap-4">
+                <div>
+                    <p className="text-xs font-bold text-blue-500 uppercase tracking-widest">{subtitle}</p>
+                    <h1 className="text-3xl font-bold text-slate-800 mt-1">{title}</h1>
+                    <p className="text-slate-400 mt-1">#{order.orderId}</p>
+                </div>
+                <Link
+                    to={backLink}
+                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline"
+                >
+                    {backLabel}
+                </Link>
+            </div>
+
+            <div className="grid lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 space-y-4">
+                    <div className="bg-white border border-blue-100 rounded-2xl p-5">
+                        <div className="flex flex-wrap items-center gap-2 mb-4">
+                            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-blue-700">
+                                {order.statusLabel}
+                            </span>
+                            <span className="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 text-slate-600">
+                                {order.deliveryMethodLabel}
+                            </span>
+                        </div>
+
+                        <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                            <Info label="Toko" value={<Link to={`/stores/${order.storeId}`} className="text-blue-600 hover:underline">{order.storeName}</Link>} />
+                            {order.buyerUsername && <Info label="Buyer" value={order.buyerUsername} />}
+                            <Info label="Subtotal" value={formatRupiah(order.subtotal)} />
+                            <Info label="Ongkir" value={formatRupiah(order.deliveryFee)} />
+                            <Info label={`PPN ${order.taxRatePercent}%`} value={formatRupiah(order.taxAmount)} />
+                            <Info label="Total" value={formatRupiah(order.totalAmount)} strong />
+                            {order.walletBalanceBefore != null && (
+                                <Info label="Saldo Sebelum" value={formatRupiah(order.walletBalanceBefore)} />
+                            )}
+                            {order.walletBalanceAfter != null && (
+                                <Info label="Saldo Sesudah" value={formatRupiah(order.walletBalanceAfter)} />
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="bg-white border border-blue-100 rounded-2xl p-5">
+                        <h2 className="font-bold text-slate-800 mb-4">Item Pesanan</h2>
+                        <div className="space-y-3">
+                            {order.items.map(item => (
+                                <div key={item.productId} className="border border-slate-200 rounded-xl p-4">
+                                    <div className="flex justify-between gap-4">
+                                        <div>
+                                            <Link to={`/products/${item.productId}`} className="font-semibold text-slate-800 hover:text-blue-600 hover:underline">{item.productName}</Link>
+                                            <p className="text-xs text-slate-400 mt-1">
+                                                {formatRupiah(item.unitPrice)} x {item.quantity}
+                                            </p>
+                                        </div>
+                                        <p className="font-semibold text-slate-700">{formatRupiah(item.subtotal)}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <div className="bg-white border border-blue-100 rounded-2xl p-5">
+                        <h2 className="font-bold text-slate-800 mb-4">Alamat Kirim</h2>
+                        <p className="text-sm font-semibold text-slate-700">{order.shippingAddress?.recipientName}</p>
+                        <p className="text-sm text-slate-500">{order.shippingAddress?.phone}</p>
+                        <p className="text-sm text-slate-500 mt-2">{order.shippingAddress?.fullAddress}</p>
+                        <p className="text-sm text-slate-500">
+                            {order.shippingAddress?.city}, {order.shippingAddress?.postalCode}
+                        </p>
+                    </div>
+
+                    <div className="bg-white border border-blue-100 rounded-2xl p-5">
+                        <h2 className="font-bold text-slate-800 mb-4">Riwayat Status</h2>
+                        <div className="space-y-3">
+                            {order.statusHistory.map(item => (
+                                <div key={`${item.status}-${item.changedAt}`} className="border-l-2 border-blue-200 pl-3">
+                                    <p className="font-semibold text-slate-700 text-sm">{item.statusLabel}</p>
+                                    <p className="text-xs text-slate-400">{formatDate(item.changedAt)}</p>
+                                    {item.note && <p className="text-xs text-slate-500 mt-1">{item.note}</p>}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function Info({ label, value, strong = false }) {
+    return (
+        <div className="rounded-xl border border-slate-200 p-4">
+            <p className="text-xs uppercase tracking-wide text-slate-400 font-semibold">{label}</p>
+            <p className={`mt-1 ${strong ? 'text-lg font-bold text-blue-700' : 'text-slate-700 font-semibold'}`}>
+                {value}
+            </p>
+        </div>
+    )
+}
