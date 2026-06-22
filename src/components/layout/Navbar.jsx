@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/useAuth'
+import { useCart } from '../../contexts/useCart'
 
 export default function Navbar() {
     const { token, activeRole, decoded, logout } = useAuth()
+    const { itemCount } = useCart()
     const navigate = useNavigate()
     const [menuOpen, setMenuOpen] = useState(false)
 
@@ -65,6 +67,24 @@ export default function Navbar() {
                             <Link to="/profile" className="text-blue-800 font-semibold text-sm hover:text-blue-600 transition">
                                 {decoded?.username}
                             </Link>
+                            {activeRole === 'BUYER' && (
+                                <Link
+                                    to="/dashboard/buyer/cart"
+                                    className="inline-flex items-center gap-2 text-slate-500 hover:text-blue-600 font-medium transition"
+                                >
+                                    <span className="relative inline-flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 4h13m-6 0a1 1 0 100 2 1 1 0 000-2zm7 0a1 1 0 100 2 1 1 0 000-2z" />
+                                        </svg>
+                                        {itemCount > 0 && (
+                                            <span className="absolute -top-2 -right-2 min-w-5 h-5 px-1 rounded-full bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center">
+                                                {itemCount}
+                                            </span>
+                                        )}
+                                    </span>
+                                    Keranjang
+                                </Link>
+                            )}
                             <Link to={getDashboardLink()} className="text-slate-500 hover:text-blue-600 font-medium transition">
                                 Dashboard
                             </Link>
@@ -128,6 +148,15 @@ export default function Navbar() {
                             <Link to="/profile" onClick={() => setMenuOpen(false)} className="text-blue-800 font-semibold text-sm">
                                 {decoded?.username}
                             </Link>
+                            {activeRole === 'BUYER' && (
+                                <Link
+                                    to="/dashboard/buyer/cart"
+                                    onClick={() => setMenuOpen(false)}
+                                    className="text-slate-600 font-medium text-sm hover:text-blue-600"
+                                >
+                                    Keranjang{itemCount > 0 ? ` (${itemCount})` : ''}
+                                </Link>
+                            )}
                             <Link to={getDashboardLink()} onClick={() => setMenuOpen(false)} className="text-slate-600 font-medium text-sm hover:text-blue-600">
                                 Dashboard
                             </Link>

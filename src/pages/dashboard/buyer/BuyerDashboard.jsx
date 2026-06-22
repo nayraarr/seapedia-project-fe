@@ -62,6 +62,13 @@ export default function BuyerDashboard() {
             active: true,
         },
         {
+            label: 'Keranjang',
+            icon: '🛒',
+            desc: 'Ringkasan cart satu toko',
+            path: '/dashboard/buyer/cart',
+            active: true,
+        },
+        {
             label: 'Riwayat Pesanan',
             icon: '📦',
             desc: 'Lacak semua transaksimu',

@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
+import Button from '../../components/ui/Button'
 import api from '../../services/api'
-import {useAuth} from "../../contexts/useAuth.jsx";
+import { useAuth } from '../../contexts/useAuth.jsx'
+import { useCart } from '../../contexts/useCart'
 
 export default function ProductDetailPage() {
     const { id } = useParams()
-    const { token } = useAuth()
+    const { token, activeRole } = useAuth()
+    const { add } = useCart()
     const [product, setProduct] = useState(null)
     const [loading, setLoading] = useState(true)
     const [notFound, setNotFound] = useState(false)
+    const [quantity, setQuantity] = useState(1)
+    const [adding, setAdding] = useState(false)
+    const [message, setMessage] = useState(null)
 
     const formatPrice = (price) =>
         new Intl.NumberFormat('id-ID', {
@@ -24,6 +30,14 @@ export default function ProductDetailPage() {
             .catch(() => setNotFound(true))
             .finally(() => setLoading(false))
     }, [id])
+
+    const handleAddToCart = async () => {
+        setAdding(true)
+        setMessage(null)
+        const result = await add(product.id, quantity)
+        setMessage(result.ok ? 'Produk ditambahkan ke keranjang' : result.message)
+        setAdding(false)
+    }
 
     if (loading) return (
         <MainLayout>
@@ -108,6 +122,36 @@ export default function ProductDetailPage() {
                             atau{' '}
                             <Link to="/register" className="font-bold hover:underline">daftar</Link>{' '}
                             untuk membeli produk ini.
+                        </div>
+                    )}
+
+                    {token && activeRole === 'BUYER' && (
+                        <div className="mt-6 bg-slate-50 border border-slate-200 rounded-xl p-4">
+                            <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+                                <label className="block">
+                                    <span className="block text-xs font-semibold text-slate-500 mb-1">Jumlah</span>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        value={quantity}
+                                        onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+                                        className="w-28 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    />
+                                </label>
+                                <Button
+                                    variant="primary"
+                                    onClick={handleAddToCart}
+                                    disabled={adding || product.stock <= 0}
+                                >
+                                    {adding ? 'Menambahkan...' : 'Tambah ke Keranjang'}
+                                </Button>
+                            </div>
+                            <p className="text-xs text-slate-400 mt-3">
+                                Keranjang buyer hanya bisa berisi produk dari satu toko.
+                            </p>
+                            {message && (
+                                <p className="text-sm mt-3 font-medium text-slate-600">{message}</p>
+                            )}
                         </div>
                     )}
                 </div>
