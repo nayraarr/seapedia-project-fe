@@ -72,8 +72,8 @@ export default function BuyerDashboard() {
             label: 'Riwayat Pesanan',
             icon: '📦',
             desc: 'Lacak semua transaksimu',
-            path: null,
-            active: false,
+            path: '/dashboard/buyer/orders',
+            active: true,
         },
     ]
 
