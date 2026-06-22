@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthProvider'
 import { useAuth } from './contexts/useAuth'
 import ProfilePage from './pages/dashboard/ProfilePage'
+import StoreManagementPage from './pages/dashboard/seller/StoreManagementPage'
+import StoresPage from './pages/public/StoresPage'
+import StoreDetailPage from './pages/public/StoreDetailPage'
 
 // public pages
 import HomePage from './pages/public/HomePage'
@@ -43,6 +46,8 @@ export default function App() {
             <Route path="/products/:id" element={<ProductDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/stores" element={<StoresPage />} />
+            <Route path="/stores/:id" element={<StoreDetailPage />} />
 
             {/* role selection */}
             <Route path="/select-role" element={
@@ -55,6 +60,9 @@ export default function App() {
             } />
             <Route path="/dashboard/seller" element={
               <ProtectedRoute requiredRole="SELLER"><SellerDashboard /></ProtectedRoute>
+            } />
+            <Route path="/dashboard/seller/store" element={
+              <ProtectedRoute requiredRole="SELLER"><StoreManagementPage /></ProtectedRoute>
             } />
             <Route path="/dashboard/driver" element={
               <ProtectedRoute requiredRole="DRIVER"><DriverDashboard /></ProtectedRoute>

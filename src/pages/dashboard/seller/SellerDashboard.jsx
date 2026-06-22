@@ -1,14 +1,19 @@
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import { useAuth } from '../../../contexts/useAuth'
-
-const cards = [
-    { label: 'Toko Saya', icon: '🏪', desc: 'Kelola profil dan info toko' },
-    { label: 'Kelola Produk', icon: '📋', desc: 'Tambah, edit, hapus produk' },
-    { label: 'Pesanan Masuk', icon: '📬', desc: 'Proses pesanan dari pembeli' },
-]
+import { getMyStore } from '../../../services/storeApi'
 
 export default function SellerDashboard() {
     const { decoded } = useAuth()
+    const [store, setStore] = useState(null)
+
+    useEffect(() => {
+        getMyStore()
+            .then(res => setStore(res.data.data))
+            .catch(() => setStore(null))
+    }, [])
+
     return (
         <MainLayout>
             <div className="mb-8">
@@ -17,17 +22,68 @@ export default function SellerDashboard() {
                 <p className="text-slate-400 mt-1">Selamat datang di dashboard Penjual</p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-4">
-                {cards.map(card => (
-                    <div key={card.label} className="bg-white border border-emerald-100 rounded-2xl p-6 hover:shadow-md hover:border-emerald-300 transition cursor-pointer">
-                        <div className="text-3xl mb-3">{card.icon}</div>
-                        <h3 className="font-semibold text-slate-700 mb-1">{card.label}</h3>
-                        <p className="text-slate-400 text-sm">{card.desc}</p>
-                        <span className="inline-block mt-3 text-xs font-semibold text-emerald-500 bg-emerald-50 px-2.5 py-1 rounded-full">
-                            Segera hadir
-                        </span>
+            {/* Store Status Banner */}
+            {store ? (
+                <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-xl">
+                            🏪
+                        </div>
+                        <div>
+                            <p className="font-bold text-emerald-800 text-sm">{store.name}</p>
+                            <p className="text-emerald-500 text-xs">Toko aktif</p>
+                        </div>
                     </div>
-                ))}
+                    <Link
+                        to="/dashboard/seller/store"
+                        className="text-sm font-semibold text-emerald-700 hover:text-emerald-900 transition"
+                    >
+                        Kelola →
+                    </Link>
+                </div>
+            ) : (
+                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <span className="text-xl">⚠️</span>
+                        <p className="text-amber-700 text-sm font-medium">Kamu belum punya toko.</p>
+                    </div>
+                    <Link
+                        to="/dashboard/seller/store"
+                        className="text-sm font-semibold bg-amber-400 hover:bg-amber-500 text-white px-4 py-1.5 rounded-xl transition"
+                    >
+                        Buat Toko
+                    </Link>
+                </div>
+            )}
+
+            {/* Menu Cards */}
+            <div className="grid md:grid-cols-3 gap-4">
+                <Link
+                    to="/dashboard/seller/store"
+                    className="bg-white border border-emerald-100 rounded-2xl p-6 hover:shadow-md hover:border-emerald-300 transition"
+                >
+                    <div className="text-3xl mb-3">🏪</div>
+                    <h3 className="font-semibold text-slate-700 mb-1">Toko Saya</h3>
+                    <p className="text-slate-400 text-sm">Kelola profil dan info toko</p>
+                </Link>
+
+                <div className="bg-white border border-emerald-100 rounded-2xl p-6 opacity-50 cursor-not-allowed">
+                    <div className="text-3xl mb-3">📋</div>
+                    <h3 className="font-semibold text-slate-700 mb-1">Kelola Produk</h3>
+                    <p className="text-slate-400 text-sm">Tambah, edit, hapus produk</p>
+                    <span className="inline-block mt-3 text-xs font-semibold text-emerald-500 bg-emerald-50 px-2.5 py-1 rounded-full">
+                        Segera hadir
+                    </span>
+                </div>
+
+                <div className="bg-white border border-emerald-100 rounded-2xl p-6 opacity-50 cursor-not-allowed">
+                    <div className="text-3xl mb-3">📬</div>
+                    <h3 className="font-semibold text-slate-700 mb-1">Pesanan Masuk</h3>
+                    <p className="text-slate-400 text-sm">Proses pesanan dari pembeli</p>
+                    <span className="inline-block mt-3 text-xs font-semibold text-emerald-500 bg-emerald-50 px-2.5 py-1 rounded-full">
+                        Segera hadir
+                    </span>
+                </div>
             </div>
         </MainLayout>
     )
