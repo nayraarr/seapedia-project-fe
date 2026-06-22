@@ -40,6 +40,10 @@ export default function Navbar() {
                         Produk
                     </Link>
 
+                    <Link to="/stores" className="text-slate-500 hover:text-blue-600 font-medium transition">
+                        Toko
+                    </Link>
+
                     <div className="w-px h-5 bg-blue-100" />
 
                     {!token ? (
@@ -99,6 +103,10 @@ export default function Navbar() {
                 <div className="md:hidden bg-white border-t border-blue-50 px-6 py-4 flex flex-col gap-4">
                     <Link to="/products" onClick={() => setMenuOpen(false)} className="text-slate-600 font-medium text-sm hover:text-blue-600">
                         Produk
+                    </Link>
+
+                    <Link to="/stores" className="text-slate-500 hover:text-blue-600 font-medium transition">
+                        Toko
                     </Link>
 
                     {!token ? (

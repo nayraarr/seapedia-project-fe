@@ -21,6 +21,7 @@ export default function Footer() {
                         <div className="flex flex-col gap-2">
                             <Link to="/" className="text-sm text-slate-400 hover:text-blue-600 transition">Beranda</Link>
                             <Link to="/products" className="text-sm text-slate-400 hover:text-blue-600 transition">Produk</Link>
+                            <Link to="/stores" className="text-sm text-slate-400 hover:text-blue-600 transition">Toko</Link>
                             <Link to="/login" className="text-sm text-slate-400 hover:text-blue-600 transition">Masuk</Link>
                             <Link to="/register" className="text-sm text-slate-400 hover:text-blue-600 transition">Daftar</Link>
                         </div>
@@ -46,7 +47,7 @@ export default function Footer() {
 
                 <div className="border-t border-blue-50 pt-6 text-center">
                     <p className="text-xs text-slate-300">
-                        © {new Date().getFullYear()} SEAPEDIA. Seleksi SEA Compfest - Zita Nayra Ardini.
+                        © {new Date().getFullYear()} SEAPEDIA. Seleksi SEA Compfest 18 - Zita Nayra Ardini.
                     </p>
                 </div>
             </div>
