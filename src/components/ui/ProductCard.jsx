@@ -19,6 +19,13 @@ export default function ProductCard({ product }) {
                 <h3 className="font-semibold text-slate-800 text-sm truncate mb-1">{product.name}</h3>
                 <p className="text-blue-600 font-bold text-base">{formatPrice(product.price)}</p>
                 <p className="text-slate-400 text-xs mt-1">Stok: {product.stock}</p>
+
+                {/* info toko */}
+                {product.storeName && (
+                    <p className="text-emerald-500 text-xs mt-2 flex items-center gap-1 truncate">
+                        🏪 <span className="truncate">{product.storeName}</span>
+                    </p>
+                )}
             </div>
         </Link>
     )

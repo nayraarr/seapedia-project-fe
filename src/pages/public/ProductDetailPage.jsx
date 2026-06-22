@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
 import api from '../../services/api'
+import {useAuth} from "../../contexts/useAuth.jsx";
 
 export default function ProductDetailPage() {
     const { id } = useParams()
+    const { token } = useAuth()
     const [product, setProduct] = useState(null)
     const [loading, setLoading] = useState(true)
     const [notFound, setNotFound] = useState(false)
@@ -81,12 +83,33 @@ export default function ProductDetailPage() {
                         {product.description || 'Tidak ada deskripsi untuk produk ini.'}
                     </p>
 
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-700">
-                        <Link to="/login" className="font-bold hover:underline">Masuk</Link>{' '}
-                        atau{' '}
-                        <Link to="/register" className="font-bold hover:underline">daftar</Link>{' '}
-                        untuk membeli produk ini.
-                    </div>
+                    {/* blok info toko */}
+                    {product.storeId && (
+                        <Link
+                            to={`/stores/${product.storeId}`}
+                            className="flex items-center gap-3 bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6 hover:bg-emerald-100 transition"
+                        >
+                            <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-xl flex-shrink-0">
+                                🏪
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-xs text-emerald-500 font-medium">Dijual oleh</p>
+                                <p className="text-sm font-bold text-slate-800 truncate">{product.storeName}</p>
+                            </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Link>
+                    )}
+
+                    {!token && (
+                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-700">
+                            <Link to="/login" className="font-bold hover:underline">Masuk</Link>{' '}
+                            atau{' '}
+                            <Link to="/register" className="font-bold hover:underline">daftar</Link>{' '}
+                            untuk membeli produk ini.
+                        </div>
+                    )}
                 </div>
             </div>
         </MainLayout>

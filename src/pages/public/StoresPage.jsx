@@ -67,7 +67,7 @@ export default function StoresPage() {
                                             {store.description || 'Belum ada deskripsi toko.'}
                                         </p>
                                         <p className="text-slate-300 text-xs mt-1">
-                                            Seller: {store.sellerUsername}
+                                            Seller: {store.ownerUsername}
                                         </p>
                                     </div>
                                     <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">

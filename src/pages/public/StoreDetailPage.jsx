@@ -77,7 +77,7 @@ export default function StoreDetailPage() {
                                     Toko Aktif
                                 </span>
                                 <span className="text-slate-300 text-xs">
-                                    Seller: {store.sellerUsername}
+                                    Seller: {store.ownerUsername}
                                 </span>
                             </div>
                         </div>
@@ -94,7 +94,7 @@ export default function StoreDetailPage() {
                         </div>
                         <div className="flex justify-between items-center py-2 border-b border-slate-50">
                             <span className="text-sm text-slate-400">Penjual</span>
-                            <span className="text-sm font-semibold text-slate-700">{store.sellerUsername}</span>
+                            <span className="text-sm font-semibold text-slate-700">{store.ownerUsername}</span>
                         </div>
                         <div className="flex justify-between items-center py-2">
                             <span className="text-sm text-slate-400">Bergabung sejak</span>
