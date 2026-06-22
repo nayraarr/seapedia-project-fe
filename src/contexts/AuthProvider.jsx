@@ -1,17 +1,14 @@
-import { createContext, useContext, useState, useEffect } from 'react'
-
-const AuthContext = createContext(null)
+import { useState, useMemo } from 'react'
+import { AuthContext } from './authContext'
 
 export function AuthProvider({ children }) {
     const [token, setToken] = useState(localStorage.getItem('token'))
     const [user, setUser] = useState(null)
 
-    // decode JWT untuk ambil activeRole, roles, username
     const decodeToken = (tkn) => {
         if (!tkn) return null
         try {
-            const payload = JSON.parse(atob(tkn.split('.')[1]))
-            return payload
+            return JSON.parse(atob(tkn.split('.')[1]))
         } catch {
             return null
         }
@@ -32,11 +29,15 @@ export function AuthProvider({ children }) {
         setUser(null)
     }
 
+    const value = useMemo(
+        () => ({ token, user, activeRole, roles, login, logout, decoded }),
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [token, user]
+    )
+
     return (
-        <AuthContext.Provider value={{ token, user, activeRole, roles, login, logout, decoded }}>
+        <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     )
 }
-
-export const useAuth = () => useContext(AuthContext)
