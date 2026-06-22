@@ -24,7 +24,10 @@ import NotFound from './pages/NotFound'
 function ProtectedRoute({ children, requiredRole }) {
   const { token, activeRole } = useAuth()
   if (!token) return <Navigate to="/login" />
-  if (requiredRole && activeRole !== requiredRole) return <Navigate to="/select-role" />
+  if (requiredRole && activeRole !== requiredRole) {
+    if (!activeRole) return <Navigate to="/select-role" />
+    return <Navigate to={`/dashboard/${activeRole.toLowerCase()}`} />
+  }
   return children
 }
 
