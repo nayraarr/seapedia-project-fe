@@ -85,6 +85,16 @@ export default function Navbar() {
                                     Keranjang
                                 </Link>
                             )}
+                            {activeRole === 'BUYER' && (
+                                <Link to="/dashboard/buyer/orders" className="text-slate-500 hover:text-blue-600 font-medium transition">
+                                    Pesanan
+                                </Link>
+                            )}
+                            {activeRole === 'SELLER' && (
+                                <Link to="/dashboard/seller/orders/incoming" className="text-slate-500 hover:text-emerald-600 font-medium transition">
+                                    Pesanan Masuk
+                                </Link>
+                            )}
                             <Link to={getDashboardLink()} className="text-slate-500 hover:text-blue-600 font-medium transition">
                                 Dashboard
                             </Link>
@@ -155,6 +165,16 @@ export default function Navbar() {
                                     className="text-slate-600 font-medium text-sm hover:text-blue-600"
                                 >
                                     Keranjang{itemCount > 0 ? ` (${itemCount})` : ''}
+                                </Link>
+                            )}
+                            {activeRole === 'BUYER' && (
+                                <Link to="/dashboard/buyer/orders" onClick={() => setMenuOpen(false)} className="text-slate-600 font-medium text-sm hover:text-blue-600">
+                                    Pesanan
+                                </Link>
+                            )}
+                            {activeRole === 'SELLER' && (
+                                <Link to="/dashboard/seller/orders/incoming" onClick={() => setMenuOpen(false)} className="text-slate-600 font-medium text-sm hover:text-emerald-600">
+                                    Pesanan Masuk
                                 </Link>
                             )}
                             <Link to={getDashboardLink()} onClick={() => setMenuOpen(false)} className="text-slate-600 font-medium text-sm hover:text-blue-600">

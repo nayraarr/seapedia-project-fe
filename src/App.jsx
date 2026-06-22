@@ -10,6 +10,8 @@ import ProductFormPage from './pages/dashboard/seller/ProductFormPage'
 import WalletPage from './pages/dashboard/buyer/WalletPage'
 import AddressManagementPage from './pages/dashboard/buyer/AddressManagementPage'
 import CartPage from './pages/dashboard/buyer/CartPage'
+import OrderHistoryPage from './pages/dashboard/buyer/OrderHistoryPage'
+import OrderDetailPage from './pages/dashboard/buyer/OrderDetailPage'
 
 // public pages
 import HomePage from './pages/public/HomePage'
@@ -26,14 +28,17 @@ import BuyerDashboard from './pages/dashboard/buyer/BuyerDashboard'
 import SellerDashboard from './pages/dashboard/seller/SellerDashboard'
 import DriverDashboard from './pages/dashboard/driver/DriverDashboard'
 import AdminDashboard from './pages/dashboard/admin/AdminDashboard'
+import IncomingOrdersPage from './pages/dashboard/seller/IncomingOrdersPage'
+import SellerOrderDetailPage from './pages/dashboard/seller/OrderDetailPage'
 import NotFound from './pages/NotFound'
 import Toast from './components/ui/Toast'
 
 // route guards
-function ProtectedRoute({ children, requiredRole }) {
+function ProtectedRoute({ children, requiredRole, allowedRoles }) {
   const { token, activeRole } = useAuth()
   if (!token) return <Navigate to="/login" />
-  if (requiredRole && activeRole !== requiredRole) {
+  const roles = allowedRoles || (requiredRole ? [requiredRole] : null)
+  if (roles && !roles.includes(activeRole)) {
     if (!activeRole) return <Navigate to="/select-role" />
     return <Navigate to={`/dashboard/${activeRole.toLowerCase()}`} />
   }
@@ -69,6 +74,12 @@ export default function App() {
         <Route path="/dashboard/buyer/cart" element={
           <ProtectedRoute requiredRole="BUYER"><CartPage /></ProtectedRoute>
         } />
+        <Route path="/dashboard/buyer/orders" element={
+          <ProtectedRoute requiredRole="BUYER"><OrderHistoryPage /></ProtectedRoute>
+        } />
+        <Route path="/dashboard/buyer/orders/:orderId" element={
+          <ProtectedRoute requiredRole="BUYER"><OrderDetailPage /></ProtectedRoute>
+        } />
         <Route path="/dashboard/buyer/wallet" element={
           <ProtectedRoute requiredRole="BUYER"><WalletPage /></ProtectedRoute>
         } />
@@ -89,6 +100,12 @@ export default function App() {
         } />
         <Route path="/dashboard/seller/products/edit/:id" element={
           <ProtectedRoute allowedRoles={['SELLER']}><ProductFormPage /></ProtectedRoute>
+        } />
+        <Route path="/dashboard/seller/orders/incoming" element={
+          <ProtectedRoute allowedRoles={['SELLER']}><IncomingOrdersPage /></ProtectedRoute>
+        } />
+        <Route path="/dashboard/seller/orders/:orderId" element={
+          <ProtectedRoute allowedRoles={['SELLER']}><SellerOrderDetailPage /></ProtectedRoute>
         } />
         <Route path="/dashboard/driver" element={
           <ProtectedRoute requiredRole="DRIVER"><DriverDashboard /></ProtectedRoute>
