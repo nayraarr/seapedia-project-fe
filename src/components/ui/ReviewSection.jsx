@@ -1,5 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import api from '../../services/api'
+import Button from './Button'
+import Input from './Input'
 
 const STAR = '★'
 
@@ -16,9 +18,7 @@ export default function ReviewSection() {
             .catch(() => {})
     }, [])
 
-    useEffect(() => {
-        fetchReviews()
-    }, [fetchReviews])
+    useEffect(() => { fetchReviews() }, [fetchReviews])
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -82,23 +82,17 @@ export default function ReviewSection() {
                 <h3 className="text-lg font-bold text-slate-800 mb-5">Tulis Ulasan</h3>
 
                 {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm mb-4">
-                        {error}
-                    </div>
+                    <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm mb-4">{error}</div>
                 )}
                 {success && (
-                    <div className="bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-xl px-4 py-3 text-sm mb-4">
-                        {success}
-                    </div>
+                    <div className="bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-xl px-4 py-3 text-sm mb-4">{success}</div>
                 )}
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <input
-                        type="text"
+                    <Input
                         placeholder="Nama kamu"
                         value={form.reviewerName}
                         onChange={e => setForm({ ...form, reviewerName: e.target.value })}
-                        className="border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition"
                     />
 
                     <div className="flex items-center gap-2">
@@ -123,13 +117,9 @@ export default function ReviewSection() {
                         className="border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition resize-none"
                     />
 
-                    <button
-                        type="submit"
-                        disabled={submitting}
-                        className="bg-blue-600 text-white py-2.5 rounded-xl hover:bg-blue-700 transition font-semibold disabled:opacity-50"
-                    >
+                    <Button type="submit" disabled={submitting} fullWidth>
                         {submitting ? 'Mengirim...' : 'Kirim Ulasan'}
-                    </button>
+                    </Button>
                 </form>
             </div>
         </section>
