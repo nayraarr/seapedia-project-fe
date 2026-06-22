@@ -5,8 +5,10 @@ import ProfilePage from './pages/dashboard/ProfilePage'
 import StoreManagementPage from './pages/dashboard/seller/StoreManagementPage'
 import StoresPage from './pages/public/StoresPage'
 import StoreDetailPage from './pages/public/StoreDetailPage'
-import ProductManagementPage from './pages/dashboard/seller/ProductManagementPage';
-import ProductFormPage from './pages/dashboard/seller/ProductFormPage';
+import ProductManagementPage from './pages/dashboard/seller/ProductManagementPage'
+import ProductFormPage from './pages/dashboard/seller/ProductFormPage'
+import WalletPage from './pages/dashboard/buyer/WalletPage'
+import AddressManagementPage from './pages/dashboard/buyer/AddressManagementPage'
 
 // public pages
 import HomePage from './pages/public/HomePage'
@@ -59,6 +61,12 @@ export default function App() {
             {/* dashboards */}
             <Route path="/dashboard/buyer" element={
               <ProtectedRoute requiredRole="BUYER"><BuyerDashboard /></ProtectedRoute>
+            } />
+            <Route path="/dashboard/buyer/wallet" element={
+              <ProtectedRoute requiredRole="BUYER"><WalletPage /></ProtectedRoute>
+            } />
+            <Route path="/dashboard/buyer/addresses" element={
+              <ProtectedRoute requiredRole="BUYER"><AddressManagementPage /></ProtectedRoute>
             } />
             <Route path="/dashboard/seller" element={
               <ProtectedRoute requiredRole="SELLER"><SellerDashboard /></ProtectedRoute>
