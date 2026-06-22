@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import { useAuth } from '../../../contexts/useAuth'
 import { getMyStore } from '../../../services/storeApi'
+import { useNavigate } from 'react-router-dom';
 
 export default function SellerDashboard() {
     const { decoded } = useAuth()
     const [store, setStore] = useState(null)
+    const navigate = useNavigate();
 
     useEffect(() => {
         getMyStore()
@@ -67,13 +69,13 @@ export default function SellerDashboard() {
                     <p className="text-slate-400 text-sm">Kelola profil dan info toko</p>
                 </Link>
 
-                <div className="bg-white border border-emerald-100 rounded-2xl p-6 opacity-50 cursor-not-allowed">
+                <div
+                    onClick={() => navigate('/dashboard/seller/products')}
+                    className="bg-white border border-emerald-100 rounded-2xl p-6 cursor-pointer hover:shadow-md hover:border-emerald-300 transition-all"
+                >
                     <div className="text-3xl mb-3">📋</div>
                     <h3 className="font-semibold text-slate-700 mb-1">Kelola Produk</h3>
                     <p className="text-slate-400 text-sm">Tambah, edit, hapus produk</p>
-                    <span className="inline-block mt-3 text-xs font-semibold text-emerald-500 bg-emerald-50 px-2.5 py-1 rounded-full">
-                        Segera hadir
-                    </span>
                 </div>
 
                 <div className="bg-white border border-emerald-100 rounded-2xl p-6 opacity-50 cursor-not-allowed">

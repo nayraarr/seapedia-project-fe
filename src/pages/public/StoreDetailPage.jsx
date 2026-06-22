@@ -1,17 +1,26 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
+import ProductCard from '../../components/ui/ProductCard'
 import { getStoreById } from '../../services/storeApi'
+import api from '../../services/api'
 
 export default function StoreDetailPage() {
     const { id } = useParams()
     const [store, setStore] = useState(null)
+    const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [notFound, setNotFound] = useState(false)
 
     useEffect(() => {
-        getStoreById(id)
-            .then(res => setStore(res.data.data))
+        Promise.all([
+            getStoreById(id),
+            api.get(`/products/store/${id}`)
+        ])
+            .then(([storeRes, productsRes]) => {
+                setStore(storeRes.data.data)
+                setProducts(productsRes.data.data || [])
+            })
             .catch(() => setNotFound(true))
             .finally(() => setLoading(false))
     }, [id])
@@ -100,13 +109,23 @@ export default function StoreDetailPage() {
                     </div>
                 </div>
 
-                {/* Products placeholder */}
+                {/* Products */}
                 <div className="bg-white border border-blue-100 rounded-2xl p-6">
-                    <h2 className="text-base font-bold text-slate-700 mb-1">Produk Toko</h2>
-                    <p className="text-xs text-slate-400 mb-4">Fitur ini akan tersedia segera</p>
-                    <div className="bg-blue-50 rounded-xl p-6 text-center">
-                        <p className="text-blue-300 text-sm font-medium">Belum ada produk ditampilkan</p>
-                    </div>
+                    <h2 className="text-base font-bold text-slate-700 mb-4">
+                        Produk Toko
+                        <span className="ml-2 text-xs font-normal text-slate-400">({products.length} produk)</span>
+                    </h2>
+                    {products.length === 0 ? (
+                        <div className="bg-emerald-50 rounded-xl p-6 text-center">
+                            <p className="text-emerald-300 text-sm font-medium">Belum ada produk di toko ini</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-2 gap-4">
+                            {products.map(product => (
+                                <ProductCard key={product.id} product={product} />
+                            ))}
+                        </div>
+                    )}
                 </div>
 
             </div>
