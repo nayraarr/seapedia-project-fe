@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
 import OrderDetailView from '../../../components/ui/OrderDetailView'
-import { getJobDetail, takeJob } from '../../../services/deliveryApi'
+import { getJobDetail, takeJob, completeJob } from '../../../services/deliveryApi'
 
 export default function DriverJobDetailPage() {
     const navigate = useNavigate()
@@ -11,7 +11,7 @@ export default function DriverJobDetailPage() {
     const [job, setJob] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
-    const [taking, setTaking] = useState(false)
+    const [actionLoading, setActionLoading] = useState(false)
 
     const loadJob = () => {
         getJobDetail(jobId)
@@ -23,14 +23,26 @@ export default function DriverJobDetailPage() {
     useEffect(() => { loadJob() }, [jobId])
 
     const handleTake = async () => {
-        setTaking(true)
+        setActionLoading(true)
         try {
             await takeJob(jobId)
             navigate('/dashboard/driver/active')
         } catch {
             setError('Gagal mengambil job. Mungkin sudah diambil driver lain.')
         } finally {
-            setTaking(false)
+            setActionLoading(false)
+        }
+    }
+
+    const handleComplete = async () => {
+        setActionLoading(true)
+        try {
+            await completeJob(jobId)
+            navigate('/dashboard/driver/active')
+        } catch {
+            setError('Gagal menyelesaikan pengiriman.')
+        } finally {
+            setActionLoading(false)
         }
     }
 
@@ -59,8 +71,15 @@ export default function DriverJobDetailPage() {
                     />
                     {job.status === 'MENUNGGU_PENGIRIM' && (
                         <div className="mt-6 flex justify-center">
-                            <Button variant="orange" disabled={taking} onClick={handleTake} className="min-w-[240px] text-base py-3">
-                                {taking ? 'Mengambil...' : 'Ambil Job Ini'}
+                            <Button variant="orange" disabled={actionLoading} onClick={handleTake} className="min-w-[240px] text-base py-3">
+                                {actionLoading ? 'Mengambil...' : 'Ambil Job Ini'}
+                            </Button>
+                        </div>
+                    )}
+                    {job.status === 'DIKIRIM' && (
+                        <div className="mt-6 flex justify-center">
+                            <Button variant="emerald" disabled={actionLoading} onClick={handleComplete} className="min-w-[240px] text-base py-3">
+                                {actionLoading ? 'Menyelesaikan...' : 'Selesaikan Pengiriman'}
                             </Button>
                         </div>
                     )}
