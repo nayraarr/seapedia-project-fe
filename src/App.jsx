@@ -30,6 +30,9 @@ import BuyerDashboard from './pages/dashboard/buyer/BuyerDashboard'
 import SellerDashboard from './pages/dashboard/seller/SellerDashboard'
 import DriverDashboard from './pages/dashboard/driver/DriverDashboard'
 import AvailableJobsPage from './pages/dashboard/driver/AvailableJobsPage'
+import DriverJobDetailPage from './pages/dashboard/driver/DriverJobDetailPage'
+import ActiveJobsPage from './pages/dashboard/driver/ActiveJobsPage'
+import DriverIncomeReportPage from './pages/dashboard/driver/DriverIncomeReportPage'
 import AdminDashboard from './pages/dashboard/admin/AdminDashboard'
 import IncomingOrdersPage from './pages/dashboard/seller/IncomingOrdersPage'
 import SellerOrderDetailPage from './pages/dashboard/seller/OrderDetailPage'
@@ -121,6 +124,15 @@ export default function App() {
           } />
           <Route path="/dashboard/driver/jobs" element={
             <ProtectedRoute requiredRole="DRIVER"><AvailableJobsPage /></ProtectedRoute>
+          } />
+          <Route path="/dashboard/driver/jobs/:jobId" element={
+            <ProtectedRoute requiredRole="DRIVER"><DriverJobDetailPage /></ProtectedRoute>
+          } />
+          <Route path="/dashboard/driver/active" element={
+            <ProtectedRoute requiredRole="DRIVER"><ActiveJobsPage /></ProtectedRoute>
+          } />
+          <Route path="/dashboard/driver/report" element={
+            <ProtectedRoute requiredRole="DRIVER"><DriverIncomeReportPage /></ProtectedRoute>
           } />
           <Route path="/dashboard/admin" element={
             <ProtectedRoute requiredRole="ADMIN"><AdminDashboard /></ProtectedRoute>

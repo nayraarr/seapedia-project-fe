@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
-import { getAvailableJobs, takeJob } from '../../../services/deliveryApi'
+import { getActiveJobs } from '../../../services/deliveryApi'
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -23,31 +23,17 @@ function formatDate(iso) {
     })
 }
 
-export default function AvailableJobsPage() {
-    const navigate = useNavigate()
+export default function ActiveJobsPage() {
     const [jobs, setJobs] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
-    const [takingId, setTakingId] = useState(null)
 
     useEffect(() => {
-        getAvailableJobs()
+        getActiveJobs()
             .then(res => setJobs(res.data.data || []))
-            .catch(() => setError('Gagal memuat job yang tersedia.'))
+            .catch(() => setError('Gagal memuat job aktif.'))
             .finally(() => setLoading(false))
     }, [])
-
-    const handleTake = useCallback(async (jobId) => {
-        setTakingId(jobId)
-        try {
-            await takeJob(jobId)
-            navigate('/dashboard/driver/active')
-        } catch {
-            setError('Gagal mengambil job. Mungkin sudah diambil driver lain.')
-        } finally {
-            setTakingId(null)
-        }
-    }, [navigate])
 
     return (
         <MainLayout>
@@ -59,8 +45,8 @@ export default function AvailableJobsPage() {
             </Link>
             <div className="mb-6">
                 <span className="text-xs font-bold text-orange-500 uppercase tracking-widest">Driver</span>
-                <h1 className="text-3xl font-bold text-slate-800 mt-1">Job Tersedia</h1>
-                <p className="text-slate-400 mt-1">Pesanan yang siap diantar (status Menunggu Pengirim)</p>
+                <h1 className="text-3xl font-bold text-slate-800 mt-1">Job Aktif</h1>
+                <p className="text-slate-400 mt-1">Pesanan yang sedang kamu antar</p>
             </div>
 
             {error && (
@@ -71,17 +57,20 @@ export default function AvailableJobsPage() {
 
             {loading ? (
                 <div className="space-y-3">
-                    {[1, 2, 3].map(i => (
+                    {[1, 2].map(i => (
                         <div key={i} className="bg-white rounded-2xl h-28 border border-orange-50 animate-pulse" />
                     ))}
                 </div>
             ) : jobs.length === 0 ? (
                 <div className="text-center py-20 bg-white border border-orange-100 rounded-2xl">
-                    <p className="text-4xl mb-3">📍</p>
-                    <p className="font-semibold text-slate-700">Belum ada job tersedia.</p>
+                    <p className="text-4xl mb-3">🚗</p>
+                    <p className="font-semibold text-slate-700">Belum ada job aktif.</p>
                     <p className="text-sm text-slate-400 mt-1">
-                        Job baru akan muncul di sini setelah seller memproses pesanan.
+                        Ambil job dari halaman Job Tersedia.
                     </p>
+                    <Link to="/dashboard/driver/jobs" className="inline-block mt-4">
+                        <Button variant="orange">Lihat Job Tersedia</Button>
+                    </Link>
                 </div>
             ) : (
                 <div className="space-y-3">
@@ -91,12 +80,17 @@ export default function AvailableJobsPage() {
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2 flex-wrap">
                                         <span className="font-bold text-slate-800 text-lg">{job.storeName}</span>
-                                        <span className="text-xs px-2.5 py-1 rounded-full bg-orange-50 text-orange-700 font-semibold">
-                                            Menunggu Pengirim
+                                        {job.statusLabel && (
+                                            <span className="text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">
+                                                {job.statusLabel}
+                                            </span>
+                                        )}
+                                        <span className="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-semibold">
+                                            {job.deliveryMethodLabel}
                                         </span>
                                     </div>
                                     <p className="text-sm text-slate-500 mt-1">
-                                        {job.deliveryMethodLabel} • {job.itemCount} item • Tujuan: {job.recipientName}, {job.city} {job.postalCode}
+                                        {job.itemCount} item • Tujuan: {job.recipientName}, {job.city} {job.postalCode}
                                     </p>
                                     <p className="text-xs text-slate-400 mt-1">
                                         Tersedia sejak {formatDate(job.availableSince)}
@@ -105,15 +99,8 @@ export default function AvailableJobsPage() {
                                 <div className="flex items-center gap-3 flex-shrink-0">
                                     <div className="text-right">
                                         <p className="text-xs text-slate-400">Total</p>
-                                        <p className="text-lg font-bold text-orange-700">{formatRupiah(job.totalAmount)}</p>
+                                        <p className="text-lg font-bold text-blue-700">{formatRupiah(job.totalAmount)}</p>
                                     </div>
-                                    <Button
-                                        variant="orange"
-                                        disabled={takingId === job.deliveryJobId}
-                                        onClick={() => handleTake(job.deliveryJobId)}
-                                    >
-                                        {takingId === job.deliveryJobId ? 'Mengambil...' : 'Ambil'}
-                                    </Button>
                                     <Link to={`/dashboard/driver/jobs/${job.deliveryJobId}`}>
                                         <Button variant="outline">Detail</Button>
                                     </Link>

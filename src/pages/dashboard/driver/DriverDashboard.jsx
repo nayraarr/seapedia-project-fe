@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom'
 
 const cards = [
     { label: 'Job Tersedia', icon: '📍', desc: 'Lihat pesanan yang bisa diambil', link: '/dashboard/driver/jobs' },
-    { label: 'Job Aktif', icon: '🚗', desc: 'Pesanan yang sedang kamu antar' },
-    { label: 'Riwayat & Penghasilan', icon: '💰', desc: 'Rekap penghasilan harian' },
+    { label: 'Job Aktif', icon: '🚗', desc: 'Pesanan yang sedang kamu antar', link: '/dashboard/driver/active' },
+    { label: 'Riwayat & Penghasilan', icon: '💰', desc: 'Rekap penghasilan harian', link: '/dashboard/driver/report' },
 ]
 
 export default function DriverDashboard() {
