@@ -5,6 +5,14 @@ import Button from '../../../components/ui/Button'
 import OrderDetailView from '../../../components/ui/OrderDetailView'
 import { getJobDetail, takeJob, completeJob } from '../../../services/deliveryApi'
 
+function formatRupiah(amount) {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+    }).format(amount ?? 0)
+}
+
 export default function DriverJobDetailPage() {
     const navigate = useNavigate()
     const { jobId } = useParams()
@@ -69,6 +77,18 @@ export default function DriverJobDetailPage() {
                         backLink="/dashboard/driver/jobs"
                         backLabel="← Kembali ke daftar job"
                     />
+                    {job.status === 'SELESAI' && (
+                        <div className="bg-gradient-to-r from-emerald-50 to-white border border-emerald-200 rounded-2xl p-5 mt-6">
+                            <h2 className="font-bold text-slate-800 mb-3">Pendapatan</h2>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm text-slate-500">Biaya Pengiriman</p>
+                                    <p className="text-sm text-slate-400 text-xs">{job.deliveryMethodLabel}</p>
+                                </div>
+                                <p className="text-2xl font-extrabold text-emerald-600">{formatRupiah(job.deliveryFee)}</p>
+                            </div>
+                        </div>
+                    )}
                     {job.status === 'MENUNGGU_PENGIRIM' && (
                         <div className="mt-6 flex justify-center">
                             <Button variant="orange" disabled={actionLoading} onClick={handleTake} className="min-w-[240px] text-base py-3">
@@ -76,7 +96,7 @@ export default function DriverJobDetailPage() {
                             </Button>
                         </div>
                     )}
-                    {job.status === 'DIKIRIM' && (
+                    {job.status === 'SEDANG_DIKIRIM' && (
                         <div className="mt-6 flex justify-center">
                             <Button variant="emerald" disabled={actionLoading} onClick={handleComplete} className="min-w-[240px] text-base py-3">
                                 {actionLoading ? 'Menyelesaikan...' : 'Selesaikan Pengiriman'}

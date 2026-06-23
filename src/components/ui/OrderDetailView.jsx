@@ -19,8 +19,19 @@ function formatDate(iso) {
     })
 }
 
+const STATUS_FLOW = ['SEDANG_DIKEMAS', 'MENUNGGU_PENGIRIM', 'SEDANG_DIKIRIM', 'SELESAI']
+
+const STATUS_LABELS = {
+    SEDANG_DIKEMAS: 'Dikemas',
+    MENUNGGU_PENGIRIM: 'Dijemput',
+    SEDANG_DIKIRIM: 'Dikirim',
+    SELESAI: 'Selesai',
+}
+
 export default function OrderDetailView({ order, title, subtitle, backLink, backLabel }) {
     if (!order) return null
+
+    const currentIdx = STATUS_FLOW.indexOf(order.status)
 
     return (
         <div className="space-y-6">
@@ -34,6 +45,29 @@ export default function OrderDetailView({ order, title, subtitle, backLink, back
                 <p className="text-xs font-bold text-blue-500 uppercase tracking-widest">{subtitle}</p>
                 <h1 className="text-3xl font-bold text-slate-800 mt-1">{title}</h1>
                 <p className="text-slate-400 mt-1">#{order.orderId}</p>
+            </div>
+
+            <div className="bg-white border border-blue-100 rounded-2xl p-5">
+                <h2 className="font-bold text-slate-800 mb-4">Progress Pengiriman</h2>
+                <div className="flex items-start justify-between gap-1">
+                    {STATUS_FLOW.map((key, idx) => {
+                        const completed = idx < currentIdx
+                        const current = idx === currentIdx
+                        return (
+                            <div key={key} className="flex-1 flex flex-col items-center relative">
+                                {idx > 0 && (
+                                    <div className={`hidden sm:block absolute -left-[calc(50%+12px)] top-4 w-[calc(100%-24px)] h-0.5 -translate-y-1/2 ${idx <= currentIdx ? 'bg-emerald-400' : 'bg-slate-200'}`} />
+                                )}
+                                <div className={`relative z-10 w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-300 ${completed ? 'bg-emerald-500 border-emerald-500 text-white' : current ? 'bg-blue-500 border-blue-500 text-white ring-4 ring-blue-200' : 'bg-white border-slate-300 text-slate-300'}`}>
+                                    {completed ? '✓' : current ? '●' : '○'}
+                                </div>
+                                <p className={`mt-2 text-[11px] font-semibold text-center leading-tight ${completed || current ? 'text-slate-700' : 'text-slate-400'}`}>
+                                    {STATUS_LABELS[key]}
+                                </p>
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-6">

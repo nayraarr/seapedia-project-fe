@@ -97,7 +97,11 @@ export default function DriverIncomeReportPage() {
                         ) : (
                             <div className="space-y-3">
                                 {history.map(job => (
-                                    <div key={job.deliveryJobId} className="border border-slate-200 rounded-xl p-4">
+                                    <Link
+                                        key={job.deliveryJobId}
+                                        to={`/dashboard/driver/jobs/${job.deliveryJobId}`}
+                                        className="block border border-slate-200 rounded-xl p-4 hover:shadow-md hover:border-orange-200 transition-all duration-200 cursor-pointer"
+                                    >
                                         <div className="flex justify-between items-start gap-4">
                                             <div>
                                                 <p className="font-semibold text-slate-800">{job.storeName}</p>
@@ -109,10 +113,11 @@ export default function DriverIncomeReportPage() {
                                                 </p>
                                             </div>
                                             <div className="text-right">
-                                                <p className="text-sm font-semibold text-emerald-600">{formatRupiah(job.totalAmount)}</p>
+                                                <p className="text-[11px] text-slate-400">Pendapatan</p>
+                                                <p className="text-sm font-semibold text-emerald-600">{formatRupiah(job.deliveryFee)}</p>
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))}
                             </div>
                         )}
