@@ -28,6 +28,11 @@ export default function IncomingOrdersPage() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [processingId, setProcessingId] = useState(null)
+    const [filterTab, setFilterTab] = useState('incoming')
+
+    const incomingOrders = orders.filter(o => o.status === 'SEDANG_DIKEMAS')
+    const processedOrders = orders.filter(o => o.status !== 'SEDANG_DIKEMAS')
+    const displayedOrders = filterTab === 'incoming' ? incomingOrders : processedOrders
 
     useEffect(() => {
         getSellerIncomingOrders()
@@ -57,12 +62,36 @@ export default function IncomingOrdersPage() {
             <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                     <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Seller</span>
-                    <h1 className="text-3xl font-bold text-slate-800 mt-1">Pesanan Masuk</h1>
-                    <p className="text-slate-400 mt-1">Daftar order yang masuk ke toko kamu</p>
+                    <h1 className="text-3xl font-bold text-slate-800 mt-1">Pesanan Saya</h1>
+                    <p className="text-slate-400 mt-1">Daftar order toko kamu</p>
                 </div>
-                <Link to="/dashboard/seller">
-                    <Button variant="outline">Dashboard Seller</Button>
-                </Link>
+                <div className="flex items-center gap-2">
+                    <Link to="/dashboard/seller/report">
+                        <Button variant="outline">Laporan</Button>
+                    </Link>
+                    <Link to="/dashboard/seller">
+                        <Button variant="outline">Dashboard</Button>
+                    </Link>
+                </div>
+            </div>
+
+            <div className="flex gap-1 mb-6 bg-emerald-50 rounded-xl p-1 w-fit">
+                <button
+                    onClick={() => setFilterTab('incoming')}
+                    className={`px-4 py-2 text-sm font-semibold rounded-lg transition ${
+                        filterTab === 'incoming' ? 'bg-white text-emerald-700 shadow-sm' : 'text-emerald-500 hover:text-emerald-700'
+                    }`}
+                >
+                    Masuk ({incomingOrders.length})
+                </button>
+                <button
+                    onClick={() => setFilterTab('processed')}
+                    className={`px-4 py-2 text-sm font-semibold rounded-lg transition ${
+                        filterTab === 'processed' ? 'bg-white text-emerald-700 shadow-sm' : 'text-emerald-500 hover:text-emerald-700'
+                    }`}
+                >
+                    Diproses ({processedOrders.length})
+                </button>
             </div>
 
             {error && (
@@ -77,15 +106,21 @@ export default function IncomingOrdersPage() {
                         <div key={i} className="bg-white rounded-2xl h-28 border border-emerald-50 animate-pulse" />
                     ))}
                 </div>
-            ) : orders.length === 0 ? (
+            ) : displayedOrders.length === 0 ? (
                 <div className="text-center py-20 bg-white border border-emerald-100 rounded-2xl">
-                    <p className="text-4xl mb-3">📬</p>
-                    <p className="font-semibold text-slate-700">Belum ada pesanan masuk.</p>
-                    <p className="text-sm text-slate-400 mt-1">Order baru akan muncul di sini setelah buyer checkout.</p>
+                    <p className="text-4xl mb-3">{filterTab === 'incoming' ? '📬' : '📦'}</p>
+                    <p className="font-semibold text-slate-700">
+                        {filterTab === 'incoming' ? 'Belum ada pesanan masuk.' : 'Belum ada pesanan diproses.'}
+                    </p>
+                    <p className="text-sm text-slate-400 mt-1">
+                        {filterTab === 'incoming'
+                            ? 'Order baru akan muncul di sini setelah buyer checkout.'
+                            : 'Pesanan yang sudah diproses akan muncul di sini.'}
+                    </p>
                 </div>
             ) : (
                 <div className="space-y-3">
-                    {orders.map(order => (
+                    {displayedOrders.map(order => (
                         <div key={order.orderId} className="bg-white border border-emerald-100 rounded-2xl p-5">
                             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                                 <div className="flex-1">
