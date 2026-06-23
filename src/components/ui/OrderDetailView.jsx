@@ -24,18 +24,16 @@ export default function OrderDetailView({ order, title, subtitle, backLink, back
 
     return (
         <div className="space-y-6">
-            <div className="flex items-start justify-between gap-4">
-                <div>
-                    <p className="text-xs font-bold text-blue-500 uppercase tracking-widest">{subtitle}</p>
-                    <h1 className="text-3xl font-bold text-slate-800 mt-1">{title}</h1>
-                    <p className="text-slate-400 mt-1">#{order.orderId}</p>
-                </div>
-                <Link
-                    to={backLink}
-                    className="text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline"
-                >
-                    {backLabel}
-                </Link>
+            <Link
+                to={backLink}
+                className="inline-block text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline"
+            >
+                {backLabel}
+            </Link>
+            <div className="-mt-2">
+                <p className="text-xs font-bold text-blue-500 uppercase tracking-widest">{subtitle}</p>
+                <h1 className="text-3xl font-bold text-slate-800 mt-1">{title}</h1>
+                <p className="text-slate-400 mt-1">#{order.orderId}</p>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-6">

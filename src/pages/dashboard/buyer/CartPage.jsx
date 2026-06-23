@@ -437,11 +437,11 @@ export default function CartPage() {
                                         </button>
                                         {showAvailableDiscounts && (
                                             <div className="mt-2 space-y-2">
-                                                {availableVouchers.filter(v => v.active && !v.expired).length > 0 && (
+                                                {availableVouchers.filter(v => v.active && !v.expired && v.remainingUsage > 0).length > 0 && (
                                                     <div>
                                                         <p className="text-xs font-semibold text-slate-500 mb-1">🎟️ Voucher</p>
                                                         <div className="space-y-1">
-                                                            {availableVouchers.filter(v => v.active && !v.expired).slice(0, 5).map(v => (
+                                                            {availableVouchers.filter(v => v.active && !v.expired && v.remainingUsage > 0).slice(0, 5).map(v => (
                                                                 <div key={v.id} className="flex items-center justify-between bg-blue-50 rounded-lg px-3 py-1.5 text-xs">
                                                                     <span className="font-mono font-bold text-blue-700">{v.code}</span>
                                                                     <span className="text-slate-500">
