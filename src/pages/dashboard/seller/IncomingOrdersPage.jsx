@@ -59,20 +59,21 @@ export default function IncomingOrdersPage() {
 
     return (
         <MainLayout>
+            <Link
+                to="/dashboard/seller"
+                className="inline-block mb-2 text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline"
+            >
+                ← Kembali
+            </Link>
             <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                     <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Seller</span>
                     <h1 className="text-3xl font-bold text-slate-800 mt-1">Pesanan Saya</h1>
                     <p className="text-slate-400 mt-1">Daftar order toko kamu</p>
                 </div>
-                <div className="flex items-center gap-2">
-                    <Link to="/dashboard/seller/report">
-                        <Button variant="outline">Laporan</Button>
-                    </Link>
-                    <Link to="/dashboard/seller">
-                        <Button variant="outline">Dashboard</Button>
-                    </Link>
-                </div>
+                <Link to="/dashboard/seller/report">
+                    <Button variant="outline">Laporan</Button>
+                </Link>
             </div>
 
             <div className="flex gap-1 mb-6 bg-emerald-50 rounded-xl p-1 w-fit">
