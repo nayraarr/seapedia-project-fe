@@ -7,3 +7,5 @@ export const getBuyerOrderDetail = (orderId) => api.get(`/buyer/orders/${orderId
 export const getSellerIncomingOrders = () => api.get('/seller/orders/incoming')
 export const getSellerOrderDetail = (orderId) => api.get(`/seller/orders/${orderId}`)
 export const processSellerOrder = (orderId) => api.patch(`/seller/orders/${orderId}/process`)
+export const getBuyerSpendingReport = () => api.get('/buyer/orders/report')
+export const getSellerIncomeReport = () => api.get('/seller/orders/report')
