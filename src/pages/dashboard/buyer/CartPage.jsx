@@ -7,6 +7,7 @@ import { useAuth } from '../../../contexts/useAuth'
 import { getAddresses } from '../../../services/addressApi'
 import { getWallet } from '../../../services/walletApi'
 import { createOrder, previewCheckout } from '../../../services/orderApi'
+import { validateDiscountCode, getVouchers, getPromos } from '../../../services/discountApi'
 
 const DELIVERY_OPTIONS = [
     { value: 'INSTANT', label: 'Instant', feeLabel: 'Rp25.000' },
@@ -40,18 +41,26 @@ export default function CartPage() {
     const [previewLoading, setPreviewLoading] = useState(false)
     const [selectedAddressId, setSelectedAddressId] = useState('')
     const [deliveryMethod, setDeliveryMethod] = useState('REGULAR')
+    const [discountCode, setDiscountCode] = useState('')
+    const [discountCheck, setDiscountCheck] = useState(null) // hasil dari endpoint validate
+    const [discountCheckLoading, setDiscountCheckLoading] = useState(false)
     const [previewData, setPreviewData] = useState(null)
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [checkoutModalOpen, setCheckoutModalOpen] = useState(false)
+    const [availableVouchers, setAvailableVouchers] = useState([])
+    const [availablePromos, setAvailablePromos] = useState([])
+    const [showAvailableDiscounts, setShowAvailableDiscounts] = useState(false)
 
     useEffect(() => {
         fetchCart()
-        Promise.all([getAddresses(), getWallet()])
-            .then(([addrRes, walletRes]) => {
+        Promise.all([getAddresses(), getWallet(), getVouchers(), getPromos()])
+            .then(([addrRes, walletRes, voucherRes, promoRes]) => {
                 const addrList = addrRes.data.data || []
                 setAddresses(addrList)
                 setWallet(walletRes.data.data)
+                setAvailableVouchers(voucherRes.data.data || [])
+                setAvailablePromos(promoRes.data.data || [])
                 const defaultAddress = addrList.find(addr => addr.isDefault) || addrList[0]
                 if (defaultAddress) {
                     setSelectedAddressId(defaultAddress.id)
@@ -60,6 +69,8 @@ export default function CartPage() {
             .catch(() => {
                 setAddresses([])
                 setWallet(null)
+                setAvailableVouchers([])
+                setAvailablePromos([])
             })
     }, [fetchCart])
 
@@ -67,17 +78,6 @@ export default function CartPage() {
         () => addresses.find(addr => addr.id === selectedAddressId) || null,
         [addresses, selectedAddressId]
     )
-
-    useEffect(() => {
-        const hasDefault = addresses.some(addr => addr.id === selectedAddressId)
-        if (!selectedAddressId && addresses.length > 0) {
-            const defaultAddress = addresses.find(addr => addr.isDefault) || addresses[0]
-            setSelectedAddressId(defaultAddress.id)
-        } else if (selectedAddressId && !hasDefault && addresses.length > 0) {
-            const fallback = addresses.find(addr => addr.isDefault) || addresses[0]
-            setSelectedAddressId(fallback.id)
-        }
-    }, [addresses, selectedAddressId])
 
     const handleQtyChange = async (cartItemId, newQty) => {
         if (newQty < 1) return
@@ -97,6 +97,27 @@ export default function CartPage() {
         setClearConfirm(false)
     }
 
+    const handleCheckDiscount = async () => {
+        const code = discountCode.trim()
+        if (!code) {
+            setDiscountCheck(null)
+            return
+        }
+        setDiscountCheckLoading(true)
+        try {
+            const res = await validateDiscountCode(code)
+            setDiscountCheck(res.data.data)
+        } catch (err) {
+            setDiscountCheck({
+                valid: false,
+                source: 'NONE',
+                message: err.response?.data?.message || 'Gagal memvalidasi kode diskon.',
+            })
+        } finally {
+            setDiscountCheckLoading(false)
+        }
+    }
+
     const handlePreviewCheckout = async () => {
         setError('')
         setSuccess('')
@@ -105,6 +126,7 @@ export default function CartPage() {
             const payload = {
                 addressId: selectedAddressId || null,
                 deliveryMethod,
+                discountCode: discountCode.trim() || null,
             }
             const res = await previewCheckout(payload)
             setPreviewData(res.data.data)
@@ -124,11 +146,14 @@ export default function CartPage() {
             const payload = {
                 addressId: selectedAddressId || null,
                 deliveryMethod,
+                discountCode: discountCode.trim() || null,
             }
             const res = await createOrder(payload)
             setSuccess('Order berhasil dibuat.')
             setCheckoutModalOpen(false)
             setPreviewData(null)
+            setDiscountCode('')
+            setDiscountCheck(null)
             await fetchCart()
             await Promise.all([
                 getWallet().then(result => setWallet(result.data.data)),
@@ -355,6 +380,103 @@ export default function CartPage() {
                                     </div>
                                 </div>
 
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-500 mb-1">
+                                        Kode Voucher / Promo
+                                    </label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={discountCode}
+                                            onChange={(e) => {
+                                                setDiscountCode(e.target.value.toUpperCase())
+                                                setDiscountCheck(null)
+                                            }}
+                                            placeholder="Masukkan kode (opsional)"
+                                            className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 uppercase"
+                                        />
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={handleCheckDiscount}
+                                            disabled={discountCheckLoading || !discountCode.trim()}
+                                        >
+                                            {discountCheckLoading ? '...' : 'Cek'}
+                                        </Button>
+                                    </div>
+                                    {discountCheck && (
+                                        <div className={`mt-2 rounded-xl px-3 py-2 text-xs border ${
+                                            discountCheck.valid
+                                                ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                                                : 'bg-red-50 border-red-200 text-red-600'
+                                        }`}>
+                                            {discountCheck.valid ? (
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <span>
+                                                        <span className="font-bold uppercase mr-1">
+                                                            {discountCheck.source === 'VOUCHER' ? '🎟️ Voucher' : '🏷️ Promo'}
+                                                        </span>
+                                                        berlaku
+                                                    </span>
+                                                    <span className="font-semibold">
+                                                        -{formatRupiah(discountCheck.discountAmount)}
+                                                    </span>
+                                                </div>
+                                            ) : (
+                                                <span>{discountCheck.message}</span>
+                                            )}
+                                        </div>
+                                    )}
+                                    <div className="mt-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowAvailableDiscounts(!showAvailableDiscounts)}
+                                            className="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1"
+                                        >
+                                            {showAvailableDiscounts ? '▲' : '▼'} Lihat kode diskon tersedia
+                                        </button>
+                                        {showAvailableDiscounts && (
+                                            <div className="mt-2 space-y-2">
+                                                {availableVouchers.filter(v => v.active && !v.expired).length > 0 && (
+                                                    <div>
+                                                        <p className="text-xs font-semibold text-slate-500 mb-1">🎟️ Voucher</p>
+                                                        <div className="space-y-1">
+                                                            {availableVouchers.filter(v => v.active && !v.expired).slice(0, 5).map(v => (
+                                                                <div key={v.id} className="flex items-center justify-between bg-blue-50 rounded-lg px-3 py-1.5 text-xs">
+                                                                    <span className="font-mono font-bold text-blue-700">{v.code}</span>
+                                                                    <span className="text-slate-500">
+                                                                        {v.discountType === 'PERCENTAGE' ? `${v.discountValue}%` : formatRupiah(v.discountValue)}
+                                                                        {v.remainingUsage > 0 && ` (sisa ${v.remainingUsage})`}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {availablePromos.filter(p => p.active && !p.expired).length > 0 && (
+                                                    <div>
+                                                        <p className="text-xs font-semibold text-slate-500 mb-1">🏷️ Promo</p>
+                                                        <div className="space-y-1">
+                                                            {availablePromos.filter(p => p.active && !p.expired).slice(0, 5).map(p => (
+                                                                <div key={p.id} className="flex items-center justify-between bg-orange-50 rounded-lg px-3 py-1.5 text-xs">
+                                                                    <span className="font-mono font-bold text-orange-700">{p.code}</span>
+                                                                    <span className="text-slate-500">
+                                                                        {p.discountType === 'PERCENTAGE' ? `${p.discountValue}%` : formatRupiah(p.discountValue)}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {availableVouchers.filter(v => v.active && !v.expired).length === 0 &&
+                                                 availablePromos.filter(p => p.active && !p.expired).length === 0 && (
+                                                    <p className="text-xs text-slate-400">Belum ada diskon tersedia.</p>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
                                 <div className="space-y-2 text-sm text-slate-600 border-t border-blue-50 pt-3">
                                     <div className="flex justify-between">
                                         <span>Toko</span>
@@ -482,6 +604,16 @@ export default function CartPage() {
                                         <span>Subtotal</span>
                                         <span className="font-semibold">{formatRupiah(previewData.subtotal)}</span>
                                     </div>
+                                    {previewData.discountSource && previewData.discountSource !== 'NONE' && (
+                                        <div className="flex justify-between text-emerald-600">
+                                            <span>Diskon {previewData.discountLabel || `(${previewData.discountSource})`}</span>
+                                            <span className="font-semibold">−{formatRupiah(previewData.discountAmount)}</span>
+                                        </div>
+                                    )}
+                                    <div className="flex justify-between text-slate-500 text-xs border-t border-blue-50 pt-1">
+                                        <span>Dasar Pengenaan Pajak</span>
+                                        <span>{formatRupiah(previewData.taxBase)}</span>
+                                    </div>
                                     <div className="flex justify-between">
                                         <span>Delivery fee</span>
                                         <span className="font-semibold">{formatRupiah(previewData.deliveryFee)}</span>
@@ -495,7 +627,8 @@ export default function CartPage() {
                                         <span className="font-extrabold text-blue-700">{formatRupiah(previewData.totalAmount)}</span>
                                     </div>
                                     <p className="text-xs text-slate-500">
-                                        Tax base dihitung dari subtotal sesuai implementasi backend.
+                                        Diskon dipotong dari subtotal sebelum PPN 12%.
+                                        PPN dihitung dari dasar pengenaan pajak (subtotal − diskon).
                                     </p>
                                 </div>
 
