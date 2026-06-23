@@ -3,20 +3,35 @@ import { Link, useParams } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
 import OrderDetailView from '../../../components/ui/OrderDetailView'
-import { getSellerOrderDetail } from '../../../services/orderApi'
+import { getSellerOrderDetail, processSellerOrder } from '../../../services/orderApi'
 
 export default function SellerOrderDetailPage() {
     const { orderId } = useParams()
     const [order, setOrder] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [processing, setProcessing] = useState(false) // baru
 
-    useEffect(() => {
+    const loadOrder = () => {
         getSellerOrderDetail(orderId)
             .then(res => setOrder(res.data.data))
             .catch(() => setError('Gagal memuat detail pesanan.'))
             .finally(() => setLoading(false))
-    }, [orderId])
+    }
+
+    useEffect(() => { loadOrder() }, [orderId])
+
+    const handleProcess = async () => {
+        setProcessing(true)
+        try {
+            await processSellerOrder(orderId)
+            loadOrder() // refresh agar status & riwayat ikut update
+        } catch {
+            setError('Gagal memproses pesanan.')
+        } finally {
+            setProcessing(false)
+        }
+    }
 
     return (
         <MainLayout>
@@ -33,13 +48,22 @@ export default function SellerOrderDetailPage() {
                     </Link>
                 </div>
             ) : (
-                <OrderDetailView
-                    order={order}
-                    title="Detail Pesanan Masuk"
-                    subtitle="Seller"
-                    backLink="/dashboard/seller/orders/incoming"
-                    backLabel="← Kembali ke pesanan masuk"
-                />
+                <>
+                    {order.status === 'SEDANG_DIKEMAS' && (
+                        <div className="mb-4 flex justify-end">
+                            <Button variant="emerald" disabled={processing} onClick={handleProcess}>
+                                {processing ? 'Memproses...' : 'Proses Pesanan'}
+                            </Button>
+                        </div>
+                    )}
+                    <OrderDetailView
+                        order={order}
+                        title="Detail Pesanan Masuk"
+                        subtitle="Seller"
+                        backLink="/dashboard/seller/orders/incoming"
+                        backLabel="← Kembali ke pesanan masuk"
+                    />
+                </>
             )}
         </MainLayout>
     )

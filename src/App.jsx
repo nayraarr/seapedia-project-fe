@@ -12,6 +12,8 @@ import AddressManagementPage from './pages/dashboard/buyer/AddressManagementPage
 import CartPage from './pages/dashboard/buyer/CartPage'
 import OrderHistoryPage from './pages/dashboard/buyer/OrderHistoryPage'
 import OrderDetailPage from './pages/dashboard/buyer/OrderDetailPage'
+import SpendingReportPage from './pages/dashboard/buyer/SpendingReportPage'
+import IncomeReportPage from './pages/dashboard/seller/IncomeReportPage'
 
 // public pages
 import HomePage from './pages/public/HomePage'
@@ -86,6 +88,9 @@ export default function App() {
         <Route path="/dashboard/buyer/addresses" element={
           <ProtectedRoute requiredRole="BUYER"><AddressManagementPage /></ProtectedRoute>
         } />
+        <Route path="/dashboard/buyer/report" element={
+          <ProtectedRoute requiredRole="BUYER"><SpendingReportPage /></ProtectedRoute>
+        } />
         <Route path="/dashboard/seller" element={
           <ProtectedRoute requiredRole="SELLER"><SellerDashboard /></ProtectedRoute>
         } />
@@ -106,6 +111,9 @@ export default function App() {
         } />
         <Route path="/dashboard/seller/orders/:orderId" element={
           <ProtectedRoute allowedRoles={['SELLER']}><SellerOrderDetailPage /></ProtectedRoute>
+        } />
+        <Route path="/dashboard/seller/report" element={
+          <ProtectedRoute allowedRoles={['SELLER']}><IncomeReportPage /></ProtectedRoute>
         } />
         <Route path="/dashboard/driver" element={
           <ProtectedRoute requiredRole="DRIVER"><DriverDashboard /></ProtectedRoute>

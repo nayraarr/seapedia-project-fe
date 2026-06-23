@@ -89,6 +89,15 @@ export default function SellerDashboard() {
                         Lihat daftar
                     </span>
                 </div>
+
+                <div
+                    onClick={() => navigate('/dashboard/seller/report')}
+                    className="bg-white border border-emerald-100 rounded-2xl p-6 cursor-pointer hover:shadow-md hover:border-emerald-300 transition"
+                >
+                    <div className="text-3xl mb-3">📊</div>
+                    <h3 className="font-semibold text-slate-700 mb-1">Laporan Pendapatan</h3>
+                    <p className="text-slate-400 text-sm">Ringkasan transaksi tokomu</p>
+                </div>
             </div>
         </MainLayout>
     )

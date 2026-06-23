@@ -50,19 +50,9 @@ export default function OrderDetailView({ order, title, subtitle, backLink, back
                             </span>
                         </div>
 
-                        <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                        <div className="grid sm:grid-cols-2 gap-3 text-sm">
                             <Info label="Toko" value={<Link to={`/stores/${order.storeId}`} className="text-blue-600 hover:underline">{order.storeName}</Link>} />
                             {order.buyerUsername && <Info label="Buyer" value={order.buyerUsername} />}
-                            <Info label="Subtotal" value={formatRupiah(order.subtotal)} />
-                            <Info label="Ongkir" value={formatRupiah(order.deliveryFee)} />
-                            <Info label={`PPN ${order.taxRatePercent}%`} value={formatRupiah(order.taxAmount)} />
-                            <Info label="Total" value={formatRupiah(order.totalAmount)} strong />
-                            {order.walletBalanceBefore != null && (
-                                <Info label="Saldo Sebelum" value={formatRupiah(order.walletBalanceBefore)} />
-                            )}
-                            {order.walletBalanceAfter != null && (
-                                <Info label="Saldo Sesudah" value={formatRupiah(order.walletBalanceAfter)} />
-                            )}
                         </div>
                     </div>
 
@@ -82,6 +72,42 @@ export default function OrderDetailView({ order, title, subtitle, backLink, back
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    </div>
+
+                    <div className="bg-white border border-blue-100 rounded-2xl p-5">
+                        <h2 className="font-bold text-slate-800 mb-4">Ringkasan Pembayaran</h2>
+                        <div className="rounded-xl border border-slate-200 p-4 space-y-2 bg-slate-50/50 text-sm">
+                            <div className="flex justify-between">
+                                <span className="text-slate-500">Subtotal</span>
+                                <span className="font-semibold text-slate-800">{formatRupiah(order.subtotal)}</span>
+                            </div>
+                            {order.discountSource && order.discountSource !== 'NONE' && (
+                                <div className="flex justify-between text-emerald-600">
+                                    <span>Diskon {order.discountLabel || `(${order.discountSource})`}</span>
+                                    <span className="font-semibold">−{formatRupiah(order.discountAmount)}</span>
+                                </div>
+                            )}
+                            <div className="flex justify-between text-slate-400 text-xs border-t border-slate-200 pt-1">
+                                <span>Dasar Pengenaan Pajak</span>
+                                <span className="font-medium">{formatRupiah(order.taxBase)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-slate-500">Delivery fee</span>
+                                <span className="font-semibold text-slate-800">{formatRupiah(order.deliveryFee)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-slate-500">PPN {order.taxRatePercent}%</span>
+                                <span className="font-semibold text-slate-800">{formatRupiah(order.taxAmount)}</span>
+                            </div>
+                            <div className="flex justify-between border-t border-slate-200 pt-2">
+                                <span className="font-bold text-slate-700">Total</span>
+                                <span className="font-extrabold text-blue-700">{formatRupiah(order.totalAmount)}</span>
+                            </div>
+                            <p className="text-xs text-slate-400 pt-1">
+                                Diskon dipotong dari subtotal sebelum PPN 12%.
+                                PPN dihitung dari dasar pengenaan pajak (subtotal − diskon).
+                            </p>
                         </div>
                     </div>
                 </div>

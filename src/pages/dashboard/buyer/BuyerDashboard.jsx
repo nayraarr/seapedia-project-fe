@@ -75,6 +75,13 @@ export default function BuyerDashboard() {
             path: '/dashboard/buyer/orders',
             active: true,
         },
+        {
+            label: 'Laporan Pengeluaran',
+            icon: '📊',
+            desc: 'Ringkasan total belanja kamu',
+            path: '/dashboard/buyer/report',
+            active: true,
+        },
     ]
 
     return (
