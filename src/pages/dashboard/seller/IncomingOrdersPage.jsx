@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
-import { getSellerIncomingOrders } from '../../../services/orderApi'
+import { getSellerIncomingOrders, processSellerOrder } from '../../../services/orderApi'
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -27,6 +27,7 @@ export default function IncomingOrdersPage() {
     const [orders, setOrders] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [processingId, setProcessingId] = useState(null)
 
     useEffect(() => {
         getSellerIncomingOrders()
@@ -34,6 +35,22 @@ export default function IncomingOrdersPage() {
             .catch(() => setError('Gagal memuat pesanan masuk.'))
             .finally(() => setLoading(false))
     }, [])
+
+    const handleProcess = async (orderId) => {
+        setProcessingId(orderId)
+        try {
+            await processSellerOrder(orderId)
+            setOrders(prev => prev.map(o =>
+                o.orderId === orderId
+                    ? { ...o, status: 'MENUNGGU_PENGIRIM', statusLabel: 'Menunggu Pengirim' }
+                    : o
+            ))
+        } catch {
+            setError('Gagal memproses pesanan.')
+        } finally {
+            setProcessingId(null)
+        }
+    }
 
     return (
         <MainLayout>
@@ -70,26 +87,39 @@ export default function IncomingOrdersPage() {
                 <div className="space-y-3">
                     {orders.map(order => (
                         <div key={order.orderId} className="bg-white border border-emerald-100 rounded-2xl p-5">
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                                <div>
+                            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+                                <div className="flex-1">
                                     <div className="flex items-center gap-2 flex-wrap">
-                                        <span className="font-bold text-slate-800">{order.buyerUsername}</span>
+                                        <span className="font-bold text-slate-800 text-lg">{order.storeName}</span>
                                         <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-semibold">
                                             {order.statusLabel}
                                         </span>
                                     </div>
-                                    <p className="text-sm text-slate-400 mt-1">{order.storeName}</p>
-                                    <p className="text-sm text-slate-500 mt-2">
+                                    <p className="text-sm text-slate-500 mt-1">
                                         {order.deliveryMethodLabel} • {order.itemCount} item • {formatDate(order.createdAt)}
                                     </p>
+                                    {order.discountSource && order.discountSource !== 'NONE' && (
+                                        <p className="text-xs text-emerald-600 mt-1">
+                                            Diskon {order.discountLabel || `(${order.discountSource})`}: −{formatRupiah(order.discountAmount)}
+                                        </p>
+                                    )}
                                 </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="text-left md:text-right">
+                                <div className="flex items-center gap-3 flex-shrink-0">
+                                    <div className="text-right">
                                         <p className="text-xs text-slate-400">Total</p>
                                         <p className="text-lg font-bold text-emerald-700">{formatRupiah(order.totalAmount)}</p>
                                     </div>
+                                    {order.status === 'SEDANG_DIKEMAS' && (
+                                        <Button
+                                            variant="emerald"
+                                            disabled={processingId === order.orderId}
+                                            onClick={() => handleProcess(order.orderId)}
+                                        >
+                                            {processingId === order.orderId ? 'Memproses...' : 'Proses'}
+                                        </Button>
+                                    )}
                                     <Link to={`/dashboard/seller/orders/${order.orderId}`}>
-                                        <Button variant="outline">Lihat Detail</Button>
+                                        <Button variant="outline">Detail</Button>
                                     </Link>
                                 </div>
                             </div>
