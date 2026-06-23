@@ -78,12 +78,15 @@ export default function SellerDashboard() {
                     <p className="text-slate-400 text-sm">Tambah, edit, hapus produk</p>
                 </div>
 
-                <div className="bg-white border border-emerald-100 rounded-2xl p-6 opacity-50 cursor-not-allowed">
+                <div
+                    onClick={() => navigate('/dashboard/seller/orders/incoming')}
+                    className="bg-white border border-emerald-100 rounded-2xl p-6 cursor-pointer hover:shadow-md hover:border-emerald-300 transition"
+                >
                     <div className="text-3xl mb-3">📬</div>
                     <h3 className="font-semibold text-slate-700 mb-1">Pesanan Masuk</h3>
                     <p className="text-slate-400 text-sm">Proses pesanan dari pembeli</p>
                     <span className="inline-block mt-3 text-xs font-semibold text-emerald-500 bg-emerald-50 px-2.5 py-1 rounded-full">
-                        Segera hadir
+                        Lihat daftar
                     </span>
                 </div>
             </div>

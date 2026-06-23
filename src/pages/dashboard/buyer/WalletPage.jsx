@@ -1,0 +1,192 @@
+import { useState, useEffect } from 'react'
+import MainLayout from '../../../components/layout/MainLayout'
+import { getWallet, topUp, getTransactions } from '../../../services/walletApi'
+
+const TOPUP_PRESETS = [10000, 25000, 50000, 100000, 250000, 500000]
+
+function formatRupiah(amount) {
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount)
+}
+
+function formatDate(iso) {
+    return new Date(iso).toLocaleString('id-ID', {
+        day: '2-digit', month: 'short', year: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    })
+}
+
+const TYPE_LABEL = { TOPUP: 'Top Up', PAYMENT: 'Pembayaran', REFUND: 'Refund' }
+const TYPE_COLOR = { TOPUP: 'text-emerald-600', PAYMENT: 'text-red-500', REFUND: 'text-blue-500' }
+const TYPE_SIGN  = { TOPUP: '+', PAYMENT: '-', REFUND: '+' }
+
+export default function WalletPage() {
+    const [wallet, setWallet] = useState(null)
+    const [transactions, setTransactions] = useState([])
+    const [amount, setAmount] = useState('')
+    const [loading, setLoading] = useState(true)
+    const [topUpLoading, setTopUpLoading] = useState(false)
+    const [error, setError] = useState('')
+    const [success, setSuccess] = useState('')
+    const [refresh, setRefresh] = useState(0)
+
+    useEffect(() => {
+        Promise.all([getWallet(), getTransactions()])
+            .then(([walletRes, txRes]) => {
+                setWallet(walletRes.data.data)
+                setTransactions(txRes.data.data)
+            })
+            .catch(() => setError('Gagal memuat data wallet.'))
+            .finally(() => setLoading(false))
+    }, [refresh])
+
+    const handleTopUp = async (e) => {
+        e.preventDefault()
+        setError('')
+        setSuccess('')
+        const parsed = parseInt(amount, 10)
+        if (!parsed || parsed < 1000) {
+            setError('Minimal top up adalah Rp1.000')
+            return
+        }
+        try {
+            setTopUpLoading(true)
+            await topUp(parsed)
+            setSuccess(`Top up ${formatRupiah(parsed)} berhasil!`)
+            setAmount('')
+            setRefresh(prev => prev + 1)
+        } catch (err) {
+            setError(err.response?.data?.message || 'Gagal melakukan top up.')
+        } finally {
+            setTopUpLoading(false)
+        }
+    }
+
+    return (
+        <MainLayout>
+            <div className="mb-8">
+                <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">Buyer</span>
+                <h1 className="text-3xl font-bold text-slate-800 mt-1">Wallet Saya 💳</h1>
+                <p className="text-slate-400 mt-1">Kelola saldo dan riwayat transaksi</p>
+            </div>
+
+            {loading ? (
+                <div className="space-y-4">
+                    <div className="bg-white animate-pulse rounded-2xl h-36 border border-blue-50" />
+                    <div className="bg-white animate-pulse rounded-2xl h-48 border border-blue-50" />
+                </div>
+            ) : (
+                <div className="grid md:grid-cols-2 gap-6">
+                    {/* Saldo */}
+                    <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-6 text-white shadow-lg">
+                        <p className="text-sm opacity-80 mb-1">Saldo Saat Ini</p>
+                        <p className="text-4xl font-bold tracking-tight">
+                            {wallet ? formatRupiah(wallet.balance) : 'Rp0'}
+                        </p>
+                        {wallet?.updatedAt && (
+                            <p className="text-xs opacity-60 mt-2">
+                                Diperbarui: {formatDate(wallet.updatedAt)}
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Form Top Up */}
+                    <div className="bg-white rounded-2xl p-6 border border-blue-100">
+                        <h2 className="font-bold text-slate-700 mb-4">Top Up Saldo</h2>
+
+                        {error && (
+                            <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                                {error}
+                            </div>
+                        )}
+                        {success && (
+                            <div className="mb-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
+                                {success}
+                            </div>
+                        )}
+
+                        <div className="grid grid-cols-3 gap-2 mb-4">
+                            {TOPUP_PRESETS.map(preset => (
+                                <button
+                                    key={preset}
+                                    type="button"
+                                    onClick={() => setAmount(String(preset))}
+                                    className={`text-xs font-semibold py-2 rounded-xl border transition
+                                        ${String(amount) === String(preset)
+                                        ? 'bg-blue-600 text-white border-blue-600'
+                                        : 'bg-white text-slate-600 border-slate-200 hover:border-blue-400'}`}
+                                >
+                                    {formatRupiah(preset)}
+                                </button>
+                            ))}
+                        </div>
+
+                        <form onSubmit={handleTopUp} className="flex flex-col gap-3">
+                            <input
+                                type="number"
+                                value={amount}
+                                onChange={e => setAmount(e.target.value)}
+                                placeholder="Atau masukkan nominal lain..."
+                                min={1000}
+                                className="border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition"
+                            />
+                            <button
+                                type="submit"
+                                disabled={topUpLoading}
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition disabled:opacity-50"
+                            >
+                                {topUpLoading ? 'Memproses...' : 'Top Up Sekarang'}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Riwayat Transaksi */}
+            {!loading && (
+                <div className="mt-6 bg-white rounded-2xl border border-blue-100 overflow-hidden">
+                    <div className="px-6 py-4 border-b border-slate-100">
+                        <h2 className="font-bold text-slate-700">Riwayat Transaksi</h2>
+                    </div>
+                    {transactions.length === 0 ? (
+                        <p className="text-slate-400 text-sm px-6 py-10 text-center">
+                            Belum ada transaksi.
+                        </p>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <thead className="bg-slate-50 text-slate-400 text-xs uppercase">
+                                <tr>
+                                    <th className="px-6 py-3 text-left">Tanggal</th>
+                                    <th className="px-6 py-3 text-left">Keterangan</th>
+                                    <th className="px-6 py-3 text-left">Tipe</th>
+                                    <th className="px-6 py-3 text-right">Jumlah</th>
+                                    <th className="px-6 py-3 text-right">Saldo Akhir</th>
+                                </tr>
+                                </thead>
+                                <tbody className="divide-y divide-slate-100">
+                                {transactions.map(tx => (
+                                    <tr key={tx.id} className="hover:bg-slate-50 transition">
+                                        <td className="px-6 py-3 text-slate-400 whitespace-nowrap">{formatDate(tx.createdAt)}</td>
+                                        <td className="px-6 py-3 text-slate-600">{tx.description || '-'}</td>
+                                        <td className="px-6 py-3">
+                                                <span className={`font-semibold ${TYPE_COLOR[tx.type]}`}>
+                                                    {TYPE_LABEL[tx.type] || tx.type}
+                                                </span>
+                                        </td>
+                                        <td className={`px-6 py-3 text-right font-semibold ${TYPE_COLOR[tx.type]}`}>
+                                            {TYPE_SIGN[tx.type]}{formatRupiah(tx.amount)}
+                                        </td>
+                                        <td className="px-6 py-3 text-right text-slate-500">
+                                            {formatRupiah(tx.balanceAfter)}
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            )}
+        </MainLayout>
+    )
+}
