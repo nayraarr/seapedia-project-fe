@@ -31,6 +31,12 @@ export default function IncomeReportPage() {
 
     return (
         <MainLayout>
+            <Link
+                to="/dashboard/seller"
+                className="inline-block mb-2 text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline"
+            >
+                ← Kembali
+            </Link>
             <div className="mb-6 flex items-start justify-between gap-4">
                 <div>
                     <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Seller</span>

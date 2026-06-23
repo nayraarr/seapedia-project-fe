@@ -49,13 +49,6 @@ export default function SellerOrderDetailPage() {
                 </div>
             ) : (
                 <>
-                    {order.status === 'SEDANG_DIKEMAS' && (
-                        <div className="mb-4 flex justify-end">
-                            <Button variant="emerald" disabled={processing} onClick={handleProcess}>
-                                {processing ? 'Memproses...' : 'Proses Pesanan'}
-                            </Button>
-                        </div>
-                    )}
                     <OrderDetailView
                         order={order}
                         title="Detail Pesanan Masuk"
@@ -63,6 +56,13 @@ export default function SellerOrderDetailPage() {
                         backLink="/dashboard/seller/orders/incoming"
                         backLabel="← Kembali ke pesanan masuk"
                     />
+                    {order.status === 'SEDANG_DIKEMAS' && (
+                        <div className="mt-6 flex justify-center">
+                            <Button variant="emerald" disabled={processing} onClick={handleProcess} className="min-w-[240px] text-base py-3">
+                                {processing ? 'Memproses...' : 'Proses Pesanan'}
+                            </Button>
+                        </div>
+                    )}
                 </>
             )}
         </MainLayout>
