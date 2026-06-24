@@ -34,6 +34,8 @@ import DriverJobDetailPage from './pages/dashboard/driver/DriverJobDetailPage'
 import ActiveJobsPage from './pages/dashboard/driver/ActiveJobsPage'
 import DriverIncomeReportPage from './pages/dashboard/driver/DriverIncomeReportPage'
 import AdminDashboard from './pages/dashboard/admin/AdminDashboard'
+import AdminOrderDetailPage from './pages/dashboard/admin/AdminOrderDetailPage'
+import AdminUserDetailPage from './pages/dashboard/admin/AdminUserDetailPage'
 import IncomingOrdersPage from './pages/dashboard/seller/IncomingOrdersPage'
 import SellerOrderDetailPage from './pages/dashboard/seller/OrderDetailPage'
 import NotFound from './pages/NotFound'
@@ -136,6 +138,12 @@ export default function App() {
           } />
           <Route path="/dashboard/admin" element={
             <ProtectedRoute requiredRole="ADMIN"><AdminDashboard /></ProtectedRoute>
+          } />
+          <Route path="/dashboard/admin/orders/:orderId" element={
+            <ProtectedRoute requiredRole="ADMIN"><AdminOrderDetailPage /></ProtectedRoute>
+          } />
+          <Route path="/dashboard/admin/users/:userId" element={
+            <ProtectedRoute requiredRole="ADMIN"><AdminUserDetailPage /></ProtectedRoute>
           } />
           <Route path="/profile" element={
             <ProtectedRoute><ProfilePage /></ProtectedRoute>

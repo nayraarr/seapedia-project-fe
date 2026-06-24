@@ -74,8 +74,7 @@ export default function DriverJobDetailPage() {
                         order={job}
                         title="Detail Job Pengiriman"
                         subtitle="Driver"
-                        backLink="/dashboard/driver/jobs"
-                        backLabel="← Kembali ke daftar job"
+                        backLabel="← Kembali"
                     />
                     {job.status === 'SELESAI' && (
                         <div className="bg-gradient-to-r from-emerald-50 to-white border border-emerald-200 rounded-2xl p-5 mt-6">

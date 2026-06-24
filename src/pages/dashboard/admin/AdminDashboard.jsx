@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
 import { useAuth } from '../../../contexts/useAuth'
@@ -94,6 +95,7 @@ function DataPreview({ title, count, columns, rows, loading, onViewAll, emptyMes
 }
 
 function MonitoringTab({ data, onNavigate }) {
+    const navigate = useNavigate()
     const [users, setUsers] = useState([])
     const [usersLoading, setUsersLoading] = useState(true)
     const [stores, setStores] = useState([])
@@ -108,6 +110,7 @@ function MonitoringTab({ data, onNavigate }) {
     const [vouchersLoading, setVouchersLoading] = useState(true)
     const [promos, setPromos] = useState([])
     const [promosLoading, setPromosLoading] = useState(true)
+    const [detailItem, setDetailItem] = useState(null)
 
     useEffect(() => {
         if (!data) return
@@ -162,7 +165,8 @@ function MonitoringTab({ data, onNavigate }) {
                 title="👤 Pengguna Terbaru" count={data.totalUsers}
                 columns={['Username', 'Email', 'Role', 'Bergabung']}
                 rows={users.slice(0, 5).map(u => (
-                    <tr key={u.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                    <tr key={u.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
+                        onClick={() => navigate(`/dashboard/admin/users/${u.id}`)}>
                         <td className="px-4 py-2.5 font-medium text-slate-700">{u.username}</td>
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{u.email}</td>
                         <td className="px-4 py-2.5">
@@ -180,7 +184,8 @@ function MonitoringTab({ data, onNavigate }) {
                 title="🏪 Toko Terbaru" count={data.totalStores}
                 columns={['Nama Toko', 'Pemilik', 'Dibuat']}
                 rows={stores.slice(0, 5).map(s => (
-                    <tr key={s.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                    <tr key={s.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
+                        onClick={() => navigate(`/stores/${s.id}`)}>
                         <td className="px-4 py-2.5 font-medium text-slate-700">{s.name}</td>
                         <td className="px-4 py-2.5 text-slate-600">{s.ownerUsername}</td>
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(s.createdAt)}</td>
@@ -193,7 +198,8 @@ function MonitoringTab({ data, onNavigate }) {
                 title="📦 Produk Terbaru" count={data.totalProducts}
                 columns={['Nama Produk', 'Toko', 'Harga', 'Stok']}
                 rows={products.slice(0, 5).map(p => (
-                    <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                    <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
+                        onClick={() => navigate(`/products/${p.id}`)}>
                         <td className="px-4 py-2.5 font-medium text-slate-700">{p.name}</td>
                         <td className="px-4 py-2.5 text-slate-600 text-xs">{p.storeName}</td>
                         <td className="px-4 py-2.5 text-slate-700 font-semibold">{formatRupiah(p.price)}</td>
@@ -213,7 +219,8 @@ function MonitoringTab({ data, onNavigate }) {
                 title="🧾 Pesanan Terbaru" count={data.totalOrders}
                 columns={['Toko', 'Buyer', 'Status', 'Total', 'Dibuat']}
                 rows={orders.slice(0, 5).map(o => (
-                    <tr key={o.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                    <tr key={o.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
+                        onClick={() => navigate(`/dashboard/admin/orders/${o.id}`)}>
                         <td className="px-4 py-2.5 font-medium text-slate-700">{o.storeName}</td>
                         <td className="px-4 py-2.5 text-slate-600">{o.buyerUsername}</td>
                         <td className="px-4 py-2.5">
@@ -271,7 +278,8 @@ function MonitoringTab({ data, onNavigate }) {
                 title="🚴 Delivery Jobs Terbaru" count={data.totalDeliveryJobs}
                 columns={['Toko', 'Driver', 'Status', 'Dibuat']}
                 rows={deliveryJobs.slice(0, 5).map(j => (
-                    <tr key={j.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                    <tr key={j.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
+                        onClick={() => setDetailItem({ type: 'delivery-job', data: j })}>
                         <td className="px-4 py-2.5 font-medium text-slate-700">{j.storeName}</td>
                         <td className="px-4 py-2.5 text-slate-600">
                             {j.driverId
@@ -332,6 +340,24 @@ function MonitoringTab({ data, onNavigate }) {
                     </div>
                 )}
             </div>
+
+            {detailItem && detailItem.type === 'delivery-job' && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={() => setDetailItem(null)}>
+                    <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl" onClick={e => e.stopPropagation()}>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-bold text-slate-800 text-lg">Detail Delivery Job</h3>
+                            <button onClick={() => setDetailItem(null)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
+                        </div>
+                        <div className="space-y-3 text-sm">
+                            <div><p className="text-xs font-semibold text-slate-400 uppercase">Order ID</p><p className="font-mono text-xs text-slate-800">{detailItem.data.id}</p></div>
+                            <div><p className="text-xs font-semibold text-slate-400 uppercase">Toko</p><p className="font-medium text-slate-800">{detailItem.data.storeName}</p></div>
+                            <div><p className="text-xs font-semibold text-slate-400 uppercase">Driver</p><p className="font-medium text-slate-800">{detailItem.data.driverId || 'Belum ada'}</p></div>
+                            <div><p className="text-xs font-semibold text-slate-400 uppercase">Status</p><p className="font-medium text-slate-800">{detailItem.data.orderStatusLabel}</p></div>
+                            <div><p className="text-xs font-semibold text-slate-400 uppercase">Dibuat</p><p className="font-medium text-slate-800">{formatDate(detailItem.data.createdAt)}</p></div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
