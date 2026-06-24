@@ -148,7 +148,7 @@ export default function ProfilePage() {
                 <div className="bg-white border border-blue-100 rounded-2xl p-6">
                     <div className="mb-5">
                         <h2 className="text-base font-bold text-slate-700">Ringkasan Keuangan</h2>
-                        <p className="text-xs text-slate-400 mt-0.5">Data real akan tersedia di fitur selanjutnya</p>
+                        <p className="text-xs text-slate-400 mt-0.5">Saldo real berdasarkan aktivitas akun</p>
                     </div>
 
                     <div className="grid grid-cols-1 gap-3">

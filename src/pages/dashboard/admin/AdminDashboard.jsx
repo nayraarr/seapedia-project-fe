@@ -1,10 +1,15 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
 import { useAuth } from '../../../contexts/useAuth'
-import { getAdminDashboard, getAdminUsers, getAdminOrders, getAdminDeliveryJobs, getSimulationStatus, advanceSimulation, resetSimulation } from '../../../services/adminApi'
-import { generateVoucher, generatePromo, getAdminVouchers, getAdminPromos, getVoucherDetail, getPromoDetail } from '../../../services/discountApi'
+import {
+    getAdminDashboard, getAdminUsers, getAdminOrders,
+    getAdminDeliveryJobs, getSimulationStatus, advanceSimulation, resetSimulation
+} from '../../../services/adminApi'
+import {
+    generateVoucher, generatePromo, getAdminVouchers,
+    getAdminPromos, getVoucherDetail, getPromoDetail
+} from '../../../services/discountApi'
 import { getAllStores } from '../../../services/storeApi'
 import api from '../../../services/api'
 
@@ -13,6 +18,7 @@ function formatRupiah(amount) {
         style: 'currency', currency: 'IDR', minimumFractionDigits: 0,
     }).format(amount ?? 0)
 }
+
 function formatDate(dateStr) {
     if (!dateStr) return '-'
     return new Date(dateStr).toLocaleDateString('id-ID', {
@@ -23,15 +29,18 @@ function formatDate(dateStr) {
 
 function StatCard({ icon, label, value, sub, color = 'slate', onClick }) {
     const colors = {
-        slate:  'bg-slate-50  border-slate-200  text-slate-700',
-        red:    'bg-red-50    border-red-200    text-red-700',
-        emerald:'bg-emerald-50 border-emerald-200 text-emerald-700',
-        yellow: 'bg-yellow-50 border-yellow-200 text-yellow-700',
-        blue:   'bg-blue-50   border-blue-200   text-blue-700',
-        purple: 'bg-purple-50 border-purple-200 text-purple-700',
+        slate:   'bg-slate-50   border-slate-200   text-slate-700',
+        red:     'bg-red-50     border-red-200     text-red-700',
+        emerald: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+        yellow:  'bg-yellow-50  border-yellow-200  text-yellow-700',
+        blue:    'bg-blue-50    border-blue-200    text-blue-700',
+        purple:  'bg-purple-50  border-purple-200  text-purple-700',
     }
     return (
-        <div className={`rounded-2xl border p-4 ${colors[color]} ${onClick ? 'cursor-pointer hover:shadow-md transition-all' : ''}`} onClick={onClick}>
+        <div
+            className={`rounded-2xl border p-4 ${colors[color]} ${onClick ? 'cursor-pointer hover:shadow-md transition-all' : ''}`}
+            onClick={onClick}
+        >
             <div className="text-2xl mb-1">{icon}</div>
             <p className="text-xs font-semibold uppercase tracking-wide opacity-60 mb-0.5">{label}</p>
             <p className="text-2xl font-bold">{value ?? '-'}</p>
@@ -43,7 +52,10 @@ function StatCard({ icon, label, value, sub, color = 'slate', onClick }) {
 function SectionTitle({ children, onClick }) {
     const Comp = onClick ? 'button' : 'div'
     return (
-        <Comp onClick={onClick} className={`text-base font-bold text-slate-700 mb-3 mt-6 first:mt-0 flex items-center gap-2 ${onClick ? 'hover:text-red-600 transition-colors' : ''}`}>
+        <Comp
+            onClick={onClick}
+            className={`text-base font-bold text-slate-700 mb-3 mt-6 first:mt-0 flex items-center gap-2 ${onClick ? 'hover:text-red-600 transition-colors' : ''}`}
+        >
             {children}
             {onClick && <span className="text-xs font-normal text-red-500 ml-auto">Lihat detail →</span>}
         </Comp>
@@ -54,8 +66,12 @@ function DataPreview({ title, count, columns, rows, loading, onViewAll, emptyMes
     return (
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100">
-                <h3 className="font-bold text-slate-700 text-sm">{title} <span className="text-slate-400 font-normal">({count})</span></h3>
-                <button onClick={onViewAll} className="text-xs font-semibold text-red-500 hover:text-red-700 transition">Lihat Semua →</button>
+                <h3 className="font-bold text-slate-700 text-sm">
+                    {title} <span className="text-slate-400 font-normal">({count})</span>
+                </h3>
+                <button onClick={onViewAll} className="text-xs font-semibold text-red-500 hover:text-red-700 transition">
+                    Lihat Semua →
+                </button>
             </div>
             {loading ? (
                 <div className="text-center py-6 text-slate-400 text-sm">Memuat data...</div>
@@ -65,13 +81,11 @@ function DataPreview({ title, count, columns, rows, loading, onViewAll, emptyMes
                 <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                         <thead>
-                            <tr className="text-left text-xs text-slate-500 uppercase border-b border-slate-50">
-                                {columns.map(col => <th key={col} className="px-4 py-2.5 font-semibold">{col}</th>)}
-                            </tr>
+                        <tr className="text-left text-xs text-slate-500 uppercase border-b border-slate-50">
+                            {columns.map(col => <th key={col} className="px-4 py-2.5 font-semibold">{col}</th>)}
+                        </tr>
                         </thead>
-                        <tbody>
-                            {rows}
-                        </tbody>
+                        <tbody>{rows}</tbody>
                     </table>
                 </div>
             )}
@@ -79,9 +93,7 @@ function DataPreview({ title, count, columns, rows, loading, onViewAll, emptyMes
     )
 }
 
-function MonitoringTab({ data, simulationOffset, onNavigate }) {
-    if (!data) return <div className="text-center py-16 text-slate-400">Memuat data monitoring...</div>
-
+function MonitoringTab({ data, onNavigate }) {
     const [users, setUsers] = useState([])
     const [usersLoading, setUsersLoading] = useState(true)
     const [stores, setStores] = useState([])
@@ -98,55 +110,74 @@ function MonitoringTab({ data, simulationOffset, onNavigate }) {
     const [promosLoading, setPromosLoading] = useState(true)
 
     useEffect(() => {
-        setUsersLoading(true); setStoresLoading(true); setProductsLoading(true)
-        setOrdersLoading(true); setDeliveryJobsLoading(true); setVouchersLoading(true); setPromosLoading(true)
-        getAdminUsers().then(res => setUsers(res.data.data || [])).catch(() => {}).finally(() => setUsersLoading(false))
-        getAllStores().then(res => setStores(res.data.data || [])).catch(() => {}).finally(() => setStoresLoading(false))
-        api.get('/products').then(res => setProducts(res.data.data || [])).catch(() => {}).finally(() => setProductsLoading(false))
-        getAdminOrders().then(res => setOrders(res.data.data || [])).catch(() => {}).finally(() => setOrdersLoading(false))
-        getAdminDeliveryJobs().then(res => setDeliveryJobs(res.data.data || [])).catch(() => {}).finally(() => setDeliveryJobsLoading(false))
-        getAdminVouchers().then(res => setVouchers(res.data.data || [])).catch(() => {}).finally(() => setVouchersLoading(false))
-        getAdminPromos().then(res => setPromos(res.data.data || [])).catch(() => {}).finally(() => setPromosLoading(false))
+        if (!data) return
+        getAdminUsers()
+            .then(res => setUsers(res.data.data || []))
+            .catch(() => {})
+            .finally(() => setUsersLoading(false))
+        getAllStores()
+            .then(res => setStores(res.data.data || []))
+            .catch(() => {})
+            .finally(() => setStoresLoading(false))
+        api.get('/products')
+            .then(res => setProducts(res.data.data || []))
+            .catch(() => {})
+            .finally(() => setProductsLoading(false))
+        getAdminOrders()
+            .then(res => setOrders(res.data.data || []))
+            .catch(() => {})
+            .finally(() => setOrdersLoading(false))
+        getAdminDeliveryJobs()
+            .then(res => setDeliveryJobs(res.data.data || []))
+            .catch(() => {})
+            .finally(() => setDeliveryJobsLoading(false))
+        getAdminVouchers()
+            .then(res => setVouchers(res.data.data || []))
+            .catch(() => {})
+            .finally(() => setVouchersLoading(false))
+        getAdminPromos()
+            .then(res => setPromos(res.data.data || []))
+            .catch(() => {})
+            .finally(() => setPromosLoading(false))
     }, [data])
+
+    if (!data) return <div className="text-center py-16 text-slate-400">Memuat data monitoring...</div>
 
     const overdueList = data.overdueOrderList || []
 
     return (
         <div className="space-y-6">
-
-            {/* Quick Stats Row */}
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
-                <StatCard icon="👥" label="Users" value={data.totalUsers} color="slate" onClick={() => onNavigate('users')} />
-                <StatCard icon="🏪" label="Toko"  value={data.totalStores} color="purple" onClick={() => onNavigate('stores')} />
-                <StatCard icon="📦" label="Produk" value={data.totalProducts} color="slate" onClick={() => onNavigate('products')} />
-                <StatCard icon="🧾" label="Orders" value={data.totalOrders} color="blue" onClick={() => onNavigate('orders')} />
-                <StatCard icon="🎟️" label="Voucher" value={data.totalVouchers} color="slate" onClick={() => onNavigate('vouchers')} />
-                <StatCard icon="🏷️" label="Promo"  value={data.totalPromos} color="slate" onClick={() => onNavigate('promos')} />
-                <StatCard icon="🚴" label="Jobs"   value={data.totalDeliveryJobs} color="yellow" onClick={() => onNavigate('delivery-jobs')} />
-                <StatCard icon="🚨" label="Overdue" value={data.overdueOrders} color="red" onClick={() => onNavigate('overdue')} />
+                <StatCard icon="👥" label="Users"   value={data.totalUsers}        color="slate"   onClick={() => onNavigate('users')} />
+                <StatCard icon="🏪" label="Toko"    value={data.totalStores}       color="purple"  onClick={() => onNavigate('stores')} />
+                <StatCard icon="📦" label="Produk"  value={data.totalProducts}     color="slate"   onClick={() => onNavigate('products')} />
+                <StatCard icon="🧾" label="Orders"  value={data.totalOrders}       color="blue"    onClick={() => onNavigate('orders')} />
+                <StatCard icon="🎟️" label="Voucher" value={data.totalVouchers}     color="slate"   onClick={() => onNavigate('vouchers')} />
+                <StatCard icon="🏷️" label="Promo"   value={data.totalPromos}       color="slate"   onClick={() => onNavigate('promos')} />
+                <StatCard icon="🚴" label="Jobs"    value={data.totalDeliveryJobs} color="yellow"  onClick={() => onNavigate('delivery-jobs')} />
+                <StatCard icon="🚨" label="Overdue" value={data.overdueOrders}     color="red"     onClick={() => onNavigate('overdue')} />
             </div>
 
-            {/* 👤 Users Preview */}
             <DataPreview
-                title="👤 Pengguna Terbaru"
-                count={data.totalUsers}
+                title="👤 Pengguna Terbaru" count={data.totalUsers}
                 columns={['Username', 'Email', 'Role', 'Bergabung']}
                 rows={users.slice(0, 5).map(u => (
                     <tr key={u.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
                         <td className="px-4 py-2.5 font-medium text-slate-700">{u.username}</td>
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{u.email}</td>
-                        <td className="px-4 py-2.5">{u.isAdmin ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Admin</span> : <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{u.roles.join(', ')}</span>}</td>
+                        <td className="px-4 py-2.5">
+                            {u.isAdmin
+                                ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Admin</span>
+                                : <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{u.roles.join(', ')}</span>}
+                        </td>
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(u.createdAt)}</td>
                     </tr>
                 ))}
-                loading={usersLoading}
-                onViewAll={() => onNavigate('users')}
+                loading={usersLoading} onViewAll={() => onNavigate('users')}
             />
 
-            {/* 🏪 Stores Preview */}
             <DataPreview
-                title="🏪 Toko Terbaru"
-                count={data.totalStores}
+                title="🏪 Toko Terbaru" count={data.totalStores}
                 columns={['Nama Toko', 'Pemilik', 'Dibuat']}
                 rows={stores.slice(0, 5).map(s => (
                     <tr key={s.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
@@ -155,52 +186,48 @@ function MonitoringTab({ data, simulationOffset, onNavigate }) {
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(s.createdAt)}</td>
                     </tr>
                 ))}
-                loading={storesLoading}
-                onViewAll={() => onNavigate('stores')}
-                emptyMessage="Belum ada toko."
+                loading={storesLoading} onViewAll={() => onNavigate('stores')} emptyMessage="Belum ada toko."
             />
 
-            {/* 📦 Products Preview */}
             <DataPreview
-                title="📦 Produk Terbaru"
-                count={data.totalProducts}
+                title="📦 Produk Terbaru" count={data.totalProducts}
                 columns={['Nama Produk', 'Toko', 'Harga', 'Stok']}
                 rows={products.slice(0, 5).map(p => (
                     <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
                         <td className="px-4 py-2.5 font-medium text-slate-700">{p.name}</td>
                         <td className="px-4 py-2.5 text-slate-600 text-xs">{p.storeName}</td>
                         <td className="px-4 py-2.5 text-slate-700 font-semibold">{formatRupiah(p.price)}</td>
-                        <td className="px-4 py-2.5"><span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${p.stock === 0 ? 'bg-red-50 text-red-600' : p.stock <= 5 ? 'bg-yellow-50 text-yellow-700' : 'bg-emerald-50 text-emerald-700'}`}>{p.stock}</span></td>
+                        <td className="px-4 py-2.5">
+                            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                                p.stock === 0 ? 'bg-red-50 text-red-600'
+                                    : p.stock <= 5 ? 'bg-yellow-50 text-yellow-700'
+                                        : 'bg-emerald-50 text-emerald-700'
+                            }`}>{p.stock}</span>
+                        </td>
                     </tr>
                 ))}
-                loading={productsLoading}
-                onViewAll={() => onNavigate('products')}
-                emptyMessage="Belum ada produk."
+                loading={productsLoading} onViewAll={() => onNavigate('products')} emptyMessage="Belum ada produk."
             />
 
-            {/* 🧾 Orders Preview */}
             <DataPreview
-                title="🧾 Pesanan Terbaru"
-                count={data.totalOrders}
+                title="🧾 Pesanan Terbaru" count={data.totalOrders}
                 columns={['Toko', 'Buyer', 'Status', 'Total', 'Dibuat']}
                 rows={orders.slice(0, 5).map(o => (
                     <tr key={o.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
                         <td className="px-4 py-2.5 font-medium text-slate-700">{o.storeName}</td>
                         <td className="px-4 py-2.5 text-slate-600">{o.buyerUsername}</td>
-                        <td className="px-4 py-2.5"><span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{o.statusLabel}</span></td>
+                        <td className="px-4 py-2.5">
+                            <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{o.statusLabel}</span>
+                        </td>
                         <td className="px-4 py-2.5 text-slate-700 font-semibold">{formatRupiah(o.totalAmount)}</td>
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(o.createdAt)}</td>
                     </tr>
                 ))}
-                loading={ordersLoading}
-                onViewAll={() => onNavigate('orders')}
-                emptyMessage="Belum ada pesanan."
+                loading={ordersLoading} onViewAll={() => onNavigate('orders')} emptyMessage="Belum ada pesanan."
             />
 
-            {/* 🎟️ Voucher & Promo Preview */}
             <DataPreview
-                title="🎟️ Voucher Terbaru"
-                count={data.totalVouchers}
+                title="🎟️ Voucher Terbaru" count={data.totalVouchers}
                 columns={['Kode', 'Diskon', 'Sisa', 'Expiry', 'Status']}
                 rows={vouchers.slice(0, 5).map(v => (
                     <tr key={v.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
@@ -208,50 +235,58 @@ function MonitoringTab({ data, simulationOffset, onNavigate }) {
                         <td className="px-4 py-2.5 text-slate-600">{v.discountType === 'PERCENTAGE' ? `${v.discountValue}%` : formatRupiah(v.discountValue)}</td>
                         <td className="px-4 py-2.5 text-slate-600">{v.remainingUsage ?? v.usageLimit - v.usedCount}/{v.usageLimit}</td>
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(v.expiryDate)}</td>
-                        <td className="px-4 py-2.5">{v.expired ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span> : v.active ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span> : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}</td>
+                        <td className="px-4 py-2.5">
+                            {v.expired
+                                ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span>
+                                : v.active
+                                    ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span>
+                                    : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}
+                        </td>
                     </tr>
                 ))}
-                loading={vouchersLoading}
-                onViewAll={() => onNavigate('vouchers')}
-                emptyMessage="Belum ada voucher."
+                loading={vouchersLoading} onViewAll={() => onNavigate('vouchers')} emptyMessage="Belum ada voucher."
             />
 
             <DataPreview
-                title="🏷️ Promo Terbaru"
-                count={data.totalPromos}
+                title="🏷️ Promo Terbaru" count={data.totalPromos}
                 columns={['Kode', 'Diskon', 'Expiry', 'Status']}
                 rows={promos.slice(0, 5).map(p => (
                     <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
                         <td className="px-4 py-2.5 font-mono font-bold text-slate-700">{p.code}</td>
                         <td className="px-4 py-2.5 text-slate-600">{p.discountType === 'PERCENTAGE' ? `${p.discountValue}%` : formatRupiah(p.discountValue)}</td>
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(p.expiryDate)}</td>
-                        <td className="px-4 py-2.5">{p.expired ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span> : p.active ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span> : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}</td>
+                        <td className="px-4 py-2.5">
+                            {p.expired
+                                ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span>
+                                : p.active
+                                    ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span>
+                                    : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}
+                        </td>
                     </tr>
                 ))}
-                loading={promosLoading}
-                onViewAll={() => onNavigate('promos')}
-                emptyMessage="Belum ada promo."
+                loading={promosLoading} onViewAll={() => onNavigate('promos')} emptyMessage="Belum ada promo."
             />
 
-            {/* 🚴 Delivery Jobs Preview */}
             <DataPreview
-                title="🚴 Delivery Jobs Terbaru"
-                count={data.totalDeliveryJobs}
+                title="🚴 Delivery Jobs Terbaru" count={data.totalDeliveryJobs}
                 columns={['Toko', 'Driver', 'Status', 'Dibuat']}
                 rows={deliveryJobs.slice(0, 5).map(j => (
                     <tr key={j.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
                         <td className="px-4 py-2.5 font-medium text-slate-700">{j.storeName}</td>
-                        <td className="px-4 py-2.5 text-slate-600">{j.driverId ? j.driverId.slice(0, 8) + '...' : <span className="text-xs text-slate-400">Belum ada</span>}</td>
-                        <td className="px-4 py-2.5"><span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{j.orderStatusLabel}</span></td>
+                        <td className="px-4 py-2.5 text-slate-600">
+                            {j.driverId
+                                ? j.driverId.slice(0, 8) + '...'
+                                : <span className="text-xs text-slate-400">Belum ada</span>}
+                        </td>
+                        <td className="px-4 py-2.5">
+                            <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{j.orderStatusLabel}</span>
+                        </td>
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(j.createdAt)}</td>
                     </tr>
                 ))}
-                loading={deliveryJobsLoading}
-                onViewAll={() => onNavigate('delivery-jobs')}
-                emptyMessage="Belum ada delivery job."
+                loading={deliveryJobsLoading} onViewAll={() => onNavigate('delivery-jobs')} emptyMessage="Belum ada delivery job."
             />
 
-            {/* 🚨 Overdue Orders */}
             <div>
                 <SectionTitle>🚨 Pesanan Overdue ({data.overdueOrders})</SectionTitle>
                 {overdueList.length === 0 ? (
@@ -268,7 +303,7 @@ function MonitoringTab({ data, simulationOffset, onNavigate }) {
                                     <th className="px-4 py-3">Toko</th>
                                     <th className="px-4 py-3">Buyer</th>
                                     <th className="px-4 py-3">Dibuat</th>
-                                    <th className="px-4 py-3">Overdue</th>
+                                    <th className="px-4 py-3">Status</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -279,9 +314,15 @@ function MonitoringTab({ data, simulationOffset, onNavigate }) {
                                         <td className="px-4 py-3 text-slate-600">{o.buyerUsername}</td>
                                         <td className="px-4 py-3 text-slate-500 text-xs">{formatDate(o.createdAt)}</td>
                                         <td className="px-4 py-3">
-                                            <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">
-                                                {o.minutesOverdue} menit
-                                            </span>
+                                            {o.processed ? (
+                                                <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                                                    DIKEMBALIKAN
+                                                </span>
+                                            ) : (
+                                                <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                                                    {o.minutesOverdue} menit
+                                                </span>
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
@@ -312,12 +353,12 @@ function ListModal({ title, items, columns, loading, onClose, renderRow }) {
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="text-left text-xs text-slate-500 uppercase border-b border-slate-100">
-                                        {columns.map(col => <th key={col} className="px-4 py-3 font-semibold">{col}</th>)}
-                                    </tr>
+                                <tr className="text-left text-xs text-slate-500 uppercase border-b border-slate-100">
+                                    {columns.map(col => <th key={col} className="px-4 py-3 font-semibold">{col}</th>)}
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    {items.map((item, i) => renderRow(item, i))}
+                                {items.map((item, i) => renderRow(item, i))}
                                 </tbody>
                             </table>
                         </div>
@@ -328,13 +369,13 @@ function ListModal({ title, items, columns, loading, onClose, renderRow }) {
     )
 }
 
-const initialVoucherForm = {
-    code: '', description: '', discountType: 'PERCENTAGE', discountValue: '',
-    maxDiscountAmount: '', minPurchaseAmount: '0', usageLimit: '', expiryDate: '',
-}
-const initialPromoForm = {
-    code: '', description: '', discountType: 'PERCENTAGE', discountValue: '',
-    maxDiscountAmount: '', minPurchaseAmount: '0', expiryDate: '',
+function DetailField({ label, value, mono }) {
+    return (
+        <div>
+            <p className="text-xs font-semibold text-slate-400 uppercase mb-0.5">{label}</p>
+            <p className={`text-slate-800 ${mono ? 'font-mono font-bold' : 'font-medium'}`}>{value ?? '-'}</p>
+        </div>
+    )
 }
 
 function DetailModal({ item, onClose }) {
@@ -362,17 +403,16 @@ function DetailModal({ item, onClose }) {
     )
 }
 
-function DetailField({ label, value, mono }) {
-    return (
-        <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase mb-0.5">{label}</p>
-            <p className={`text-slate-800 ${mono ? 'font-mono font-bold' : 'font-medium'}`}>{value ?? '-'}</p>
-        </div>
-    )
+const initialVoucherForm = {
+    code: '', description: '', discountType: 'PERCENTAGE', discountValue: '',
+    maxDiscountAmount: '', minPurchaseAmount: '0', usageLimit: '', expiryDate: '',
+}
+const initialPromoForm = {
+    code: '', description: '', discountType: 'PERCENTAGE', discountValue: '',
+    maxDiscountAmount: '', minPurchaseAmount: '0', expiryDate: '',
 }
 
 export default function AdminDashboard() {
-    const navigate = useNavigate()
     const { decoded } = useAuth()
     const [activeTab, setActiveTab] = useState('monitoring')
     const [monitoringData, setMonitoringData] = useState(null)
@@ -432,37 +472,50 @@ export default function AdminDashboard() {
             await advanceSimulation(minutes)
             await refreshSimulation()
             await refreshMonitoring()
-        } catch { setMessage({ type: 'error', text: 'Gagal memajukan waktu.' }) }
-        finally { setSimulating(false) }
+        } catch {
+            setMessage({ type: 'error', text: 'Gagal memajukan waktu.' })
+        } finally {
+            setSimulating(false)
+        }
     }
+
     const handleResetTime = async () => {
         setSimulating(true)
         try {
             await resetSimulation()
             await refreshSimulation()
             await refreshMonitoring()
-        } catch { setMessage({ type: 'error', text: 'Gagal mereset simulasi.' }) }
-        finally { setSimulating(false) }
+        } catch {
+            setMessage({ type: 'error', text: 'Gagal mereset simulasi.' })
+        } finally {
+            setSimulating(false)
+        }
     }
 
     const handleVoucherChange = (e) => {
         const { name, value } = e.target
         setVoucherForm(prev => ({ ...prev, [name]: name === 'code' ? value.toUpperCase() : value }))
     }
+
     const handlePromoChange = (e) => {
         const { name, value } = e.target
         setPromoForm(prev => ({ ...prev, [name]: name === 'code' ? value.toUpperCase() : value }))
     }
+
     const handleCreateVoucher = async (e) => {
         e.preventDefault()
-        setSubmitting(true); setMessage({ type: '', text: '' })
+        setSubmitting(true)
+        setMessage({ type: '', text: '' })
         try {
             const payload = {
-                code: voucherForm.code, description: voucherForm.description || undefined,
-                discountType: voucherForm.discountType, discountValue: Number(voucherForm.discountValue),
+                code: voucherForm.code,
+                description: voucherForm.description || undefined,
+                discountType: voucherForm.discountType,
+                discountValue: Number(voucherForm.discountValue),
                 maxDiscountAmount: voucherForm.maxDiscountAmount ? Number(voucherForm.maxDiscountAmount) : undefined,
                 minPurchaseAmount: Number(voucherForm.minPurchaseAmount) || 0,
-                usageLimit: Number(voucherForm.usageLimit), expiryDate: voucherForm.expiryDate + ':00',
+                usageLimit: Number(voucherForm.usageLimit),
+                expiryDate: voucherForm.expiryDate + ':00',
             }
             await generateVoucher(payload)
             setMessage({ type: 'success', text: `Voucher "${voucherForm.code}" berhasil dibuat.` })
@@ -470,15 +523,21 @@ export default function AdminDashboard() {
             await fetchVouchers()
         } catch (err) {
             setMessage({ type: 'error', text: err.response?.data?.message || 'Gagal membuat voucher.' })
-        } finally { setSubmitting(false) }
+        } finally {
+            setSubmitting(false)
+        }
     }
+
     const handleCreatePromo = async (e) => {
         e.preventDefault()
-        setSubmitting(true); setMessage({ type: '', text: '' })
+        setSubmitting(true)
+        setMessage({ type: '', text: '' })
         try {
             const payload = {
-                code: promoForm.code, description: promoForm.description || undefined,
-                discountType: promoForm.discountType, discountValue: Number(promoForm.discountValue),
+                code: promoForm.code,
+                description: promoForm.description || undefined,
+                discountType: promoForm.discountType,
+                discountValue: Number(promoForm.discountValue),
                 maxDiscountAmount: promoForm.maxDiscountAmount ? Number(promoForm.maxDiscountAmount) : undefined,
                 minPurchaseAmount: Number(promoForm.minPurchaseAmount) || 0,
                 expiryDate: promoForm.expiryDate + ':00',
@@ -489,8 +548,11 @@ export default function AdminDashboard() {
             await fetchPromos()
         } catch (err) {
             setMessage({ type: 'error', text: err.response?.data?.message || 'Gagal membuat promo.' })
-        } finally { setSubmitting(false) }
+        } finally {
+            setSubmitting(false)
+        }
     }
+
     const handleViewDetail = async (type, id) => {
         try {
             const res = type === 'VOUCHER' ? await getVoucherDetail(id) : await getPromoDetail(id)
@@ -501,11 +563,12 @@ export default function AdminDashboard() {
     }
 
     const handleSectionClick = (key) => {
-        if (key === 'overdue') { return }
+        if (key === 'overdue') return
         if (key === 'vouchers') { setActiveTab('vouchers'); setMessage({ type: '', text: '' }); return }
-        if (key === 'promos') { setActiveTab('promos'); setMessage({ type: '', text: '' }); return }
+        if (key === 'promos')   { setActiveTab('promos');   setMessage({ type: '', text: '' }); return }
 
         let fetchFn, title, columns, renderRow
+
         if (key === 'users') {
             fetchFn = getAdminUsers
             title = 'Daftar Pengguna'
@@ -514,8 +577,41 @@ export default function AdminDashboard() {
                 <tr key={u.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
                     <td className="px-4 py-3 font-medium text-slate-700">{u.username}</td>
                     <td className="px-4 py-3 text-slate-500 text-xs">{u.email}</td>
-                    <td className="px-4 py-3">{u.isAdmin ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Admin</span> : <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{u.roles.join(', ')}</span>}</td>
+                    <td className="px-4 py-3">
+                        {u.isAdmin
+                            ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Admin</span>
+                            : <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{u.roles.join(', ')}</span>}
+                    </td>
                     <td className="px-4 py-3 text-slate-500 text-xs">{formatDate(u.createdAt)}</td>
+                </tr>
+            )
+        } else if (key === 'stores') {
+            fetchFn = getAllStores
+            title = 'Daftar Toko'
+            columns = ['Nama Toko', 'Pemilik', 'Dibuat']
+            renderRow = (s) => (
+                <tr key={s.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                    <td className="px-4 py-3 font-medium text-slate-700">{s.name}</td>
+                    <td className="px-4 py-3 text-slate-600">{s.ownerUsername}</td>
+                    <td className="px-4 py-3 text-slate-500 text-xs">{formatDate(s.createdAt)}</td>
+                </tr>
+            )
+        } else if (key === 'products') {
+            fetchFn = () => api.get('/products')
+            title = 'Daftar Produk'
+            columns = ['Nama Produk', 'Toko', 'Harga', 'Stok']
+            renderRow = (p) => (
+                <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                    <td className="px-4 py-3 font-medium text-slate-700">{p.name}</td>
+                    <td className="px-4 py-3 text-slate-600 text-xs">{p.storeName}</td>
+                    <td className="px-4 py-3 font-semibold text-slate-700">{formatRupiah(p.price)}</td>
+                    <td className="px-4 py-3">
+                        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                            p.stock === 0 ? 'bg-red-50 text-red-600'
+                                : p.stock <= 5 ? 'bg-yellow-50 text-yellow-700'
+                                    : 'bg-emerald-50 text-emerald-700'
+                        }`}>{p.stock}</span>
+                    </td>
                 </tr>
             )
         } else if (key === 'orders') {
@@ -578,7 +674,7 @@ export default function AdminDashboard() {
                 }`}>{message.text}</div>
             )}
 
-            {/* ⏰ Time Simulation Panel */}
+            {/* Time Simulation Panel */}
             <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-2xl p-4 mb-6">
                 <div className="flex flex-wrap items-center gap-3">
                     <span className="text-sm font-bold text-red-700">⏰ Simulasi Waktu</span>
@@ -590,34 +686,55 @@ export default function AdminDashboard() {
                         <span className="text-xs text-slate-500">Waktu nyata</span>
                     )}
                     <div className="flex items-center gap-1 ml-auto flex-wrap">
-                        <button onClick={() => handleAdvanceTime(30)} disabled={simulating} className="text-xs font-semibold bg-white text-slate-600 hover:bg-red-50 hover:text-red-600 px-3 py-1.5 rounded-lg border border-slate-200 transition disabled:opacity-50">+30m</button>
-                        <button onClick={() => handleAdvanceTime(60)} disabled={simulating} className="text-xs font-semibold bg-white text-slate-600 hover:bg-red-50 hover:text-red-600 px-3 py-1.5 rounded-lg border border-slate-200 transition disabled:opacity-50">+1j</button>
-                        <button onClick={() => handleAdvanceTime(360)} disabled={simulating} className="text-xs font-semibold bg-white text-slate-600 hover:bg-red-50 hover:text-red-600 px-3 py-1.5 rounded-lg border border-slate-200 transition disabled:opacity-50">+6j</button>
-                        <button onClick={() => handleAdvanceTime(1440)} disabled={simulating} className="text-xs font-semibold bg-white text-slate-600 hover:bg-red-50 hover:text-red-600 px-3 py-1.5 rounded-lg border border-slate-200 transition disabled:opacity-50">+1h</button>
+                        {[{ label: '+30m', val: 30 }, { label: '+1j', val: 60 }, { label: '+6j', val: 360 }, { label: '+1h', val: 1440 }].map(btn => (
+                            <button key={btn.val} onClick={() => handleAdvanceTime(btn.val)} disabled={simulating}
+                                    className="text-xs font-semibold bg-white text-slate-600 hover:bg-red-50 hover:text-red-600 px-3 py-1.5 rounded-lg border border-slate-200 transition disabled:opacity-50">
+                                {btn.label}
+                            </button>
+                        ))}
                         <div className="flex items-center gap-1 ml-2">
-                            <input type="number" min="1" value={simulationInput} onChange={e => setSimulationInput(e.target.value)} placeholder="menit" className="w-20 text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-red-300" />
-                            <button onClick={() => { const m = parseInt(simulationInput); if (m > 0) handleAdvanceTime(m); setSimulationInput('') }} disabled={simulating || !simulationInput} className="text-xs font-semibold bg-red-500 text-white hover:bg-red-600 px-3 py-1.5 rounded-lg transition disabled:opacity-50">Majukan</button>
+                            <input
+                                type="number" min="1" value={simulationInput}
+                                onChange={e => setSimulationInput(e.target.value)}
+                                placeholder="menit"
+                                className="w-20 text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-red-300"
+                            />
+                            <button
+                                onClick={() => { const m = parseInt(simulationInput); if (m > 0) handleAdvanceTime(m); setSimulationInput('') }}
+                                disabled={simulating || !simulationInput}
+                                className="text-xs font-semibold bg-red-500 text-white hover:bg-red-600 px-3 py-1.5 rounded-lg transition disabled:opacity-50"
+                            >
+                                Majukan
+                            </button>
                         </div>
                         {simulationOffset > 0 && (
-                            <button onClick={handleResetTime} disabled={simulating} className="text-xs font-semibold text-red-500 hover:text-red-700 px-3 py-1.5 transition">Reset</button>
+                            <button onClick={handleResetTime} disabled={simulating}
+                                    className="text-xs font-semibold text-red-500 hover:text-red-700 px-3 py-1.5 transition">
+                                Reset
+                            </button>
                         )}
                     </div>
                 </div>
             </div>
 
+            {/* Tabs */}
             <div className="flex gap-1 mb-6 bg-red-50 rounded-xl p-1 w-fit">
                 {tabs.map(t => (
-                    <button key={t.key} onClick={() => { setActiveTab(t.key); setMessage({ type: '', text: '' }) }}
+                    <button key={t.key}
+                            onClick={() => { setActiveTab(t.key); setMessage({ type: '', text: '' }) }}
                             className={`px-5 py-2 text-sm font-semibold rounded-lg transition ${
                                 activeTab === t.key ? 'bg-white text-red-700 shadow-sm' : 'text-red-500 hover:text-red-700'
-                            }`}>{t.label}</button>
+                            }`}
+                    >
+                        {t.label}
+                    </button>
                 ))}
             </div>
 
             {activeTab === 'monitoring' && (
                 monitoringLoading
                     ? <div className="text-center py-16 text-slate-400">Memuat data monitoring...</div>
-                    : <MonitoringTab data={monitoringData} simulationOffset={simulationOffset} onNavigate={handleSectionClick} />
+                    : <MonitoringTab data={monitoringData} onNavigate={handleSectionClick} />
             )}
 
             {activeTab === 'vouchers' && (
@@ -626,45 +743,16 @@ export default function AdminDashboard() {
                         <div className="bg-white border border-red-100 rounded-2xl p-6">
                             <h2 className="font-bold text-slate-700 text-lg mb-4">Buat Voucher Baru</h2>
                             <form onSubmit={handleCreateVoucher} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div>
-                                    <label className={labelClass}>Kode Voucher</label>
-                                    <input name="code" value={voucherForm.code} onChange={handleVoucherChange} required className={inputClass} placeholder="CONTOH50" />
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Tipe Diskon</label>
-                                    <select name="discountType" value={voucherForm.discountType} onChange={handleVoucherChange} className={inputClass}>
-                                        <option value="PERCENTAGE">Persen (%)</option>
-                                        <option value="FIXED">Nominal (Rp)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Nilai Diskon</label>
-                                    <input name="discountValue" type="number" value={voucherForm.discountValue} onChange={handleVoucherChange} required min="1" className={inputClass} placeholder={voucherForm.discountType === 'PERCENTAGE' ? '10' : '5000'} />
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Maks Diskon (kosongkan jika %)</label>
-                                    <input name="maxDiscountAmount" type="number" value={voucherForm.maxDiscountAmount} onChange={handleVoucherChange} min="1" className={inputClass} placeholder="Rp" />
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Min Pembelian</label>
-                                    <input name="minPurchaseAmount" type="number" value={voucherForm.minPurchaseAmount} onChange={handleVoucherChange} min="0" className={inputClass} placeholder="0" />
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Batas Pemakaian</label>
-                                    <input name="usageLimit" type="number" value={voucherForm.usageLimit} onChange={handleVoucherChange} required min="1" className={inputClass} placeholder="100" />
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Berlaku Sampai</label>
-                                    <input name="expiryDate" type="datetime-local" value={voucherForm.expiryDate} onChange={handleVoucherChange} required className={inputClass} />
-                                </div>
-                                <div className="md:col-span-2 lg:col-span-3">
-                                    <label className={labelClass}>Deskripsi (opsional)</label>
-                                    <input name="description" value={voucherForm.description} onChange={handleVoucherChange} className={inputClass} placeholder="Deskripsi voucher" />
-                                </div>
+                                <div><label className={labelClass}>Kode Voucher</label><input name="code" value={voucherForm.code} onChange={handleVoucherChange} required className={inputClass} placeholder="CONTOH50" /></div>
+                                <div><label className={labelClass}>Tipe Diskon</label><select name="discountType" value={voucherForm.discountType} onChange={handleVoucherChange} className={inputClass}><option value="PERCENTAGE">Persen (%)</option><option value="FIXED">Nominal (Rp)</option></select></div>
+                                <div><label className={labelClass}>Nilai Diskon</label><input name="discountValue" type="number" value={voucherForm.discountValue} onChange={handleVoucherChange} required min="1" className={inputClass} placeholder={voucherForm.discountType === 'PERCENTAGE' ? '10' : '5000'} /></div>
+                                <div><label className={labelClass}>Maks Diskon (kosongkan jika %)</label><input name="maxDiscountAmount" type="number" value={voucherForm.maxDiscountAmount} onChange={handleVoucherChange} min="1" className={inputClass} placeholder="Rp" /></div>
+                                <div><label className={labelClass}>Min Pembelian</label><input name="minPurchaseAmount" type="number" value={voucherForm.minPurchaseAmount} onChange={handleVoucherChange} min="0" className={inputClass} placeholder="0" /></div>
+                                <div><label className={labelClass}>Batas Pemakaian</label><input name="usageLimit" type="number" value={voucherForm.usageLimit} onChange={handleVoucherChange} required min="1" className={inputClass} placeholder="100" /></div>
+                                <div><label className={labelClass}>Berlaku Sampai</label><input name="expiryDate" type="datetime-local" value={voucherForm.expiryDate} onChange={handleVoucherChange} required className={inputClass} /></div>
+                                <div className="md:col-span-2 lg:col-span-3"><label className={labelClass}>Deskripsi (opsional)</label><input name="description" value={voucherForm.description} onChange={handleVoucherChange} className={inputClass} placeholder="Deskripsi voucher" /></div>
                                 <div className="md:col-span-2 lg:col-span-3 flex justify-end">
-                                    <Button type="submit" variant="primary" disabled={submitting}>
-                                        {submitting ? 'Menyimpan...' : 'Buat Voucher'}
-                                    </Button>
+                                    <Button type="submit" disabled={submitting}>{submitting ? 'Menyimpan...' : 'Buat Voucher'}</Button>
                                 </div>
                             </form>
                         </div>
@@ -676,31 +764,21 @@ export default function AdminDashboard() {
                             ) : (
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-sm">
-                                        <thead>
-                                            <tr className="text-left text-xs text-slate-500 uppercase border-b border-slate-100">
-                                                <th className="px-3 py-3">Kode</th>
-                                                <th className="px-3 py-3">Diskon</th>
-                                                <th className="px-3 py-3">Min Beli</th>
-                                                <th className="px-3 py-3">Sisa</th>
-                                                <th className="px-3 py-3">Expiry</th>
-                                                <th className="px-3 py-3">Status</th>
-                                                <th className="px-3 py-3"></th>
-                                            </tr>
-                                        </thead>
+                                        <thead><tr className="text-left text-xs text-slate-500 uppercase border-b border-slate-100">
+                                            <th className="px-3 py-3">Kode</th><th className="px-3 py-3">Diskon</th><th className="px-3 py-3">Min Beli</th><th className="px-3 py-3">Sisa</th><th className="px-3 py-3">Expiry</th><th className="px-3 py-3">Status</th><th className="px-3 py-3"></th>
+                                        </tr></thead>
                                         <tbody>
-                                            {vouchers.map(v => (
-                                                <tr key={v.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
-                                                    <td className="px-3 py-3 font-mono font-bold text-slate-700">{v.code}</td>
-                                                    <td className="px-3 py-3 text-slate-600">{v.discountType === 'PERCENTAGE' ? `${v.discountValue}%` : formatRupiah(v.discountValue)}</td>
-                                                    <td className="px-3 py-3 text-slate-600">{formatRupiah(v.minPurchaseAmount)}</td>
-                                                    <td className="px-3 py-3 text-slate-600">{v.remainingUsage ?? v.usageLimit - v.usedCount}/{v.usageLimit}</td>
-                                                    <td className="px-3 py-3 text-slate-500 text-xs">{formatDate(v.expiryDate)}</td>
-                                                    <td className="px-3 py-3">{v.expired ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span> : v.active ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span> : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}</td>
-                                                    <td className="px-3 py-3">
-                                                        <button onClick={() => handleViewDetail('VOUCHER', v.id)} className="text-xs font-semibold bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-3 py-1.5 rounded-lg transition">Detail</button>
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                        {vouchers.map(v => (
+                                            <tr key={v.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                                                <td className="px-3 py-3 font-mono font-bold text-slate-700">{v.code}</td>
+                                                <td className="px-3 py-3 text-slate-600">{v.discountType === 'PERCENTAGE' ? `${v.discountValue}%` : formatRupiah(v.discountValue)}</td>
+                                                <td className="px-3 py-3 text-slate-600">{formatRupiah(v.minPurchaseAmount)}</td>
+                                                <td className="px-3 py-3 text-slate-600">{v.remainingUsage ?? v.usageLimit - v.usedCount}/{v.usageLimit}</td>
+                                                <td className="px-3 py-3 text-slate-500 text-xs">{formatDate(v.expiryDate)}</td>
+                                                <td className="px-3 py-3">{v.expired ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span> : v.active ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span> : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}</td>
+                                                <td className="px-3 py-3"><button onClick={() => handleViewDetail('VOUCHER', v.id)} className="text-xs font-semibold bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-3 py-1.5 rounded-lg transition">Detail</button></td>
+                                            </tr>
+                                        ))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -716,41 +794,15 @@ export default function AdminDashboard() {
                         <div className="bg-white border border-red-100 rounded-2xl p-6">
                             <h2 className="font-bold text-slate-700 text-lg mb-4">Buat Promo Baru</h2>
                             <form onSubmit={handleCreatePromo} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div>
-                                    <label className={labelClass}>Kode Promo</label>
-                                    <input name="code" value={promoForm.code} onChange={handlePromoChange} required className={inputClass} placeholder="PROMO60" />
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Tipe Diskon</label>
-                                    <select name="discountType" value={promoForm.discountType} onChange={handlePromoChange} className={inputClass}>
-                                        <option value="PERCENTAGE">Persen (%)</option>
-                                        <option value="FIXED">Nominal (Rp)</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Nilai Diskon</label>
-                                    <input name="discountValue" type="number" value={promoForm.discountValue} onChange={handlePromoChange} required min="1" className={inputClass} placeholder={promoForm.discountType === 'PERCENTAGE' ? '10' : '5000'} />
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Maks Diskon (kosongkan jika %)</label>
-                                    <input name="maxDiscountAmount" type="number" value={promoForm.maxDiscountAmount} onChange={handlePromoChange} min="1" className={inputClass} placeholder="Rp" />
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Min Pembelian</label>
-                                    <input name="minPurchaseAmount" type="number" value={promoForm.minPurchaseAmount} onChange={handlePromoChange} min="0" className={inputClass} placeholder="0" />
-                                </div>
-                                <div>
-                                    <label className={labelClass}>Berlaku Sampai</label>
-                                    <input name="expiryDate" type="datetime-local" value={promoForm.expiryDate} onChange={handlePromoChange} required className={inputClass} />
-                                </div>
-                                <div className="md:col-span-2 lg:col-span-3">
-                                    <label className={labelClass}>Deskripsi (opsional)</label>
-                                    <input name="description" value={promoForm.description} onChange={handlePromoChange} className={inputClass} placeholder="Deskripsi promo" />
-                                </div>
+                                <div><label className={labelClass}>Kode Promo</label><input name="code" value={promoForm.code} onChange={handlePromoChange} required className={inputClass} placeholder="PROMO60" /></div>
+                                <div><label className={labelClass}>Tipe Diskon</label><select name="discountType" value={promoForm.discountType} onChange={handlePromoChange} className={inputClass}><option value="PERCENTAGE">Persen (%)</option><option value="FIXED">Nominal (Rp)</option></select></div>
+                                <div><label className={labelClass}>Nilai Diskon</label><input name="discountValue" type="number" value={promoForm.discountValue} onChange={handlePromoChange} required min="1" className={inputClass} placeholder={promoForm.discountType === 'PERCENTAGE' ? '10' : '5000'} /></div>
+                                <div><label className={labelClass}>Maks Diskon (kosongkan jika %)</label><input name="maxDiscountAmount" type="number" value={promoForm.maxDiscountAmount} onChange={handlePromoChange} min="1" className={inputClass} placeholder="Rp" /></div>
+                                <div><label className={labelClass}>Min Pembelian</label><input name="minPurchaseAmount" type="number" value={promoForm.minPurchaseAmount} onChange={handlePromoChange} min="0" className={inputClass} placeholder="0" /></div>
+                                <div><label className={labelClass}>Berlaku Sampai</label><input name="expiryDate" type="datetime-local" value={promoForm.expiryDate} onChange={handlePromoChange} required className={inputClass} /></div>
+                                <div className="md:col-span-2 lg:col-span-3"><label className={labelClass}>Deskripsi (opsional)</label><input name="description" value={promoForm.description} onChange={handlePromoChange} className={inputClass} placeholder="Deskripsi promo" /></div>
                                 <div className="md:col-span-2 lg:col-span-3 flex justify-end">
-                                    <Button type="submit" variant="primary" disabled={submitting}>
-                                        {submitting ? 'Menyimpan...' : 'Buat Promo'}
-                                    </Button>
+                                    <Button type="submit" disabled={submitting}>{submitting ? 'Menyimpan...' : 'Buat Promo'}</Button>
                                 </div>
                             </form>
                         </div>
@@ -762,29 +814,20 @@ export default function AdminDashboard() {
                             ) : (
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-sm">
-                                        <thead>
-                                            <tr className="text-left text-xs text-slate-500 uppercase border-b border-slate-100">
-                                                <th className="px-3 py-3">Kode</th>
-                                                <th className="px-3 py-3">Diskon</th>
-                                                <th className="px-3 py-3">Min Beli</th>
-                                                <th className="px-3 py-3">Expiry</th>
-                                                <th className="px-3 py-3">Status</th>
-                                                <th className="px-3 py-3"></th>
-                                            </tr>
-                                        </thead>
+                                        <thead><tr className="text-left text-xs text-slate-500 uppercase border-b border-slate-100">
+                                            <th className="px-3 py-3">Kode</th><th className="px-3 py-3">Diskon</th><th className="px-3 py-3">Min Beli</th><th className="px-3 py-3">Expiry</th><th className="px-3 py-3">Status</th><th className="px-3 py-3"></th>
+                                        </tr></thead>
                                         <tbody>
-                                            {promos.map(p => (
-                                                <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
-                                                    <td className="px-3 py-3 font-mono font-bold text-slate-700">{p.code}</td>
-                                                    <td className="px-3 py-3 text-slate-600">{p.discountType === 'PERCENTAGE' ? `${p.discountValue}%` : formatRupiah(p.discountValue)}</td>
-                                                    <td className="px-3 py-3 text-slate-600">{formatRupiah(p.minPurchaseAmount)}</td>
-                                                    <td className="px-3 py-3 text-slate-500 text-xs">{formatDate(p.expiryDate)}</td>
-                                                    <td className="px-3 py-3">{p.expired ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span> : p.active ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span> : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}</td>
-                                                    <td className="px-3 py-3">
-                                                        <button onClick={() => handleViewDetail('PROMO', p.id)} className="text-xs font-semibold bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-3 py-1.5 rounded-lg transition">Detail</button>
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                        {promos.map(p => (
+                                            <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                                                <td className="px-3 py-3 font-mono font-bold text-slate-700">{p.code}</td>
+                                                <td className="px-3 py-3 text-slate-600">{p.discountType === 'PERCENTAGE' ? `${p.discountValue}%` : formatRupiah(p.discountValue)}</td>
+                                                <td className="px-3 py-3 text-slate-600">{formatRupiah(p.minPurchaseAmount)}</td>
+                                                <td className="px-3 py-3 text-slate-500 text-xs">{formatDate(p.expiryDate)}</td>
+                                                <td className="px-3 py-3">{p.expired ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span> : p.active ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span> : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}</td>
+                                                <td className="px-3 py-3"><button onClick={() => handleViewDetail('PROMO', p.id)} className="text-xs font-semibold bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-3 py-1.5 rounded-lg transition">Detail</button></td>
+                                            </tr>
+                                        ))}
                                         </tbody>
                                     </table>
                                 </div>
