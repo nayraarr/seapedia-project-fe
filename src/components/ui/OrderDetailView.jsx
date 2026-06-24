@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import BackButton from './BackButton'
+import {Link} from "react-router-dom";
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -30,19 +31,14 @@ const STATUS_LABELS = {
 
 const RETURNED = 'DIKEMBALIKAN'
 
-export default function OrderDetailView({ order, title, subtitle, backLink, backLabel }) {
+export default function OrderDetailView({ order, title, subtitle, backLabel }) {
     if (!order) return null
 
     const currentIdx = STATUS_FLOW.indexOf(order.status)
 
     return (
         <div className="space-y-6">
-            <Link
-                to={backLink}
-                className="inline-block text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline"
-            >
-                {backLabel}
-            </Link>
+            <BackButton label={backLabel} />
             <div className="-mt-2">
                 <p className="text-xs font-bold text-blue-500 uppercase tracking-widest">{subtitle}</p>
                 <h1 className="text-3xl font-bold text-slate-800 mt-1">{title}</h1>

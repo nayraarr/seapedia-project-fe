@@ -37,8 +37,7 @@ export default function OrderDetailPage() {
                     order={order}
                     title="Detail Pesanan"
                     subtitle="Buyer"
-                    backLink="/dashboard/buyer/orders"
-                    backLabel="← Kembali ke riwayat"
+                    backLabel="← Kembali"
                 />
             )}
         </MainLayout>
