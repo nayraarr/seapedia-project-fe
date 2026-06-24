@@ -64,15 +64,18 @@ function SectionTitle({ children, onClick }) {
 }
 
 function DataPreview({ title, count, columns, rows, loading, onViewAll, emptyMessage = 'Belum ada data.' }) {
+    const hasMore = count > 10
     return (
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100">
                 <h3 className="font-bold text-slate-700 text-sm">
                     {title} <span className="text-slate-400 font-normal">({count})</span>
                 </h3>
-                <button onClick={onViewAll} className="text-xs font-semibold text-red-500 hover:text-red-700 transition">
-                    Lihat Semua →
-                </button>
+                {hasMore && (
+                    <button onClick={onViewAll} className="text-xs font-semibold text-red-500 hover:text-red-700 transition">
+                        Lihat Semua →
+                    </button>
+                )}
             </div>
             {loading ? (
                 <div className="text-center py-6 text-slate-400 text-sm">Memuat data...</div>
@@ -164,7 +167,7 @@ function MonitoringTab({ data, onNavigate }) {
             <DataPreview
                 title="👤 Pengguna Terbaru" count={data.totalUsers}
                 columns={['Username', 'Email', 'Role', 'Bergabung']}
-                rows={users.slice(0, 5).map(u => (
+                rows={users.slice(0, 10).map(u => (
                     <tr key={u.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
                         onClick={() => navigate(`/dashboard/admin/users/${u.id}`)}>
                         <td className="px-4 py-2.5 font-medium text-slate-700">{u.username}</td>
@@ -183,7 +186,7 @@ function MonitoringTab({ data, onNavigate }) {
             <DataPreview
                 title="🏪 Toko Terbaru" count={data.totalStores}
                 columns={['Nama Toko', 'Pemilik', 'Dibuat']}
-                rows={stores.slice(0, 5).map(s => (
+                rows={stores.slice(0, 10).map(s => (
                     <tr key={s.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
                         onClick={() => navigate(`/stores/${s.id}`)}>
                         <td className="px-4 py-2.5 font-medium text-slate-700">{s.name}</td>
@@ -197,7 +200,7 @@ function MonitoringTab({ data, onNavigate }) {
             <DataPreview
                 title="📦 Produk Terbaru" count={data.totalProducts}
                 columns={['Nama Produk', 'Toko', 'Harga', 'Stok']}
-                rows={products.slice(0, 5).map(p => (
+                rows={products.slice(0, 10).map(p => (
                     <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
                         onClick={() => navigate(`/products/${p.id}`)}>
                         <td className="px-4 py-2.5 font-medium text-slate-700">{p.name}</td>
@@ -218,7 +221,7 @@ function MonitoringTab({ data, onNavigate }) {
             <DataPreview
                 title="🧾 Pesanan Terbaru" count={data.totalOrders}
                 columns={['Toko', 'Buyer', 'Status', 'Total', 'Dibuat']}
-                rows={orders.slice(0, 5).map(o => (
+                rows={orders.slice(0, 10).map(o => (
                     <tr key={o.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
                         onClick={() => navigate(`/dashboard/admin/orders/${o.id}`)}>
                         <td className="px-4 py-2.5 font-medium text-slate-700">{o.storeName}</td>
@@ -236,7 +239,7 @@ function MonitoringTab({ data, onNavigate }) {
             <DataPreview
                 title="🎟️ Voucher Terbaru" count={data.totalVouchers}
                 columns={['Kode', 'Diskon', 'Sisa', 'Expiry', 'Status']}
-                rows={vouchers.slice(0, 5).map(v => (
+                rows={vouchers.slice(0, 10).map(v => (
                     <tr key={v.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
                         <td className="px-4 py-2.5 font-mono font-bold text-slate-700">{v.code}</td>
                         <td className="px-4 py-2.5 text-slate-600">{v.discountType === 'PERCENTAGE' ? `${v.discountValue}%` : formatRupiah(v.discountValue)}</td>
@@ -257,7 +260,7 @@ function MonitoringTab({ data, onNavigate }) {
             <DataPreview
                 title="🏷️ Promo Terbaru" count={data.totalPromos}
                 columns={['Kode', 'Diskon', 'Expiry', 'Status']}
-                rows={promos.slice(0, 5).map(p => (
+                rows={promos.slice(0, 10).map(p => (
                     <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
                         <td className="px-4 py-2.5 font-mono font-bold text-slate-700">{p.code}</td>
                         <td className="px-4 py-2.5 text-slate-600">{p.discountType === 'PERCENTAGE' ? `${p.discountValue}%` : formatRupiah(p.discountValue)}</td>
@@ -277,7 +280,7 @@ function MonitoringTab({ data, onNavigate }) {
             <DataPreview
                 title="🚴 Delivery Jobs Terbaru" count={data.totalDeliveryJobs}
                 columns={['Toko', 'Driver', 'Status', 'Dibuat']}
-                rows={deliveryJobs.slice(0, 5).map(j => (
+                rows={deliveryJobs.slice(0, 10).map(j => (
                     <tr key={j.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
                         onClick={() => setDetailItem({ type: 'delivery-job', data: j })}>
                         <td className="px-4 py-2.5 font-medium text-slate-700">{j.storeName}</td>
@@ -316,7 +319,8 @@ function MonitoringTab({ data, onNavigate }) {
                                 </thead>
                                 <tbody>
                                 {overdueList.map(o => (
-                                    <tr key={o.orderId} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                                    <tr key={o.orderId} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
+                                        onClick={() => navigate(`/dashboard/admin/orders/${o.orderId}`)}>
                                         <td className="px-4 py-3 font-mono text-xs text-slate-500">{o.orderId.slice(0, 8)}...</td>
                                         <td className="px-4 py-3 font-medium text-slate-700">{o.storeName}</td>
                                         <td className="px-4 py-3 text-slate-600">{o.buyerUsername}</td>
@@ -600,7 +604,8 @@ export default function AdminDashboard() {
             title = 'Daftar Pengguna'
             columns = ['Username', 'Email', 'Role', 'Dibuat']
             renderRow = (u) => (
-                <tr key={u.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                <tr key={u.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
+                    onClick={() => navigate(`/dashboard/admin/users/${u.id}`)}>
                     <td className="px-4 py-3 font-medium text-slate-700">{u.username}</td>
                     <td className="px-4 py-3 text-slate-500 text-xs">{u.email}</td>
                     <td className="px-4 py-3">
@@ -616,7 +621,8 @@ export default function AdminDashboard() {
             title = 'Daftar Toko'
             columns = ['Nama Toko', 'Pemilik', 'Dibuat']
             renderRow = (s) => (
-                <tr key={s.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                <tr key={s.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
+                    onClick={() => navigate(`/stores/${s.id}`)}>
                     <td className="px-4 py-3 font-medium text-slate-700">{s.name}</td>
                     <td className="px-4 py-3 text-slate-600">{s.ownerUsername}</td>
                     <td className="px-4 py-3 text-slate-500 text-xs">{formatDate(s.createdAt)}</td>
@@ -627,7 +633,8 @@ export default function AdminDashboard() {
             title = 'Daftar Produk'
             columns = ['Nama Produk', 'Toko', 'Harga', 'Stok']
             renderRow = (p) => (
-                <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
+                    onClick={() => navigate(`/products/${p.id}`)}>
                     <td className="px-4 py-3 font-medium text-slate-700">{p.name}</td>
                     <td className="px-4 py-3 text-slate-600 text-xs">{p.storeName}</td>
                     <td className="px-4 py-3 font-semibold text-slate-700">{formatRupiah(p.price)}</td>
@@ -645,7 +652,8 @@ export default function AdminDashboard() {
             title = 'Daftar Pesanan'
             columns = ['Toko', 'Buyer', 'Status', 'Total', 'Dibuat']
             renderRow = (o) => (
-                <tr key={o.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                <tr key={o.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
+                    onClick={() => navigate(`/dashboard/admin/orders/${o.id}`)}>
                     <td className="px-4 py-3 font-medium text-slate-700">{o.storeName}</td>
                     <td className="px-4 py-3 text-slate-600">{o.buyerUsername}</td>
                     <td className="px-4 py-3"><span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{o.statusLabel}</span></td>
@@ -658,7 +666,8 @@ export default function AdminDashboard() {
             title = 'Daftar Delivery Jobs'
             columns = ['Toko', 'Driver', 'Status', 'Dibuat']
             renderRow = (j) => (
-                <tr key={j.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
+                <tr key={j.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
+                    onClick={() => setDetailItem({ type: 'delivery-job', data: j })}>
                     <td className="px-4 py-3 font-medium text-slate-700">{j.storeName}</td>
                     <td className="px-4 py-3 text-slate-600">{j.driverId ? j.driverId.slice(0, 8) + '...' : <span className="text-xs text-slate-400">Belum ada</span>}</td>
                     <td className="px-4 py-3"><span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{j.orderStatusLabel}</span></td>
