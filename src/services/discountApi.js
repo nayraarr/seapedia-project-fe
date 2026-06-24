@@ -3,6 +3,8 @@ import api from './api'
 // Admin-only
 export const generateVoucher = (data) => api.post('/admin/vouchers', data)
 export const generatePromo = (data) => api.post('/admin/promos', data)
+export const getAdminVouchers = () => api.get('/admin/vouchers')
+export const getAdminPromos = () => api.get('/admin/promos')
 
 // Public/read-only
 export const getVouchers = () => api.get('/discounts/vouchers')

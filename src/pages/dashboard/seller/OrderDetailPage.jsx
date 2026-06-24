@@ -53,8 +53,7 @@ export default function SellerOrderDetailPage() {
                         order={order}
                         title="Detail Pesanan Masuk"
                         subtitle="Seller"
-                        backLink="/dashboard/seller/orders/incoming"
-                        backLabel="← Kembali ke pesanan masuk"
+                        backLabel="← Kembali"
                     />
                     {order.status === 'SEDANG_DIKEMAS' && (
                         <div className="mt-6 flex justify-center">

@@ -122,14 +122,24 @@ export default function IncomingOrdersPage() {
             ) : (
                 <div className="space-y-3">
                     {displayedOrders.map(order => (
-                        <div key={order.orderId} className="bg-white border border-emerald-100 rounded-2xl p-5">
+                        <div key={order.orderId} className={`rounded-2xl p-5 ${
+                            order.overdue
+                                ? 'bg-red-50 border border-red-200'
+                                : 'bg-white border border-emerald-100'
+                        }`}>
                             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2 flex-wrap">
                                         <span className="font-bold text-slate-800 text-lg">{order.storeName}</span>
-                                        <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-semibold">
-                                            {order.statusLabel}
-                                        </span>
+                                        {order.overdue ? (
+                                            <span className="text-xs px-2.5 py-1 rounded-full bg-red-100 text-red-700 font-semibold">
+                                                {order.statusLabel} ⚠️
+                                            </span>
+                                        ) : (
+                                            <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-semibold">
+                                                {order.statusLabel}
+                                            </span>
+                                        )}
                                     </div>
                                     <p className="text-sm text-slate-500 mt-1">
                                         {order.deliveryMethodLabel} • {order.itemCount} item • {formatDate(order.createdAt)}
