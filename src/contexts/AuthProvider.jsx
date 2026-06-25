@@ -12,6 +12,18 @@ const isTokenExpired = (tkn) => {
     }
 }
 
+const isTokenExpiringSoon = (tkn, thresholdMinutes = 2) => {
+    if (!tkn) return true
+    try {
+        const payload = JSON.parse(atob(tkn.split('.')[1]))
+        const expiresAt = payload.exp * 1000
+        const threshold = thresholdMinutes * 60 * 1000
+        return expiresAt - Date.now() < threshold
+    } catch {
+        return true
+    }
+}
+
 export function AuthProvider({ children }) {
     const [token, setToken] = useState(() => {
         const stored = localStorage.getItem('token')
@@ -50,6 +62,22 @@ export function AuthProvider({ children }) {
             localStorage.removeItem('token')
             setToken(null)
             setUser(null)
+        }
+    }
+
+    const refreshToken = async () => {
+        try {
+            const res = await api.post('/auth/refresh')
+            const newToken = res.data.data.token
+            localStorage.setItem('token', newToken)
+            setToken(newToken)
+            return newToken
+        } catch (error) {
+            console.error('Refresh failed:', error)
+            localStorage.removeItem('token')
+            setToken(null)
+            setUser(null)
+            return null
         }
     }
 

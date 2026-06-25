@@ -1,19 +1,50 @@
 import axios from 'axios'
+import { isTokenExpiringSoon } from '../contexts/AuthProvider'
+
+let isRefreshing = false
+let refreshSubscribers = []
+
+const onRefreshed = (newToken) => {
+    refreshSubscribers.forEach(cb => cb(newToken))
+    refreshSubscribers = []
+}
 
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
 })
 
-// attach token otomatis ke setiap request
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(async (config) => {
     const token = localStorage.getItem('token')
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`
+
+    const isAuthEndpoint = config.url?.includes('/auth/')
+
+    if (token && !isAuthEndpoint && isTokenExpiringSoon(token, 2)) {
+        if (!isRefreshing) {
+            isRefreshing = true
+            try {
+                const res = await api.post('/auth/refresh')
+                const newToken = res.data.data.token
+                localStorage.setItem('token', newToken)
+                onRefreshed(newToken)
+            } catch (error) {
+                console.error(error)
+                refreshSubscribers = []
+            } finally {
+                isRefreshing = false
+            }
+        } else {
+            await new Promise(resolve => refreshSubscribers.push(resolve))
+        }
     }
+
+    const currentToken = localStorage.getItem('token')
+    if (currentToken) {
+        config.headers.Authorization = `Bearer ${currentToken}`
+    }
+
     return config
 })
 
-// handle 401 global
 api.interceptors.response.use(
     (response) => response,
     (error) => {
