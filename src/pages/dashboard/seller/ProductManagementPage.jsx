@@ -4,6 +4,7 @@ import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
 import ConfirmDialog from '../../../components/ui/ConfirmDialog'
 import { getMyProducts, deleteProduct } from '../../../services/productApi'
+import { getMyStore } from '../../../services/storeApi'
 
 const formatPrice = (price) =>
     new Intl.NumberFormat('id-ID', {
@@ -16,14 +17,23 @@ export default function ProductManagementPage() {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [refresh, setRefresh] = useState(0)
-    const [deleteTarget, setDeleteTarget] = useState(null) // { id, name }
+    const [deleteTarget, setDeleteTarget] = useState(null)
+    const [noStore, setNoStore] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => {
-        getMyProducts()
-            .then(res => setProducts(res.data.data || []))
-            .catch(() => setProducts([]))
-            .finally(() => setLoading(false))
+        getMyStore()
+            .then(() => {
+                setNoStore(false)
+                getMyProducts()
+                    .then(res => setProducts(res.data.data || []))
+                    .catch(() => setProducts([]))
+                    .finally(() => setLoading(false))
+            })
+            .catch(() => {
+                setNoStore(true)
+                setLoading(false)
+            })
     }, [refresh])
 
     const handleDeleteConfirm = async () => {
@@ -55,12 +65,23 @@ export default function ProductManagementPage() {
                     <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Seller</span>
                     <h1 className="text-3xl font-bold text-slate-800 mt-1">Kelola Produk</h1>
                 </div>
-                <Button onClick={() => navigate('/dashboard/seller/products/new')}>
-                    + Tambah Produk
-                </Button>
+                {!noStore && (
+                    <Button onClick={() => navigate('/dashboard/seller/products/new')}>
+                        + Tambah Produk
+                    </Button>
+                )}
             </div>
 
-            {products.length === 0 ? (
+            {noStore ? (
+                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center">
+                    <p className="text-4xl mb-3">⚠️</p>
+                    <p className="text-amber-700 font-semibold mb-1">Kamu belum punya toko</p>
+                    <p className="text-amber-500 text-sm mb-4">Buat toko dulu sebelum mengelola produk</p>
+                    <Button onClick={() => navigate('/dashboard/seller/store')}>
+                        Buat Toko
+                    </Button>
+                </div>
+            ) : products.length === 0 ? (
                 <div className="text-center py-20">
                     <p className="text-5xl mb-4">📦</p>
                     <p className="text-slate-600 font-semibold">Belum ada produk</p>

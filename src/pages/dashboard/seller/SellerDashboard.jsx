@@ -70,12 +70,12 @@ export default function SellerDashboard() {
                 </Link>
 
                 <div
-                    onClick={() => navigate('/dashboard/seller/products')}
+                    onClick={() => navigate(store ? '/dashboard/seller/products' : '/dashboard/seller/store')}
                     className="bg-white border border-emerald-100 rounded-2xl p-6 cursor-pointer hover:shadow-md hover:border-emerald-300 transition-all"
                 >
                     <div className="text-3xl mb-3">📋</div>
                     <h3 className="font-semibold text-slate-700 mb-1">Kelola Produk</h3>
-                    <p className="text-slate-400 text-sm">Tambah, edit, hapus produk</p>
+                    <p className="text-slate-400 text-sm">{store ? 'Tambah, edit, hapus produk' : 'Buat toko dulu'}</p>
                 </div>
 
                 <div

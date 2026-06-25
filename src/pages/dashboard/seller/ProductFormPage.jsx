@@ -4,6 +4,7 @@ import MainLayout from '../../../components/layout/MainLayout'
 import Input from '../../../components/ui/Input'
 import Button from '../../../components/ui/Button'
 import { createProduct, updateProduct, getMyProducts } from '../../../services/productApi'
+import { getMyStore } from '../../../services/storeApi'
 
 export default function ProductFormPage() {
     const { id } = useParams()
@@ -12,6 +13,15 @@ export default function ProductFormPage() {
     const [form, setForm] = useState({ name: '', description: '', price: '', stock: '' })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const [checkingStore, setCheckingStore] = useState(true)
+
+    useEffect(() => {
+        getMyStore()
+            .then(() => setCheckingStore(false))
+            .catch(() => {
+                navigate('/dashboard/seller/store', { replace: true })
+            })
+    }, [navigate])
 
     useEffect(() => {
         if (!isEdit) return
@@ -25,6 +35,8 @@ export default function ProductFormPage() {
             })
         }).catch(() => {})
     }, [id, isEdit])
+
+    if (checkingStore) return null
 
     const handleSubmit = async (e) => {
         e.preventDefault()

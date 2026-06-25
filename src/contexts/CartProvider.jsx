@@ -8,7 +8,8 @@ export function CartProvider({ children }) {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [toast, setToast] = useState(null)
-    const { token } = useAuth()
+    const { token, activeRole } = useAuth()
+    const isBuyer = activeRole === 'BUYER'
 
     const fetchCart = useCallback(async () => {
         setLoading(true)
@@ -24,7 +25,7 @@ export function CartProvider({ children }) {
     }, [])
 
     useEffect(() => {
-        if (token) {
+        if (token && isBuyer) {
             const loadCart = async () => {
                 await fetchCart()
             }
@@ -36,7 +37,7 @@ export function CartProvider({ children }) {
                 setToast(null)
             })
         }
-    }, [token, fetchCart])
+    }, [token, isBuyer, fetchCart])
 
     useEffect(() => {
         if (!toast) return undefined
