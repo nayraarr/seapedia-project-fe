@@ -2,8 +2,25 @@ import { useState, useMemo } from 'react'
 import { AuthContext } from './authContext'
 import api from '../services/api'
 
+const isTokenExpired = (tkn) => {
+    if (!tkn) return true
+    try {
+        const payload = JSON.parse(atob(tkn.split('.')[1]))
+        return payload.exp * 1000 < Date.now()
+    } catch {
+        return true
+    }
+}
+
 export function AuthProvider({ children }) {
-    const [token, setToken] = useState(localStorage.getItem('token'))
+    const [token, setToken] = useState(() => {
+        const stored = localStorage.getItem('token')
+        if (isTokenExpired(stored)) {
+            localStorage.removeItem('token')
+            return null
+        }
+        return stored
+    })
     const [user, setUser] = useState(null)
 
     const decodeToken = (tkn) => {
@@ -28,7 +45,7 @@ export function AuthProvider({ children }) {
         try {
             await api.post('/auth/logout')
         } catch (error) {
-            console.log(`Exception : ${error.message}`);
+            console.error('Logout failed:', error)
         } finally {
             localStorage.removeItem('token')
             setToken(null)
@@ -37,7 +54,7 @@ export function AuthProvider({ children }) {
     }
 
     const value = useMemo(
-        () => ({ token, user, activeRole, roles, login, logout, decoded }),
+        () => ({ token, user, activeRole, roles, login, logout, decoded, isTokenExpired }),
         [token, user]
     )
 
