@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { AuthContext } from './authContext'
+import api from '../services/api'
 
 export function AuthProvider({ children }) {
     const [token, setToken] = useState(localStorage.getItem('token'))
@@ -23,15 +24,20 @@ export function AuthProvider({ children }) {
         setToken(newToken)
     }
 
-    const logout = () => {
-        localStorage.removeItem('token')
-        setToken(null)
-        setUser(null)
+    const logout = async () => {
+        try {
+            await api.post('/auth/logout')
+        } catch (error) {
+            console.log(`Exception : ${error.message}`);
+        } finally {
+            localStorage.removeItem('token')
+            setToken(null)
+            setUser(null)
+        }
     }
 
     const value = useMemo(
         () => ({ token, user, activeRole, roles, login, logout, decoded }),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
         [token, user]
     )
 
