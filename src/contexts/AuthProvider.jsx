@@ -12,7 +12,7 @@ const isTokenExpired = (tkn) => {
     }
 }
 
-const isTokenExpiringSoon = (tkn, thresholdMinutes = 2) => {
+export const isTokenExpiringSoon = (tkn, thresholdMinutes = 2) => {
     if (!tkn) return true
     try {
         const payload = JSON.parse(atob(tkn.split('.')[1]))
