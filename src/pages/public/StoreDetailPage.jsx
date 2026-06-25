@@ -1,29 +1,38 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
 import ProductCard from '../../components/ui/ProductCard'
-import { getStoreById } from '../../services/storeApi'
+import Button from '../../components/ui/Button'
+import { getStoreById, getMyStore } from '../../services/storeApi'
+import { useAuth } from '../../contexts/useAuth'
 import api from '../../services/api'
 
 export default function StoreDetailPage() {
     const { id } = useParams()
+    const navigate = useNavigate()
+    const { activeRole } = useAuth()
     const [store, setStore] = useState(null)
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [notFound, setNotFound] = useState(false)
+    const [isOwner, setIsOwner] = useState(false)
 
     useEffect(() => {
         Promise.all([
             getStoreById(id),
-            api.get(`/products/store/${id}`)
+            api.get(`/products/store/${id}`),
+            activeRole === 'SELLER' ? getMyStore().catch(() => null) : Promise.resolve(null)
         ])
-            .then(([storeRes, productsRes]) => {
+            .then(([storeRes, productsRes, myStore]) => {
                 setStore(storeRes.data.data)
                 setProducts(productsRes.data.data || [])
+                if (myStore) {
+                    setIsOwner(String(myStore.data.data.id) === String(id))
+                }
             })
             .catch(() => setNotFound(true))
             .finally(() => setLoading(false))
-    }, [id])
+    }, [id, activeRole])
 
     if (loading) return (
         <MainLayout>
@@ -61,30 +70,43 @@ export default function StoreDetailPage() {
 
             <div className="max-w-2xl mx-auto space-y-5">
 
-                {/* Store Header */}
+                {}
                 <div className="bg-white border border-blue-100 rounded-2xl p-6">
                     <div className="flex items-start gap-5">
                         <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-3xl flex-shrink-0">
                             🏪
                         </div>
-                        <div className="flex-1">
-                            <h1 className="text-2xl font-bold text-slate-800">{store.name}</h1>
-                            <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                                {store.description || 'Belum ada deskripsi toko.'}
-                            </p>
-                            <div className="flex items-center gap-3 mt-3">
-                                <span className="text-xs font-semibold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full">
-                                    Toko Aktif
-                                </span>
-                                <span className="text-slate-300 text-xs">
-                                    Seller: {store.ownerUsername}
-                                </span>
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-4">
+                                <div>
+                                    <h1 className="text-2xl font-bold text-slate-800">{store.name}</h1>
+                                    <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                                        {store.description || 'Belum ada deskripsi toko.'}
+                                    </p>
+                                    <div className="flex items-center gap-3 mt-3">
+                                        <span className="text-xs font-semibold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full">
+                                            Toko Aktif
+                                        </span>
+                                        <span className="text-slate-300 text-xs">
+                                            Seller: {store.ownerUsername}
+                                        </span>
+                                    </div>
+                                </div>
+                                {isOwner && (
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => navigate(`/dashboard/seller/store`)}
+                                    >
+                                        Edit
+                                    </Button>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Store Info */}
+                {}
                 <div className="bg-white border border-blue-100 rounded-2xl p-6">
                     <h2 className="text-base font-bold text-slate-700 mb-4">Informasi Toko</h2>
                     <div className="space-y-3">
@@ -109,12 +131,22 @@ export default function StoreDetailPage() {
                     </div>
                 </div>
 
-                {/* Products */}
+                {}
                 <div className="bg-white border border-blue-100 rounded-2xl p-6">
-                    <h2 className="text-base font-bold text-slate-700 mb-4">
-                        Produk Toko
-                        <span className="ml-2 text-xs font-normal text-slate-400">({products.length} produk)</span>
-                    </h2>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-base font-bold text-slate-700">
+                            Produk Toko
+                            <span className="ml-2 text-xs font-normal text-slate-400">({products.length} produk)</span>
+                        </h2>
+                        {isOwner && (
+                            <Button
+                                size="sm"
+                                onClick={() => navigate('/dashboard/seller/products/new')}
+                            >
+                                + Tambah Produk
+                            </Button>
+                        )}
+                    </div>
                     {products.length === 0 ? (
                         <div className="bg-emerald-50 rounded-xl p-6 text-center">
                             <p className="text-emerald-300 text-sm font-medium">Belum ada produk di toko ini</p>
