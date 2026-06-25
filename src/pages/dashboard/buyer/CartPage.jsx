@@ -10,9 +10,9 @@ import { createOrder, previewCheckout } from '../../../services/orderApi'
 import { validateDiscountCode, getVouchers, getPromos } from '../../../services/discountApi'
 
 const DELIVERY_OPTIONS = [
-    { value: 'INSTANT', label: 'Instant', feeLabel: 'Rp25.000' },
-    { value: 'NEXT_DAY', label: 'Next Day', feeLabel: 'Rp15.000' },
-    { value: 'REGULAR', label: 'Regular', feeLabel: 'Rp10.000' },
+    { value: 'INSTANT', label: 'Instant', fee: 25000, feeLabel: 'Rp25.000' },
+    { value: 'NEXT_DAY', label: 'Next Day', fee: 15000, feeLabel: 'Rp15.000' },
+    { value: 'REGULAR', label: 'Regular', fee: 10000, feeLabel: 'Rp10.000' },
 ]
 
 function formatRupiah(amount) {
@@ -180,7 +180,9 @@ export default function CartPage() {
     }
 
     const isEmpty = !cart || cart.items.length === 0
-    const estimatedFee = DELIVERY_OPTIONS.find(item => item.value === deliveryMethod)?.feeLabel
+    const selectedDelivery = DELIVERY_OPTIONS.find(item => item.value === deliveryMethod)
+    const estimatedFeeLabel = selectedDelivery?.feeLabel
+    const estimatedFee = selectedDelivery?.fee || 0
 
     return (
         <MainLayout>
@@ -487,21 +489,24 @@ export default function CartPage() {
                                         <span className="font-semibold">{cart.totalItems} item</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span>Estimasi ongkir</span>
-                                        <span className="font-semibold">{estimatedFee}</span>
+                                        <span>Ongkos kirim</span>
+                                        <span className="font-semibold">{estimatedFeeLabel}</span>
                                     </div>
                                 </div>
 
-                                <div className="border-t border-blue-50 pt-3">
+                                <div className="border-t border-blue-50 pt-3 space-y-1">
                                     <div className="flex justify-between items-center">
-                                        <span className="font-bold text-slate-700">Subtotal</span>
+                                        <span className="font-bold text-slate-700">Subtotal <span className="text-xs font-normal text-slate-400">(sebelum diskon & PPN)</span></span>
                                         <span className="text-lg font-extrabold text-blue-600">
                                             {formatRupiah(cart.grandTotal)}
                                         </span>
                                     </div>
-                                    <p className="text-xs text-slate-400 mt-1">
-                                        Final total akan menambahkan ongkir dan PPN 12%.
-                                    </p>
+                                    <div className="flex justify-between items-center text-sm">
+                                        <span className="text-slate-500">Total + ongkir <span className="text-xs text-slate-400">(sebelum diskon & PPN)</span></span>
+                                        <span className="font-bold text-slate-700">
+                                            {formatRupiah(cart.grandTotal + estimatedFee)}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <Button

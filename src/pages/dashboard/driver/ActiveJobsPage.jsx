@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
-import { getActiveJobs } from '../../../services/deliveryApi'
+import { getActiveJobs, completeJob } from '../../../services/deliveryApi'
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -27,6 +27,7 @@ export default function ActiveJobsPage() {
     const [jobs, setJobs] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [completingId, setCompletingId] = useState(null)
 
     useEffect(() => {
         getActiveJobs()
@@ -34,6 +35,19 @@ export default function ActiveJobsPage() {
             .catch(() => setError('Gagal memuat job aktif.'))
             .finally(() => setLoading(false))
     }, [])
+
+    const handleComplete = async (jobId) => {
+        if (!confirm('Selesaikan pengiriman ini?')) return
+        setCompletingId(jobId)
+        try {
+            await completeJob(jobId)
+            setJobs(prev => prev.filter(j => j.deliveryJobId !== jobId))
+        } catch {
+            alert('Gagal menyelesaikan job.')
+        } finally {
+            setCompletingId(null)
+        }
+    }
 
     return (
         <MainLayout>
@@ -104,6 +118,12 @@ export default function ActiveJobsPage() {
                                     <Link to={`/dashboard/driver/jobs/${job.deliveryJobId}`}>
                                         <Button variant="outline">Detail</Button>
                                     </Link>
+                                    <Button
+                                        onClick={() => handleComplete(job.deliveryJobId)}
+                                        disabled={completingId === job.deliveryJobId}
+                                    >
+                                        {completingId === job.deliveryJobId ? 'Menyelesaikan...' : 'Selesaikan'}
+                                    </Button>
                                 </div>
                             </div>
                         </div>

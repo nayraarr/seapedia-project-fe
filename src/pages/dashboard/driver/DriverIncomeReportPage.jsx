@@ -59,7 +59,7 @@ export default function DriverIncomeReportPage() {
             <div className="mb-6">
                 <span className="text-xs font-bold text-orange-500 uppercase tracking-widest">Driver</span>
                 <h1 className="text-3xl font-bold text-slate-800 mt-1">Riwayat & Penghasilan</h1>
-                <p className="text-slate-400 mt-1">Rekap penghasilan harian</p>
+                <p className="text-slate-400 mt-1">Rekap penghasilan</p>
             </div>
 
             {error && (
