@@ -30,16 +30,16 @@ function formatDate(dateStr) {
 
 function StatCard({ icon, label, value, sub, color = 'slate', onClick }) {
     const colors = {
-        slate:   'bg-slate-50   border-slate-200   text-slate-700',
-        red:     'bg-red-50     border-red-200     text-red-700',
-        emerald: 'bg-emerald-50 border-emerald-200 text-emerald-700',
-        yellow:  'bg-yellow-50  border-yellow-200  text-yellow-700',
-        blue:    'bg-blue-50    border-blue-200    text-blue-700',
-        purple:  'bg-purple-50  border-purple-200  text-purple-700',
+        slate:   'card border-slate-200 text-slate-700',
+        red:     'card border-red-200 text-red-700',
+        emerald: 'card border-emerald-200 text-emerald-700',
+        yellow:  'card border-yellow-200 text-yellow-700',
+        blue:    'card border-ocean-200 text-ocean-700',
+        purple:  'card border-purple-200 text-purple-700',
     }
     return (
         <div
-            className={`rounded-2xl border p-4 ${colors[color]} ${onClick ? 'cursor-pointer hover:shadow-md transition-all' : ''}`}
+            className={`p-4 ${colors[color]} ${onClick ? 'cursor-pointer card-hover' : ''}`}
             onClick={onClick}
         >
             <div className="text-2xl mb-1">{icon}</div>
@@ -66,7 +66,7 @@ function SectionTitle({ children, onClick }) {
 function DataPreview({ title, count, columns, rows, loading, onViewAll, emptyMessage = 'Belum ada data.' }) {
     const hasMore = count > 10
     return (
-        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+        <div className="card overflow-hidden">
             <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100">
                 <h3 className="font-bold text-slate-700 text-sm">
                     {title} <span className="text-slate-400 font-normal">({count})</span>
@@ -152,7 +152,7 @@ function MonitoringTab({ data, onNavigate }) {
     const overdueList = data.overdueOrderList || []
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
                 <StatCard icon="👥" label="Users"   value={data.totalUsers}        color="slate"   onClick={() => onNavigate('users')} />
                 <StatCard icon="🏪" label="Toko"    value={data.totalStores}       color="purple"  onClick={() => onNavigate('stores')} />
@@ -174,8 +174,8 @@ function MonitoringTab({ data, onNavigate }) {
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{u.email}</td>
                         <td className="px-4 py-2.5">
                             {u.isAdmin
-                                ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Admin</span>
-                                : <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{u.roles.join(', ')}</span>}
+                                ? <span className="badge-red">Admin</span>
+                                : <span className="badge-slate">{u.roles.join(', ')}</span>}
                         </td>
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(u.createdAt)}</td>
                     </tr>
@@ -208,9 +208,9 @@ function MonitoringTab({ data, onNavigate }) {
                         <td className="px-4 py-2.5 text-slate-700 font-semibold">{formatRupiah(p.price)}</td>
                         <td className="px-4 py-2.5">
                             <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                                p.stock === 0 ? 'bg-red-50 text-red-600'
+                                p.stock === 0 ? 'badge-red'
                                     : p.stock <= 5 ? 'bg-yellow-50 text-yellow-700'
-                                        : 'bg-emerald-50 text-emerald-700'
+                                        : 'badge-emerald'
                             }`}>{p.stock}</span>
                         </td>
                     </tr>
@@ -227,7 +227,7 @@ function MonitoringTab({ data, onNavigate }) {
                         <td className="px-4 py-2.5 font-medium text-slate-700">{o.storeName}</td>
                         <td className="px-4 py-2.5 text-slate-600">{o.buyerUsername}</td>
                         <td className="px-4 py-2.5">
-                            <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{o.statusLabel}</span>
+                            <span className="badge-slate">{o.statusLabel}</span>
                         </td>
                         <td className="px-4 py-2.5 text-slate-700 font-semibold">{formatRupiah(o.totalAmount)}</td>
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(o.createdAt)}</td>
@@ -247,10 +247,10 @@ function MonitoringTab({ data, onNavigate }) {
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(v.expiryDate)}</td>
                         <td className="px-4 py-2.5">
                             {v.expired
-                                ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span>
+                                ? <span className="badge-red">Expired</span>
                                 : v.active
-                                    ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span>
-                                    : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}
+                                    ? <span className="badge-emerald">Aktif</span>
+                                    : <span className="badge-slate">Nonaktif</span>}
                         </td>
                     </tr>
                 ))}
@@ -267,10 +267,10 @@ function MonitoringTab({ data, onNavigate }) {
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(p.expiryDate)}</td>
                         <td className="px-4 py-2.5">
                             {p.expired
-                                ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span>
+                                ? <span className="badge-red">Expired</span>
                                 : p.active
-                                    ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span>
-                                    : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}
+                                    ? <span className="badge-emerald">Aktif</span>
+                                    : <span className="badge-slate">Nonaktif</span>}
                         </td>
                     </tr>
                 ))}
@@ -290,7 +290,7 @@ function MonitoringTab({ data, onNavigate }) {
                                 : <span className="text-xs text-slate-400">Belum ada</span>}
                         </td>
                         <td className="px-4 py-2.5">
-                            <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{j.orderStatusLabel}</span>
+                            <span className="badge-slate">{j.orderStatusLabel}</span>
                         </td>
                         <td className="px-4 py-2.5 text-slate-500 text-xs">{formatDate(j.createdAt)}</td>
                     </tr>
@@ -301,11 +301,11 @@ function MonitoringTab({ data, onNavigate }) {
             <div>
                 <SectionTitle>🚨 Pesanan Overdue ({data.overdueOrders})</SectionTitle>
                 {overdueList.length === 0 ? (
-                    <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-4 text-emerald-700 text-sm font-medium">
+                    <div className="badge-emerald px-5 py-4 text-sm font-medium rounded-2xl">
                         ✅ Tidak ada pesanan overdue saat ini.
                     </div>
                 ) : (
-                    <div className="bg-white border border-red-100 rounded-2xl overflow-hidden">
+                    <div className="card border-red-100 overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
@@ -327,11 +327,11 @@ function MonitoringTab({ data, onNavigate }) {
                                         <td className="px-4 py-3 text-slate-500 text-xs">{formatDate(o.createdAt)}</td>
                                         <td className="px-4 py-3">
                                             {o.processed ? (
-                                                <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                                                <span className="badge-orange">
                                                     DIKEMBALIKAN
                                                 </span>
                                             ) : (
-                                                <span className="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                                                <span className="badge-red">
                                                     {o.minutesOverdue} menit
                                                 </span>
                                             )}
@@ -346,8 +346,8 @@ function MonitoringTab({ data, onNavigate }) {
             </div>
 
             {detailItem && detailItem.type === 'delivery-job' && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={() => setDetailItem(null)}>
-                    <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl" onClick={e => e.stopPropagation()}>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm animate-fade-in" onClick={() => setDetailItem(null)}>
+                    <div className="card p-6 max-w-md w-full mx-4 shadow-xl animate-slide-up" onClick={e => e.stopPropagation()}>
                         <div className="flex justify-between items-center mb-4">
                             <h3 className="font-bold text-slate-800 text-lg">Detail Delivery Job</h3>
                             <button onClick={() => setDetailItem(null)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
@@ -368,8 +368,8 @@ function MonitoringTab({ data, onNavigate }) {
 
 function ListModal({ title, items, columns, loading, onClose, renderRow }) {
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={onClose}>
-            <div className="bg-white rounded-2xl max-w-4xl w-full mx-4 shadow-xl max-h-[80vh] flex flex-col" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+            <div className="card max-w-4xl w-full mx-4 shadow-xl max-h-[80vh] flex flex-col animate-slide-up" onClick={e => e.stopPropagation()}>
                 <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
                     <h3 className="font-bold text-slate-800 text-lg">{title}</h3>
                     <button onClick={onClose} className="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 text-lg">&times;</button>
@@ -412,8 +412,8 @@ function DetailModal({ item, onClose }) {
     if (!item) return null
     const data = item.data
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={onClose}>
-            <div className="bg-white rounded-2xl p-6 max-w-lg w-full mx-4 shadow-xl" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+            <div className="card p-6 max-w-lg w-full mx-4 shadow-xl animate-slide-up" onClick={e => e.stopPropagation()}>
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="font-bold text-slate-800 text-lg">Detail {item.type}</h3>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
@@ -444,6 +444,7 @@ const initialPromoForm = {
 
 export default function AdminDashboard() {
     const { decoded } = useAuth()
+    const navigate = useNavigate()
     const [activeTab, setActiveTab] = useState('monitoring')
     const [monitoringData, setMonitoringData] = useState(null)
     const [monitoringLoading, setMonitoringLoading] = useState(true)
@@ -456,6 +457,7 @@ export default function AdminDashboard() {
     const [submitting, setSubmitting] = useState(false)
     const [message, setMessage] = useState({ type: '', text: '' })
     const [selectedItem, setSelectedItem] = useState(null)
+    const [detailItem, setDetailItem] = useState(null)
 
     const [modalList, setModalList] = useState(null)
     const [modalLoading, setModalLoading] = useState(false)
@@ -610,8 +612,8 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3 text-slate-500 text-xs">{u.email}</td>
                     <td className="px-4 py-3">
                         {u.isAdmin
-                            ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Admin</span>
-                            : <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{u.roles.join(', ')}</span>}
+                            ? <span className="badge-red">Admin</span>
+                            : <span className="badge-slate">{u.roles.join(', ')}</span>}
                     </td>
                     <td className="px-4 py-3 text-slate-500 text-xs">{formatDate(u.createdAt)}</td>
                 </tr>
@@ -640,9 +642,9 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3 font-semibold text-slate-700">{formatRupiah(p.price)}</td>
                     <td className="px-4 py-3">
                         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                            p.stock === 0 ? 'bg-red-50 text-red-600'
+                            p.stock === 0 ? 'badge-red'
                                 : p.stock <= 5 ? 'bg-yellow-50 text-yellow-700'
-                                    : 'bg-emerald-50 text-emerald-700'
+                                    : 'badge-emerald'
                         }`}>{p.stock}</span>
                     </td>
                 </tr>
@@ -656,7 +658,7 @@ export default function AdminDashboard() {
                     onClick={() => navigate(`/dashboard/admin/orders/${o.id}`)}>
                     <td className="px-4 py-3 font-medium text-slate-700">{o.storeName}</td>
                     <td className="px-4 py-3 text-slate-600">{o.buyerUsername}</td>
-                    <td className="px-4 py-3"><span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{o.statusLabel}</span></td>
+                    <td className="px-4 py-3"><span className="badge-slate">{o.statusLabel}</span></td>
                     <td className="px-4 py-3 text-slate-700 font-semibold">{formatRupiah(o.totalAmount)}</td>
                     <td className="px-4 py-3 text-slate-500 text-xs">{formatDate(o.createdAt)}</td>
                 </tr>
@@ -670,7 +672,7 @@ export default function AdminDashboard() {
                     onClick={() => setDetailItem({ type: 'delivery-job', data: j })}>
                     <td className="px-4 py-3 font-medium text-slate-700">{j.storeName}</td>
                     <td className="px-4 py-3 text-slate-600">{j.driverId ? j.driverId.slice(0, 8) + '...' : <span className="text-xs text-slate-400">Belum ada</span>}</td>
-                    <td className="px-4 py-3"><span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">{j.orderStatusLabel}</span></td>
+                    <td className="px-4 py-3"><span className="badge-slate">{j.orderStatusLabel}</span></td>
                     <td className="px-4 py-3 text-slate-500 text-xs">{formatDate(j.createdAt)}</td>
                 </tr>
             )
@@ -690,19 +692,18 @@ export default function AdminDashboard() {
         { key: 'promos',     label: 'Promo' },
     ]
 
-    const inputClass = "w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-red-300"
-    const labelClass = "block text-xs font-semibold text-slate-500 mb-1"
+    const inputClass = "input-field w-full focus:ring-red-300"
 
     return (
         <MainLayout>
-            <div className="mb-6">
+            <div className="mb-6 animate-fade-in">
                 <span className="text-xs font-bold text-red-500 uppercase tracking-widest">Dashboard</span>
                 <h1 className="text-2xl font-bold text-slate-800 mt-1">Halo, {decoded?.username}!</h1>
                 <p className="text-slate-400 text-sm mt-1">Monitoring &amp; Manajemen Diskon</p>
             </div>
 
             {message.text && (
-                <div className={`mb-4 text-sm rounded-xl px-4 py-3 border ${
+                <div className={`mb-4 text-sm rounded-xl px-4 py-3 border animate-fade-in ${
                     message.type === 'success'
                         ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
                         : 'bg-red-50 border-red-200 text-red-600'
@@ -710,11 +711,11 @@ export default function AdminDashboard() {
             )}
 
             {/* Time Simulation Panel */}
-            <div className="bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-2xl p-4 mb-6">
+            <div className="ocean-gradient-subtle border border-ocean-200 rounded-2xl p-4 mb-6 animate-slide-up">
                 <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-sm font-bold text-red-700">⏰ Simulasi Waktu</span>
+                    <span className="text-sm font-bold text-ocean-700">⏰ Simulasi Waktu</span>
                     {simulationOffset > 0 ? (
-                        <span className="text-xs bg-white text-red-600 px-3 py-1 rounded-full font-semibold border border-red-200">
+                        <span className="text-xs bg-white text-red-600 px-3 py-1 rounded-full font-semibold border border-red-200 shadow-sm">
                             +{simulationOffset} menit {simulatedNow && `(~ ${formatDate(simulatedNow)})`}
                         </span>
                     ) : (
@@ -723,7 +724,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center gap-1 ml-auto flex-wrap">
                         {[{ label: '+30m', val: 30 }, { label: '+1j', val: 60 }, { label: '+6j', val: 360 }, { label: '+1h', val: 1440 }].map(btn => (
                             <button key={btn.val} onClick={() => handleAdvanceTime(btn.val)} disabled={simulating}
-                                    className="text-xs font-semibold bg-white text-slate-600 hover:bg-red-50 hover:text-red-600 px-3 py-1.5 rounded-lg border border-slate-200 transition disabled:opacity-50">
+                                    className="text-xs font-semibold bg-white text-slate-600 hover:bg-red-50 hover:text-red-600 px-3 py-1.5 rounded-lg border border-slate-200 transition disabled:opacity-50 shadow-card">
                                 {btn.label}
                             </button>
                         ))}
@@ -732,12 +733,12 @@ export default function AdminDashboard() {
                                 type="number" min="1" value={simulationInput}
                                 onChange={e => setSimulationInput(e.target.value)}
                                 placeholder="menit"
-                                className="w-20 text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-red-300"
+                                className="input-field w-20 text-xs px-2 py-1.5"
                             />
                             <button
                                 onClick={() => { const m = parseInt(simulationInput); if (m > 0) handleAdvanceTime(m); setSimulationInput('') }}
                                 disabled={simulating || !simulationInput}
-                                className="text-xs font-semibold bg-red-500 text-white hover:bg-red-600 px-3 py-1.5 rounded-lg transition disabled:opacity-50"
+                                className="text-xs font-semibold bg-red-500 text-white hover:bg-red-600 px-3 py-1.5 rounded-lg transition disabled:opacity-50 shadow-card"
                             >
                                 Majukan
                             </button>
@@ -753,7 +754,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-1 mb-6 bg-red-50 rounded-xl p-1 w-fit">
+            <div className="flex gap-1 mb-6 bg-red-50 rounded-xl p-1 w-fit animate-fade-in">
                 {tabs.map(t => (
                     <button key={t.key}
                             onClick={() => { setActiveTab(t.key); setMessage({ type: '', text: '' }) }}
@@ -774,25 +775,25 @@ export default function AdminDashboard() {
 
             {activeTab === 'vouchers' && (
                 listLoading ? <div className="text-center py-16 text-slate-400">Memuat data...</div> : (
-                    <div className="space-y-6">
-                        <div className="bg-white border border-red-100 rounded-2xl p-6">
+                    <div className="space-y-6 animate-slide-up">
+                        <div className="card p-6">
                             <h2 className="font-bold text-slate-700 text-lg mb-4">Buat Voucher Baru</h2>
                             <form onSubmit={handleCreateVoucher} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div><label className={labelClass}>Kode Voucher</label><input name="code" value={voucherForm.code} onChange={handleVoucherChange} required className={inputClass} placeholder="CONTOH50" /></div>
-                                <div><label className={labelClass}>Tipe Diskon</label><select name="discountType" value={voucherForm.discountType} onChange={handleVoucherChange} className={inputClass}><option value="PERCENTAGE">Persen (%)</option><option value="FIXED">Nominal (Rp)</option></select></div>
-                                <div><label className={labelClass}>Nilai Diskon</label><input name="discountValue" type="number" value={voucherForm.discountValue} onChange={handleVoucherChange} required min="1" className={inputClass} placeholder={voucherForm.discountType === 'PERCENTAGE' ? '10' : '5000'} /></div>
-                                <div><label className={labelClass}>Maks Diskon (kosongkan jika %)</label><input name="maxDiscountAmount" type="number" value={voucherForm.maxDiscountAmount} onChange={handleVoucherChange} min="1" className={inputClass} placeholder="Rp" /></div>
-                                <div><label className={labelClass}>Min Pembelian</label><input name="minPurchaseAmount" type="number" value={voucherForm.minPurchaseAmount} onChange={handleVoucherChange} min="0" className={inputClass} placeholder="0" /></div>
-                                <div><label className={labelClass}>Batas Pemakaian</label><input name="usageLimit" type="number" value={voucherForm.usageLimit} onChange={handleVoucherChange} required min="1" className={inputClass} placeholder="100" /></div>
-                                <div><label className={labelClass}>Berlaku Sampai</label><input name="expiryDate" type="datetime-local" value={voucherForm.expiryDate} onChange={handleVoucherChange} required className={inputClass} /></div>
-                                <div className="md:col-span-2 lg:col-span-3"><label className={labelClass}>Deskripsi (opsional)</label><input name="description" value={voucherForm.description} onChange={handleVoucherChange} className={inputClass} placeholder="Deskripsi voucher" /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Kode Voucher</label><input name="code" value={voucherForm.code} onChange={handleVoucherChange} required className={inputClass} placeholder="CONTOH50" /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Tipe Diskon</label><select name="discountType" value={voucherForm.discountType} onChange={handleVoucherChange} className={inputClass}><option value="PERCENTAGE">Persen (%)</option><option value="FIXED">Nominal (Rp)</option></select></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Nilai Diskon</label><input name="discountValue" type="number" value={voucherForm.discountValue} onChange={handleVoucherChange} required min="1" className={inputClass} placeholder={voucherForm.discountType === 'PERCENTAGE' ? '10' : '5000'} /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Maks Diskon (kosongkan jika %)</label><input name="maxDiscountAmount" type="number" value={voucherForm.maxDiscountAmount} onChange={handleVoucherChange} min="1" className={inputClass} placeholder="Rp" /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Min Pembelian</label><input name="minPurchaseAmount" type="number" value={voucherForm.minPurchaseAmount} onChange={handleVoucherChange} min="0" className={inputClass} placeholder="0" /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Batas Pemakaian</label><input name="usageLimit" type="number" value={voucherForm.usageLimit} onChange={handleVoucherChange} required min="1" className={inputClass} placeholder="100" /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Berlaku Sampai</label><input name="expiryDate" type="datetime-local" value={voucherForm.expiryDate} onChange={handleVoucherChange} required className={inputClass} /></div>
+                                <div className="md:col-span-2 lg:col-span-3"><label className="block text-xs font-semibold text-slate-500 mb-1">Deskripsi (opsional)</label><input name="description" value={voucherForm.description} onChange={handleVoucherChange} className={inputClass} placeholder="Deskripsi voucher" /></div>
                                 <div className="md:col-span-2 lg:col-span-3 flex justify-end">
                                     <Button type="submit" disabled={submitting}>{submitting ? 'Menyimpan...' : 'Buat Voucher'}</Button>
                                 </div>
                             </form>
                         </div>
 
-                        <div className="bg-white border border-red-100 rounded-2xl p-6">
+                        <div className="card p-6">
                             <h2 className="font-bold text-slate-700 text-lg mb-4">Daftar Voucher</h2>
                             {vouchers.length === 0 ? (
                                 <p className="text-sm text-slate-400 text-center py-8">Belum ada voucher.</p>
@@ -810,7 +811,7 @@ export default function AdminDashboard() {
                                                 <td className="px-3 py-3 text-slate-600">{formatRupiah(v.minPurchaseAmount)}</td>
                                                 <td className="px-3 py-3 text-slate-600">{v.remainingUsage ?? v.usageLimit - v.usedCount}/{v.usageLimit}</td>
                                                 <td className="px-3 py-3 text-slate-500 text-xs">{formatDate(v.expiryDate)}</td>
-                                                <td className="px-3 py-3">{v.expired ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span> : v.active ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span> : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}</td>
+                                                <td className="px-3 py-3">{v.expired ? <span className="badge-red">Expired</span> : v.active ? <span className="badge-emerald">Aktif</span> : <span className="badge-slate">Nonaktif</span>}</td>
                                                 <td className="px-3 py-3"><button onClick={() => handleViewDetail('VOUCHER', v.id)} className="text-xs font-semibold bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-3 py-1.5 rounded-lg transition">Detail</button></td>
                                             </tr>
                                         ))}
@@ -825,24 +826,24 @@ export default function AdminDashboard() {
 
             {activeTab === 'promos' && (
                 listLoading ? <div className="text-center py-16 text-slate-400">Memuat data...</div> : (
-                    <div className="space-y-6">
-                        <div className="bg-white border border-red-100 rounded-2xl p-6">
+                    <div className="space-y-6 animate-slide-up">
+                        <div className="card p-6">
                             <h2 className="font-bold text-slate-700 text-lg mb-4">Buat Promo Baru</h2>
                             <form onSubmit={handleCreatePromo} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div><label className={labelClass}>Kode Promo</label><input name="code" value={promoForm.code} onChange={handlePromoChange} required className={inputClass} placeholder="PROMO60" /></div>
-                                <div><label className={labelClass}>Tipe Diskon</label><select name="discountType" value={promoForm.discountType} onChange={handlePromoChange} className={inputClass}><option value="PERCENTAGE">Persen (%)</option><option value="FIXED">Nominal (Rp)</option></select></div>
-                                <div><label className={labelClass}>Nilai Diskon</label><input name="discountValue" type="number" value={promoForm.discountValue} onChange={handlePromoChange} required min="1" className={inputClass} placeholder={promoForm.discountType === 'PERCENTAGE' ? '10' : '5000'} /></div>
-                                <div><label className={labelClass}>Maks Diskon (kosongkan jika %)</label><input name="maxDiscountAmount" type="number" value={promoForm.maxDiscountAmount} onChange={handlePromoChange} min="1" className={inputClass} placeholder="Rp" /></div>
-                                <div><label className={labelClass}>Min Pembelian</label><input name="minPurchaseAmount" type="number" value={promoForm.minPurchaseAmount} onChange={handlePromoChange} min="0" className={inputClass} placeholder="0" /></div>
-                                <div><label className={labelClass}>Berlaku Sampai</label><input name="expiryDate" type="datetime-local" value={promoForm.expiryDate} onChange={handlePromoChange} required className={inputClass} /></div>
-                                <div className="md:col-span-2 lg:col-span-3"><label className={labelClass}>Deskripsi (opsional)</label><input name="description" value={promoForm.description} onChange={handlePromoChange} className={inputClass} placeholder="Deskripsi promo" /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Kode Promo</label><input name="code" value={promoForm.code} onChange={handlePromoChange} required className={inputClass} placeholder="PROMO60" /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Tipe Diskon</label><select name="discountType" value={promoForm.discountType} onChange={handlePromoChange} className={inputClass}><option value="PERCENTAGE">Persen (%)</option><option value="FIXED">Nominal (Rp)</option></select></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Nilai Diskon</label><input name="discountValue" type="number" value={promoForm.discountValue} onChange={handlePromoChange} required min="1" className={inputClass} placeholder={promoForm.discountType === 'PERCENTAGE' ? '10' : '5000'} /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Maks Diskon (kosongkan jika %)</label><input name="maxDiscountAmount" type="number" value={promoForm.maxDiscountAmount} onChange={handlePromoChange} min="1" className={inputClass} placeholder="Rp" /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Min Pembelian</label><input name="minPurchaseAmount" type="number" value={promoForm.minPurchaseAmount} onChange={handlePromoChange} min="0" className={inputClass} placeholder="0" /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Berlaku Sampai</label><input name="expiryDate" type="datetime-local" value={promoForm.expiryDate} onChange={handlePromoChange} required className={inputClass} /></div>
+                                <div className="md:col-span-2 lg:col-span-3"><label className="block text-xs font-semibold text-slate-500 mb-1">Deskripsi (opsional)</label><input name="description" value={promoForm.description} onChange={handlePromoChange} className={inputClass} placeholder="Deskripsi promo" /></div>
                                 <div className="md:col-span-2 lg:col-span-3 flex justify-end">
                                     <Button type="submit" disabled={submitting}>{submitting ? 'Menyimpan...' : 'Buat Promo'}</Button>
                                 </div>
                             </form>
                         </div>
 
-                        <div className="bg-white border border-red-100 rounded-2xl p-6">
+                        <div className="card p-6">
                             <h2 className="font-bold text-slate-700 text-lg mb-4">Daftar Promo</h2>
                             {promos.length === 0 ? (
                                 <p className="text-sm text-slate-400 text-center py-8">Belum ada promo.</p>
@@ -859,7 +860,7 @@ export default function AdminDashboard() {
                                                 <td className="px-3 py-3 text-slate-600">{p.discountType === 'PERCENTAGE' ? `${p.discountValue}%` : formatRupiah(p.discountValue)}</td>
                                                 <td className="px-3 py-3 text-slate-600">{formatRupiah(p.minPurchaseAmount)}</td>
                                                 <td className="px-3 py-3 text-slate-500 text-xs">{formatDate(p.expiryDate)}</td>
-                                                <td className="px-3 py-3">{p.expired ? <span className="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Expired</span> : p.active ? <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Aktif</span> : <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Nonaktif</span>}</td>
+                                                <td className="px-3 py-3">{p.expired ? <span className="badge-red">Expired</span> : p.active ? <span className="badge-emerald">Aktif</span> : <span className="badge-slate">Nonaktif</span>}</td>
                                                 <td className="px-3 py-3"><button onClick={() => handleViewDetail('PROMO', p.id)} className="text-xs font-semibold bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-3 py-1.5 rounded-lg transition">Detail</button></td>
                                             </tr>
                                         ))}
@@ -873,6 +874,24 @@ export default function AdminDashboard() {
             )}
 
             {selectedItem && <DetailModal item={selectedItem} onClose={() => setSelectedItem(null)} />}
+
+            {detailItem && detailItem.type === 'delivery-job' && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm animate-fade-in" onClick={() => setDetailItem(null)}>
+                    <div className="card p-6 max-w-md w-full mx-4 shadow-xl animate-slide-up" onClick={e => e.stopPropagation()}>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="font-bold text-slate-800 text-lg">Detail Delivery Job</h3>
+                            <button onClick={() => setDetailItem(null)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
+                        </div>
+                        <div className="space-y-3 text-sm">
+                            <div><p className="text-xs font-semibold text-slate-400 uppercase">Order ID</p><p className="font-mono text-xs text-slate-800">{detailItem.data.id}</p></div>
+                            <div><p className="text-xs font-semibold text-slate-400 uppercase">Toko</p><p className="font-medium text-slate-800">{detailItem.data.storeName}</p></div>
+                            <div><p className="text-xs font-semibold text-slate-400 uppercase">Driver</p><p className="font-medium text-slate-800">{detailItem.data.driverId || 'Belum ada'}</p></div>
+                            <div><p className="text-xs font-semibold text-slate-400 uppercase">Status</p><p className="font-medium text-slate-800">{detailItem.data.orderStatusLabel}</p></div>
+                            <div><p className="text-xs font-semibold text-slate-400 uppercase">Dibuat</p><p className="font-medium text-slate-800">{formatDate(detailItem.data.createdAt)}</p></div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {modalList && (
                 <ListModal
