@@ -13,6 +13,7 @@ import {
 } from '../../../services/discountApi'
 import { getAllStores } from '../../../services/storeApi'
 import api from '../../../services/api'
+import { Users, Store, Package, Receipt, Ticket, Tag, Bike, TriangleAlert, CheckCircle } from 'lucide-react'
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -72,9 +73,9 @@ function DataPreview({ title, count, columns, rows, loading, onViewAll, emptyMes
                     {title} <span className="text-slate-400 font-normal">({count})</span>
                 </h3>
                 {hasMore && (
-                    <button onClick={onViewAll} className="text-xs font-semibold text-red-500 hover:text-red-700 transition">
-                        Lihat Semua →
-                    </button>
+                    <Button onClick={onViewAll} variant="outline" size="sm">
+                        Lihat Semua
+                    </Button>
                 )}
             </div>
             {loading ? (
@@ -154,18 +155,18 @@ function MonitoringTab({ data, onNavigate }) {
     return (
         <div className="space-y-6 animate-fade-in">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
-                <StatCard icon="👥" label="Users"   value={data.totalUsers}        color="slate"   onClick={() => onNavigate('users')} />
-                <StatCard icon="🏪" label="Toko"    value={data.totalStores}       color="purple"  onClick={() => onNavigate('stores')} />
-                <StatCard icon="📦" label="Produk"  value={data.totalProducts}     color="slate"   onClick={() => onNavigate('products')} />
-                <StatCard icon="🧾" label="Orders"  value={data.totalOrders}       color="blue"    onClick={() => onNavigate('orders')} />
-                <StatCard icon="🎟️" label="Voucher" value={data.totalVouchers}     color="slate"   onClick={() => onNavigate('vouchers')} />
-                <StatCard icon="🏷️" label="Promo"   value={data.totalPromos}       color="slate"   onClick={() => onNavigate('promos')} />
-                <StatCard icon="🚴" label="Jobs"    value={data.totalDeliveryJobs} color="yellow"  onClick={() => onNavigate('delivery-jobs')} />
-                <StatCard icon="🚨" label="Overdue" value={data.overdueOrders}     color="red"     onClick={() => onNavigate('overdue')} />
+                <StatCard icon={<Users size={20} strokeWidth={1.5} />} label="Users"   value={data.totalUsers}        color="slate"   onClick={() => onNavigate('users')} />
+                <StatCard icon={<Store size={20} strokeWidth={1.5} />} label="Toko"    value={data.totalStores}       color="purple"  onClick={() => onNavigate('stores')} />
+                <StatCard icon={<Package size={20} strokeWidth={1.5} />} label="Produk"  value={data.totalProducts}     color="slate"   onClick={() => onNavigate('products')} />
+                <StatCard icon={<Receipt size={20} strokeWidth={1.5} />} label="Orders"  value={data.totalOrders}       color="blue"    onClick={() => onNavigate('orders')} />
+                <StatCard icon={<Ticket size={20} strokeWidth={1.5} />} label="Voucher" value={data.totalVouchers}     color="slate"   onClick={() => onNavigate('vouchers')} />
+                <StatCard icon={<Tag size={20} strokeWidth={1.5} />} label="Promo"   value={data.totalPromos}       color="slate"   onClick={() => onNavigate('promos')} />
+                <StatCard icon={<Bike size={20} strokeWidth={1.5} />} label="Jobs"    value={data.totalDeliveryJobs} color="yellow"  onClick={() => onNavigate('delivery-jobs')} />
+                <StatCard icon={<TriangleAlert size={20} strokeWidth={1.5} />} label="Overdue" value={data.overdueOrders}     color="red"     onClick={() => onNavigate('overdue')} />
             </div>
 
             <DataPreview
-                title="👤 Pengguna Terbaru" count={data.totalUsers}
+                title={<><Users size={16} className="inline-block mr-1" strokeWidth={1.5} /> Pengguna Terbaru</>} count={data.totalUsers}
                 columns={['Username', 'Email', 'Role', 'Bergabung']}
                 rows={users.slice(0, 10).map(u => (
                     <tr key={u.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
@@ -184,7 +185,7 @@ function MonitoringTab({ data, onNavigate }) {
             />
 
             <DataPreview
-                title="🏪 Toko Terbaru" count={data.totalStores}
+                title={<><Store size={16} className="inline-block mr-1" strokeWidth={1.5} /> Toko Terbaru</>} count={data.totalStores}
                 columns={['Nama Toko', 'Pemilik', 'Dibuat']}
                 rows={stores.slice(0, 10).map(s => (
                     <tr key={s.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
@@ -198,7 +199,7 @@ function MonitoringTab({ data, onNavigate }) {
             />
 
             <DataPreview
-                title="📦 Produk Terbaru" count={data.totalProducts}
+                title={<><Package size={16} className="inline-block mr-1" strokeWidth={1.5} /> Produk Terbaru</>} count={data.totalProducts}
                 columns={['Nama Produk', 'Toko', 'Harga', 'Stok']}
                 rows={products.slice(0, 10).map(p => (
                     <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
@@ -219,7 +220,7 @@ function MonitoringTab({ data, onNavigate }) {
             />
 
             <DataPreview
-                title="🧾 Pesanan Terbaru" count={data.totalOrders}
+                title={<><Receipt size={16} className="inline-block mr-1" strokeWidth={1.5} /> Pesanan Terbaru</>} count={data.totalOrders}
                 columns={['Toko', 'Buyer', 'Status', 'Total', 'Dibuat']}
                 rows={orders.slice(0, 10).map(o => (
                     <tr key={o.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
@@ -237,7 +238,7 @@ function MonitoringTab({ data, onNavigate }) {
             />
 
             <DataPreview
-                title="🎟️ Voucher Terbaru" count={data.totalVouchers}
+                title={<><Ticket size={16} className="inline-block mr-1" strokeWidth={1.5} /> Voucher Terbaru</>} count={data.totalVouchers}
                 columns={['Kode', 'Diskon', 'Sisa', 'Expiry', 'Status']}
                 rows={vouchers.slice(0, 10).map(v => (
                     <tr key={v.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
@@ -258,7 +259,7 @@ function MonitoringTab({ data, onNavigate }) {
             />
 
             <DataPreview
-                title="🏷️ Promo Terbaru" count={data.totalPromos}
+                title={<><Tag size={16} className="inline-block mr-1" strokeWidth={1.5} /> Promo Terbaru</>} count={data.totalPromos}
                 columns={['Kode', 'Diskon', 'Expiry', 'Status']}
                 rows={promos.slice(0, 10).map(p => (
                     <tr key={p.id} className="border-b border-slate-50 hover:bg-red-50/40 transition">
@@ -278,7 +279,7 @@ function MonitoringTab({ data, onNavigate }) {
             />
 
             <DataPreview
-                title="🚴 Delivery Jobs Terbaru" count={data.totalDeliveryJobs}
+                title={<><Bike size={16} className="inline-block mr-1" strokeWidth={1.5} /> Delivery Jobs Terbaru</>} count={data.totalDeliveryJobs}
                 columns={['Toko', 'Driver', 'Status', 'Dibuat']}
                 rows={deliveryJobs.slice(0, 10).map(j => (
                     <tr key={j.id} className="border-b border-slate-50 hover:bg-red-50/40 transition cursor-pointer"
@@ -299,10 +300,10 @@ function MonitoringTab({ data, onNavigate }) {
             />
 
             <div>
-                <SectionTitle>🚨 Pesanan Overdue ({data.overdueOrders})</SectionTitle>
+                <SectionTitle><><TriangleAlert size={16} className="inline-block mr-1" strokeWidth={1.5} /> Pesanan Overdue ({data.overdueOrders})</></SectionTitle>
                 {overdueList.length === 0 ? (
                     <div className="badge-emerald px-5 py-4 text-sm font-medium rounded-2xl">
-                        ✅ Tidak ada pesanan overdue saat ini.
+                        <CheckCircle size={16} className="inline-block mr-1" strokeWidth={1.5} /> Tidak ada pesanan overdue saat ini.
                     </div>
                 ) : (
                     <div className="card border-red-100 overflow-hidden">

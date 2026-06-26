@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import BackButton from '../../../components/ui/BackButton'
 import { getDriverReport, getJobHistory } from '../../../services/deliveryApi'
+import { ClipboardList, CheckCircle, Car, Wallet } from 'lucide-react'
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -43,10 +44,10 @@ export default function DriverIncomeReportPage() {
     }, [])
 
     const summaryCards = report ? [
-        { label: 'Total Job Diambil', value: report.totalJobsTaken, icon: '📋', color: 'blue' },
-        { label: 'Job Selesai', value: report.completedJobs, icon: '✅', color: 'emerald' },
-        { label: 'Job Aktif', value: report.activeJobs, icon: '🚗', color: 'orange' },
-        { label: 'Total Pendapatan', value: formatRupiah(report.totalIncome), icon: '💰', color: 'blue' },
+        { label: 'Total Job Diambil', value: report.totalJobsTaken, icon: <ClipboardList size={24} strokeWidth={1.5} />, color: 'blue' },
+        { label: 'Job Selesai', value: report.completedJobs, icon: <CheckCircle size={24} strokeWidth={1.5} />, color: 'emerald' },
+        { label: 'Job Aktif', value: report.activeJobs, icon: <Car size={24} strokeWidth={1.5} />, color: 'orange' },
+        { label: 'Total Pendapatan', value: formatRupiah(report.totalIncome), icon: <Wallet size={24} strokeWidth={1.5} />, color: 'blue' },
     ] : []
 
     return (

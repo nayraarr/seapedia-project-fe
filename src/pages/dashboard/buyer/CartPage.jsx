@@ -9,6 +9,7 @@ import { getAddresses } from '../../../services/addressApi'
 import { getWallet } from '../../../services/walletApi'
 import { createOrder, previewCheckout } from '../../../services/orderApi'
 import { validateDiscountCode, getVouchers, getPromos } from '../../../services/discountApi'
+import { Ban, ShoppingCart, Info, Store, Package, Ticket, Tag, ChevronUp, ChevronDown, X } from 'lucide-react'
 
 const DELIVERY_OPTIONS = [
     { value: 'INSTANT', label: 'Instant', fee: 25000, feeLabel: 'Rp25.000' },
@@ -35,6 +36,7 @@ export default function CartPage() {
     const navigate = useNavigate()
 
     const [clearConfirm, setClearConfirm] = useState(false)
+    const [clearing, setClearing] = useState(false)
     const [busyItem, setBusyItem] = useState(null)
     const [addresses, setAddresses] = useState([])
     const [wallet, setWallet] = useState(null)
@@ -49,6 +51,7 @@ export default function CartPage() {
     const [error, setError] = useState('')
     const [fieldErrors, setFieldErrors] = useState({})
     const [success, setSuccess] = useState('')
+    const [checkoutError, setCheckoutError] = useState('')
     const [checkoutModalOpen, setCheckoutModalOpen] = useState(false)
     const [availableVouchers, setAvailableVouchers] = useState([])
     const [availablePromos, setAvailablePromos] = useState([])
@@ -95,7 +98,9 @@ export default function CartPage() {
     }
 
     const handleClear = async () => {
+        setClearing(true)
         await clear()
+        setClearing(false)
         setClearConfirm(false)
     }
 
@@ -123,6 +128,7 @@ export default function CartPage() {
 
     const handlePreviewCheckout = async () => {
         setError('')
+        setCheckoutError('')
         setSuccess('')
         setPreviewLoading(true)
         try {
@@ -136,11 +142,13 @@ export default function CartPage() {
             setCheckoutModalOpen(true)
         } catch (err) {
             const data = err.response?.data
+            const msg = data?.message || 'Gagal memuat ringkasan checkout.'
             if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
                 setFieldErrors(data.fieldErrors)
             } else {
-                setError(data?.message || 'Gagal memuat ringkasan checkout.')
+                setError(msg)
             }
+            setCheckoutError(msg)
         } finally {
             setPreviewLoading(false)
         }
@@ -185,7 +193,7 @@ export default function CartPage() {
             <MainLayout>
                 <BackButton className="mb-3" />
                 <div className="text-center py-24">
-                    <p className="text-5xl mb-4">{'\u{1F6AB}'}</p>
+                    <p className="text-5xl mb-4"><Ban size={48} strokeWidth={1.5} /></p>
                     <p className="text-slate-600 font-semibold">Halaman ini hanya untuk Pembeli.</p>
                 </div>
             </MainLayout>
@@ -203,7 +211,7 @@ export default function CartPage() {
             <div className="mb-6 flex items-center justify-between gap-4 animate-fade-in">
                 <div>
                     <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Keranjang</span>
-                    <h1 className="text-2xl font-bold text-slate-800 mt-1">Keranjang Belanja {'\u{1F6D2}'}</h1>
+                    <h1 className="text-2xl font-bold text-slate-800 mt-1"><ShoppingCart size={24} className="inline-block" strokeWidth={1.5} /> Keranjang Belanja</h1>
                 </div>
                 {!isEmpty && (
                     <div className="flex items-center gap-2">
@@ -214,15 +222,16 @@ export default function CartPage() {
                             variant="danger"
                             size="sm"
                             onClick={() => setClearConfirm(true)}
+                            disabled={clearing}
                         >
-                            Kosongkan
+                            {clearing ? 'Mengosongkan...' : 'Kosongkan'}
                         </Button>
                     </div>
                 )}
             </div>
 
             <div className="mb-4 ocean-gradient-subtle border border-ocean-200 rounded-xl px-4 py-3 flex items-start gap-3 text-sm text-ocean-700">
-                <span className="text-lg flex-shrink-0">{'\u2139\uFE0F'}</span>
+                <span className="text-lg flex-shrink-0"><Info size={18} strokeWidth={1.5} /></span>
                 <p>
                     Keranjang SEAPEDIA hanya dapat memuat produk dari <strong>satu toko</strong> sekaligus.
                     Checkout akan menampilkan subtotal, ongkir, PPN 12%, dan total akhir sebelum dikonfirmasi.
@@ -251,7 +260,7 @@ export default function CartPage() {
 
             {!loading && isEmpty && (
                 <div className="text-center py-24">
-                    <p className="text-6xl mb-4">{'\u{1F6D2}'}</p>
+                    <div className="flex justify-center mb-4"><ShoppingCart size={48} strokeWidth={1.5} /></div>
                     <p className="text-slate-600 font-semibold text-lg mb-2">Keranjangmu masih kosong</p>
                     <p className="text-slate-400 text-sm mb-6">Yuk, temukan produk segar dari laut!</p>
                     <Link to="/products">
@@ -264,7 +273,7 @@ export default function CartPage() {
                 <div className="grid lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 space-y-3">
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="text-base">{'\u{1F3EA}'}</span>
+                            <span className="text-base"><Store size={16} strokeWidth={1.5} /></span>
                             <Link
                                 to={`/stores/${cart.storeId}`}
                                 className="text-sm font-bold text-emerald-700 hover:underline"
@@ -280,7 +289,7 @@ export default function CartPage() {
                                 className="card-hover p-4 flex items-center gap-4"
                             >
                                 <div className="w-14 h-14 rounded-xl bg-ocean-50 flex items-center justify-center text-2xl flex-shrink-0">
-                                    {'\u{1F41F}'}
+                                    <Package size={24} strokeWidth={1.5} />
                                 </div>
 
                                 <div className="flex-1 min-w-0">
@@ -347,6 +356,24 @@ export default function CartPage() {
                                 </p>
                             </div>
 
+                            {addresses.length > 0 && !selectedAddressId && (
+                                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5">
+                                    Pilih alamat pengiriman untuk melanjutkan checkout.
+                                </div>
+                            )}
+
+                            {addresses.length === 0 && (
+                                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-3 space-y-2">
+                                    <p>Tambahkan alamat pengiriman terlebih dahulu untuk checkout.</p>
+                                    <Link
+                                        to="/dashboard/buyer/addresses"
+                                        className="inline-block text-xs font-semibold text-white bg-amber-600 hover:bg-amber-700 px-3 py-1.5 rounded-lg transition"
+                                    >
+                                        + Tambah Alamat
+                                    </Link>
+                                </div>
+                            )}
+
                             <div className="space-y-3">
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-500 mb-1">
@@ -354,7 +381,7 @@ export default function CartPage() {
                                     </label>
                                     <select
                                         value={selectedAddressId}
-                                        onChange={(e) => setSelectedAddressId(e.target.value)}
+                                        onChange={(e) => { setSelectedAddressId(e.target.value); setCheckoutError(''); }}
                                         className="input-field"
                                     >
                                         {addresses.length === 0 && (
@@ -382,7 +409,7 @@ export default function CartPage() {
                                             <button
                                                 key={option.value}
                                                 type="button"
-                                                onClick={() => setDeliveryMethod(option.value)}
+                                                onClick={() => { setDeliveryMethod(option.value); setCheckoutError('') }}
                                                 className={`flex items-center justify-between rounded-xl border px-4 py-3 text-sm transition text-left ${
                                                     deliveryMethod === option.value
                                                         ? 'border-ocean-500 bg-ocean-50 text-ocean-700'
@@ -407,6 +434,7 @@ export default function CartPage() {
                                             onChange={(e) => {
                                                 setDiscountCode(e.target.value.toUpperCase())
                                                 setDiscountCheck(null)
+                                                setCheckoutError('')
                                             }}
                                             placeholder="Masukkan kode (opsional)"
                                             className="input-field uppercase"
@@ -430,7 +458,7 @@ export default function CartPage() {
                                                 <div className="flex items-center justify-between gap-2">
                                                     <span>
                                                         <span className="font-bold uppercase mr-1">
-                                                            {discountCheck.source === 'VOUCHER' ? '\u{1F39F}\uFE0F Voucher' : '\u{1F3F7}\uFE0F Promo'}
+                                                            {discountCheck.source === 'VOUCHER' ? <><Ticket size={14} className="inline-block mr-1" strokeWidth={1.5} /> Voucher</> : <><Tag size={14} className="inline-block mr-1" strokeWidth={1.5} /> Promo</>}
                                                         </span>
                                                         berlaku
                                                     </span>
@@ -449,13 +477,13 @@ export default function CartPage() {
                                             onClick={() => setShowAvailableDiscounts(!showAvailableDiscounts)}
                                             className="text-xs text-ocean-600 hover:text-ocean-800 font-semibold flex items-center gap-1"
                                         >
-                                            {showAvailableDiscounts ? '\u25B2' : '\u25BC'} Lihat kode diskon tersedia
+                                            {showAvailableDiscounts ? <ChevronUp size={16} strokeWidth={1.5} /> : <ChevronDown size={16} strokeWidth={1.5} />} Lihat kode diskon tersedia
                                         </button>
                                         {showAvailableDiscounts && (
                                             <div className="mt-2 space-y-2">
                                                 {availableVouchers.filter(v => v.active && !v.expired && v.remainingUsage > 0).length > 0 && (
                                                     <div>
-                                                        <p className="text-xs font-semibold text-slate-500 mb-1">{'\u{1F39F}\uFE0F'} Voucher</p>
+                                                        <p className="text-xs font-semibold text-slate-500 mb-1"><Ticket size={14} className="inline-block mr-1" strokeWidth={1.5} /> Voucher</p>
                                                         <div className="space-y-1">
                                                             {availableVouchers.filter(v => v.active && !v.expired && v.remainingUsage > 0).slice(0, 5).map(v => (
                                                                 <div key={v.id} className="flex items-center justify-between bg-ocean-50 rounded-lg px-3 py-1.5 text-xs">
@@ -471,7 +499,7 @@ export default function CartPage() {
                                                 )}
                                                 {availablePromos.filter(p => p.active && !p.expired).length > 0 && (
                                                     <div>
-                                                        <p className="text-xs font-semibold text-slate-500 mb-1">{'\u{1F3F7}\uFE0F'} Promo</p>
+                                                        <p className="text-xs font-semibold text-slate-500 mb-1"><Tag size={14} className="inline-block mr-1" strokeWidth={1.5} /> Promo</p>
                                                         <div className="space-y-1">
                                                             {availablePromos.filter(p => p.active && !p.expired).slice(0, 5).map(p => (
                                                                 <div key={p.id} className="flex items-center justify-between bg-orange-50 rounded-lg px-3 py-1.5 text-xs">
@@ -523,6 +551,12 @@ export default function CartPage() {
                                     </div>
                                 </div>
 
+                                {checkoutError && (
+                                    <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                                        {checkoutError}
+                                    </div>
+                                )}
+
                                 <Button
                                     variant="primary"
                                     fullWidth
@@ -571,7 +605,7 @@ export default function CartPage() {
                                     className="text-slate-400 hover:text-slate-700"
                                     onClick={() => setCheckoutModalOpen(false)}
                                 >
-                                    {'\u2715'}
+                                    <X size={20} strokeWidth={1.5} />
                                 </button>
                             </div>
                         </div>
@@ -698,8 +732,8 @@ export default function CartPage() {
                             <Button variant="outline" fullWidth onClick={() => setClearConfirm(false)}>
                                 Batal
                             </Button>
-                            <Button variant="danger" fullWidth onClick={handleClear}>
-                                Ya, Kosongkan
+                            <Button variant="danger" fullWidth onClick={handleClear} disabled={clearing}>
+                                {clearing ? 'Mengosongkan...' : 'Ya, Kosongkan'}
                             </Button>
                         </div>
                     </div>

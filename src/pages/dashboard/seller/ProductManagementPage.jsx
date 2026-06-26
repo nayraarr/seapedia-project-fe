@@ -6,6 +6,7 @@ import ConfirmDialog from '../../../components/ui/ConfirmDialog'
 import BackButton from '../../../components/ui/BackButton'
 import { getMyProducts, deleteProduct } from '../../../services/productApi'
 import { getMyStore } from '../../../services/storeApi'
+import { TriangleAlert, Package } from 'lucide-react'
 
 const formatPrice = (price) =>
     new Intl.NumberFormat('id-ID', {
@@ -77,7 +78,7 @@ export default function ProductManagementPage() {
 
             {noStore ? (
                 <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center animate-fade-in">
-                    <p className="text-4xl mb-3">⚠️</p>
+                    <p className="text-4xl mb-3"><TriangleAlert size={48} strokeWidth={1.5} /></p>
                     <p className="text-amber-700 font-semibold mb-1">Kamu belum punya toko</p>
                     <p className="text-amber-500 text-sm mb-4">Buat toko dulu sebelum mengelola produk</p>
                     <Button onClick={() => navigate('/dashboard/seller/store')}>
@@ -86,7 +87,7 @@ export default function ProductManagementPage() {
                 </div>
             ) : products.length === 0 ? (
                 <div className="text-center py-20 animate-fade-in">
-                    <p className="text-5xl mb-4">📦</p>
+                    <p className="text-5xl mb-4"><Package size={48} strokeWidth={1.5} /></p>
                     <p className="text-slate-600 font-semibold">Belum ada produk</p>
                     <p className="text-slate-400 text-sm mt-1 mb-6">Tambah produk pertamamu sekarang</p>
                     <Button onClick={() => navigate('/dashboard/seller/products/new')}>

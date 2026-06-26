@@ -35,7 +35,7 @@ export default function ProductDetailPage() {
     const handleAddToCart = async () => {
         setAdding(true)
         setMessage(null)
-        const result = await add(product.id, quantity)
+        const result = await add(product.id, quantity, product.storeId)
         setMessage(result.ok ? 'Produk ditambahkan ke keranjang' : result.message)
         setAdding(false)
     }
@@ -88,7 +88,7 @@ export default function ProductDetailPage() {
                             {product.stock > 0 ? `Stok: ${product.stock}` : 'Habis'}
                         </span>
                         {product.storeName && (
-                            <span className="badge-orange">🏪 {product.storeName}</span>
+                            <span className="badge-orange">{product.storeName}</span>
                         )}
                     </div>
 

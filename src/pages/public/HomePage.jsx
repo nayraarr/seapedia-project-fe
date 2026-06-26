@@ -4,11 +4,12 @@ import MainLayout from '../../components/layout/MainLayout'
 import ProductCard from '../../components/ui/ProductCard'
 import ReviewSection from '../../components/ui/ReviewSection'
 import api from '../../services/api'
+import { Package, Store, CheckCircle } from 'lucide-react'
 
 const stats = [
-    { label: 'Produk Tersedia', value: '1.200+', icon: '📦' },
-    { label: 'Penjual Aktif', value: '340+', icon: '🏪' },
-    { label: 'Transaksi Selesai', value: '8.500+', icon: '✅' },
+    { label: 'Produk Tersedia', value: '1.200+', icon: Package },
+    { label: 'Penjual Aktif', value: '340+', icon: Store },
+    { label: 'Transaksi Selesai', value: '8.500+', icon: CheckCircle },
 ]
 
 export default function HomePage() {
@@ -59,7 +60,7 @@ export default function HomePage() {
             <section className="grid grid-cols-3 gap-3 sm:gap-4 mb-12">
                 {stats.map(stat => (
                     <div key={stat.label} className="card-hover p-4 sm:p-5 text-center group">
-                        <span className="text-xl sm:text-3xl block mb-1 sm:mb-2">{stat.icon}</span>
+                        <span className="text-xl sm:text-3xl flex justify-center mb-1 sm:mb-2"><stat.icon size={28} strokeWidth={1.5} /></span>
                         <p className="text-lg sm:text-3xl font-extrabold text-ocean-600 mb-0.5 sm:mb-1">{stat.value}</p>
                         <p className="text-xs text-slate-500 font-medium">{stat.label}</p>
                     </div>

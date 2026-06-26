@@ -47,15 +47,20 @@ export function CartProvider({ children }) {
 
     const notifyError = useCallback((message) => {
         setError(message)
-        setToast(message)
+        setToast({ message, type: 'error' })
     }, [])
 
     const dismissToast = useCallback(() => {
         setToast(null)
     }, [])
 
-    const add = useCallback(async (productId, quantity = 1) => {
+    const add = useCallback(async (productId, quantity = 1, storeId) => {
         setError(null)
+        if (storeId && cart?.storeId && cart?.items?.length > 0 && cart.storeId !== storeId) {
+            const msg = `Keranjang sudah berisi produk dari toko lain. Selesaikan atau kosongkan keranjang sebelum berbelanja dari toko lain.`
+            notifyError(msg)
+            return { ok: false, message: msg }
+        }
         try {
             const res = await addToCart(productId, quantity)
             setCart(res.data.data)
@@ -65,7 +70,7 @@ export function CartProvider({ children }) {
             notifyError(msg)
             return { ok: false, message: msg }
         }
-    }, [notifyError])
+    }, [notifyError, cart])
 
     const update = useCallback(async (cartItemId, quantity) => {
         setError(null)

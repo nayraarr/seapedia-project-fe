@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import BackButton from '../../../components/ui/BackButton'
 import { getAdminUsers, getAdminUserWallet, getAdminUserFinancialSummary } from '../../../services/adminApi'
+import { Wallet } from 'lucide-react'
 
 function formatCurrency(amount) {
     if (amount == null) return '—'
@@ -58,7 +59,7 @@ export default function AdminUserDetailPage() {
                     <p className="text-red-600 font-semibold">{error}</p>
                 </div>
             ) : (
-                <div className="space-y-4 max-w-lg animate-slide-up">
+                <div className="space-y-4 max-w-lg mx-auto animate-slide-up">
                     <div className="card p-6">
                         <div className="flex items-center gap-4 mb-6">
                             <div className="w-16 h-16 rounded-full ocean-gradient flex items-center justify-center text-white text-2xl font-bold shadow-card">
@@ -91,7 +92,7 @@ export default function AdminUserDetailPage() {
                     </div>
 
                     <div className="card p-6">
-                        <h2 className="font-bold text-slate-800 mb-4">💰 Informasi Keuangan</h2>
+                        <h2 className="font-bold text-slate-800 mb-4"><Wallet size={24} strokeWidth={1.5} className="inline-flex mr-2" /> Informasi Keuangan</h2>
                         <div className="space-y-4 text-sm">
                             <div className="border-b border-slate-100 pb-3">
                                 <p className="text-xs font-semibold text-slate-400 uppercase">Saldo Wallet</p>

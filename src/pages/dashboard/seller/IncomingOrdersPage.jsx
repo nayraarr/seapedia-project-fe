@@ -4,6 +4,7 @@ import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
 import BackButton from '../../../components/ui/BackButton'
 import { getSellerIncomingOrders, processSellerOrder } from '../../../services/orderApi'
+import { Inbox, Package, TriangleAlert } from 'lucide-react'
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -105,7 +106,7 @@ export default function IncomingOrdersPage() {
                 </div>
             ) : displayedOrders.length === 0 ? (
                 <div className="text-center py-20 card animate-fade-in">
-                    <p className="text-4xl mb-3">{filterTab === 'incoming' ? '📬' : '📦'}</p>
+                    <p className="text-4xl mb-3">{filterTab === 'incoming' ? <Inbox size={48} strokeWidth={1.5} /> : <Package size={48} strokeWidth={1.5} />}</p>
                     <p className="font-semibold text-slate-700">
                         {filterTab === 'incoming' ? 'Belum ada pesanan masuk.' : 'Belum ada pesanan diproses.'}
                     </p>
@@ -129,7 +130,7 @@ export default function IncomingOrdersPage() {
                                         <span className="font-bold text-slate-800 text-lg">{order.storeName}</span>
                                         {order.overdue ? (
                                             <span className="badge-red">
-                                                {order.statusLabel} ⚠️
+                                                {order.statusLabel} <TriangleAlert size={14} strokeWidth={1.5} className="inline" />
                                             </span>
                                         ) : (
                                             <span className="badge-emerald">

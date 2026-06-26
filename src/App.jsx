@@ -64,7 +64,7 @@ export default function App() {
 
   return (
       <BrowserRouter>
-        <Toast message={toast} onClose={dismissToast} />
+        <Toast message={toast?.message} type={toast?.type} onClose={dismissToast} />
         <Routes>
           {/* public */}
           <Route path="/" element={<HomePage />} />

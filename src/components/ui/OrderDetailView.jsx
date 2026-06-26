@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Check, Circle } from 'lucide-react'
 import BackButton from './BackButton'
 
 function formatRupiah(amount) {
@@ -71,7 +72,7 @@ export default function OrderDetailView({ order, title, subtitle, backLabel }) {
                                         <div className={`status-line ${passed ? 'bg-slate-300' : 'bg-slate-200'}`} />
                                     )}
                                     <div className={`status-dot ${passed ? 'bg-slate-300 border-slate-300 text-white' : 'bg-white border-slate-300 text-slate-300'}`}>
-                                        {passed ? '✓' : '○'}
+                                        {passed ? <Check size={12} strokeWidth={2} className="inline-block" /> : <Circle size={12} strokeWidth={2} className="inline-block" />}
                                     </div>
                                     <p className={`mt-2 text-[11px] font-semibold text-center leading-tight ${passed ? 'text-slate-500' : 'text-slate-400'}`}>
                                         {STATUS_LABELS[key]}
@@ -98,7 +99,7 @@ export default function OrderDetailView({ order, title, subtitle, backLabel }) {
                                         <div className={`status-line ${idx <= currentIdx ? 'bg-emerald-400' : 'bg-slate-200'}`} />
                                     )}
                                     <div className={`status-dot ${completed ? 'bg-emerald-500 border-emerald-500 text-white' : current ? 'ocean-gradient text-white ring-4 ring-ocean-200' : 'bg-white border-slate-300 text-slate-300'}`}>
-                                        {completed ? '✓' : current ? '●' : '○'}
+                                        {completed ? <Check size={12} strokeWidth={2} className="inline-block" /> : current ? <Circle size={12} strokeWidth={2} className="inline-block" fill="currentColor" /> : <Circle size={12} strokeWidth={2} className="inline-block" />}
                                     </div>
                                     <p className={`mt-2 text-[11px] font-semibold text-center leading-tight ${completed || current ? 'text-slate-700' : 'text-slate-400'}`}>
                                         {STATUS_LABELS[key]}

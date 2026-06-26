@@ -8,6 +8,7 @@ import { createStore, getMyStore, updateStore } from '../../../services/storeApi
 import { getMyProducts } from '../../../services/productApi'
 import { useAuth } from '../../../contexts/useAuth'
 import BackButton from '../../../components/ui/BackButton'
+import { Store } from 'lucide-react'
 
 export default function StoreManagementPage() {
     const [store, setStore] = useState(null)
@@ -88,7 +89,7 @@ export default function StoreManagementPage() {
     if (notFound && !showForm) return (
         <MainLayout>
             <div className="max-w-2xl mx-auto text-center animate-fade-in">
-                <p className="text-5xl mb-4">🏪</p>
+                <p className="text-5xl mb-4"><Store size={48} strokeWidth={1.5} /></p>
                 <p className="text-slate-600 font-semibold text-lg mb-2">Kamu belum punya toko</p>
                 <p className="text-slate-400 text-sm mb-6">Buat toko dulu supaya bisa menjual produk.</p>
                 <Button onClick={() => setShowForm(true)}>
@@ -159,7 +160,7 @@ export default function StoreManagementPage() {
                 <div className="card-hover p-6">
                     <div className="flex items-start gap-5">
                         <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-3xl flex-shrink-0">
-                            🏪
+                            <Store size={28} strokeWidth={1.5} />
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-4">

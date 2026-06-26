@@ -1,7 +1,7 @@
-export default function Toast({ message, onClose }) {
+export default function Toast({ message, type, onClose }) {
     if (!message) return null
 
-    const isError = message.toLowerCase().includes('gagal') || message.toLowerCase().includes('error') || message.toLowerCase().includes('tidak')
+    const isError = type === 'error'
 
     return (
         <div className="fixed top-5 right-5 z-[100] w-[min(92vw,22rem)] animate-slide-down">

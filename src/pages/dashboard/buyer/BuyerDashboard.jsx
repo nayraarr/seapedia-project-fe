@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { CreditCard, MapPin, ShoppingCart, Package, BarChart3, CheckCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import { useAuth } from '../../../contexts/useAuth'
@@ -42,7 +43,7 @@ export default function BuyerDashboard() {
     const menuCards = [
         {
             label: 'Wallet & Saldo',
-            icon: '\u{1F4B3}',
+            icon: CreditCard,
             desc: 'Kelola saldo dan top up',
             path: '/dashboard/buyer/wallet',
             active: true,
@@ -54,28 +55,28 @@ export default function BuyerDashboard() {
         },
         {
             label: 'Alamat Pengiriman',
-            icon: '\u{1F4CD}',
+            icon: MapPin,
             desc: 'Kelola alamat pengiriman kamu',
             path: '/dashboard/buyer/addresses',
             active: true,
         },
         {
             label: 'Keranjang',
-            icon: '\u{1F6D2}',
+            icon: ShoppingCart,
             desc: 'Ringkasan cart satu toko',
             path: '/dashboard/buyer/cart',
             active: true,
         },
         {
             label: 'Riwayat Pesanan',
-            icon: '\u{1F4E6}',
+            icon: Package,
             desc: 'Lacak semua transaksimu',
             path: '/dashboard/buyer/orders',
             active: true,
         },
         {
             label: 'Laporan Pengeluaran',
-            icon: '\u{1F4CA}',
+            icon: BarChart3,
             desc: 'Ringkasan total belanja kamu',
             path: '/dashboard/buyer/report',
             active: true,
@@ -87,7 +88,7 @@ export default function BuyerDashboard() {
             <div className="mb-8 animate-fade-in">
                 <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Dashboard</span>
                 <h1 className="text-3xl font-bold text-slate-800 mt-1">
-                    Halo, {decoded?.username}! {'\u{1F44B}'}
+                    Halo, {decoded?.username}!
                 </h1>
                 <p className="text-slate-400 mt-1">Selamat datang di dashboard Pembeli</p>
             </div>
@@ -102,7 +103,7 @@ export default function BuyerDashboard() {
                             ? 'card-hover cursor-pointer'
                             : 'border-ocean-100 opacity-70 cursor-default'}`}
                     >
-                        <div className="text-3xl mb-3">{card.icon}</div>
+                        <div className="text-3xl mb-3"><card.icon size={28} strokeWidth={1.5} /></div>
                         <h3 className="font-semibold text-slate-700 mb-1">{card.label}</h3>
                         <p className="text-slate-400 text-sm">{card.desc}</p>
                         {card.extra}
@@ -117,7 +118,7 @@ export default function BuyerDashboard() {
 
             {!loading && lastTopUp && (
                 <div className="mt-6 card p-5 flex items-center gap-4 animate-slide-up">
-                    <span className="text-2xl">{'\u2705'}</span>
+                    <span className="text-2xl"><CheckCircle size={24} strokeWidth={1.5} /></span>
                     <div>
                         <p className="text-sm font-semibold text-slate-700">Top Up Terakhir</p>
                         <p className="text-slate-500 text-sm">

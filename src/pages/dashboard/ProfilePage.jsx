@@ -4,12 +4,13 @@ import MainLayout from '../../components/layout/MainLayout'
 import { useAuth } from '../../contexts/useAuth'
 import api from '../../services/api'
 import BackButton from '../../components/ui/BackButton'
+import { ShoppingBag, Store, Truck, Settings, User, Wallet } from 'lucide-react'
 
 const roleInfo = {
-    BUYER:  { label: 'Pembeli', badge: 'badge-blue', border: 'border-ocean-200 bg-ocean-50/50', desc: 'Belanja produk & kelola pesanan', icon: '🛍️' },
-    SELLER: { label: 'Penjual', badge: 'badge-emerald', border: 'border-emerald-200 bg-emerald-50/50', desc: 'Kelola toko & produk', icon: '🏪' },
-    DRIVER: { label: 'Driver',  badge: 'badge-orange', border: 'border-orange-200 bg-orange-50/50', desc: 'Antar pesanan & lihat penghasilan', icon: '🚚' },
-    ADMIN:  { label: 'Admin',   badge: 'badge-red', border: 'border-red-200 bg-red-50/50', desc: 'Monitor & kelola platform', icon: '⚙️' },
+    BUYER:  { label: 'Pembeli', badge: 'badge-blue', border: 'border-ocean-200 bg-ocean-50/50', desc: 'Belanja produk & kelola pesanan', icon: <ShoppingBag size={20} strokeWidth={1.5} /> },
+    SELLER: { label: 'Penjual', badge: 'badge-emerald', border: 'border-emerald-200 bg-emerald-50/50', desc: 'Kelola toko & produk', icon: <Store size={20} strokeWidth={1.5} /> },
+    DRIVER: { label: 'Driver',  badge: 'badge-orange', border: 'border-orange-200 bg-orange-50/50', desc: 'Antar pesanan & lihat penghasilan', icon: <Truck size={20} strokeWidth={1.5} /> },
+    ADMIN:  { label: 'Admin',   badge: 'badge-red', border: 'border-red-200 bg-red-50/50', desc: 'Monitor & kelola platform', icon: <Settings size={20} strokeWidth={1.5} /> },
 }
 
 const formatCurrency = (amount) =>
@@ -101,7 +102,7 @@ export default function ProfilePage() {
                     <h2 className="text-base font-bold text-slate-700 mb-4">Role yang Dimiliki</h2>
                     <div className="space-y-3">
                         {roles.map(role => {
-                            const info = roleInfo[role] || { label: role, badge: 'badge-slate', border: 'border-slate-200', desc: '', icon: '👤' }
+                            const info = roleInfo[role] || { label: role, badge: 'badge-slate', border: 'border-slate-200', desc: '', icon: <User size={20} strokeWidth={1.5} /> }
                             const isActive = role === activeRole
                             return (
                                 <div
@@ -111,7 +112,7 @@ export default function ProfilePage() {
                                     }`}
                                 >
                                     <div className="flex items-center gap-3">
-                                        <span className="text-lg">{info.icon}</span>
+                                        <span className="inline-flex">{info.icon}</span>
                                         <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${info.badge}`}>
                                             {info.label}
                                         </span>
@@ -150,7 +151,7 @@ export default function ProfilePage() {
                                         {summary ? formatCurrency(summary.walletBalance) : '—'}
                                     </p>
                                 </div>
-                                <span className="text-2xl">👛</span>
+                                <Wallet size={24} strokeWidth={1.5} className="flex-shrink-0" />
                             </div>
                         )}
 
@@ -162,7 +163,7 @@ export default function ProfilePage() {
                                         {summary ? formatCurrency(summary.sellerIncome) : '—'}
                                     </p>
                                 </div>
-                                <span className="text-2xl">🏪</span>
+                                <Store size={24} strokeWidth={1.5} className="flex-shrink-0" />
                             </div>
                         )}
 
@@ -174,7 +175,7 @@ export default function ProfilePage() {
                                         {summary ? formatCurrency(summary.driverEarnings) : '—'}
                                     </p>
                                 </div>
-                                <span className="text-2xl">🚚</span>
+                                <Truck size={24} strokeWidth={1.5} className="flex-shrink-0" />
                             </div>
                         )}
                     </div>

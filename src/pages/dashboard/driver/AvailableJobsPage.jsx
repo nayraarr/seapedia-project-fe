@@ -4,6 +4,7 @@ import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
 import BackButton from '../../../components/ui/BackButton'
 import { getAvailableJobs, takeJob } from '../../../services/deliveryApi'
+import { MapPin } from 'lucide-react'
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -73,7 +74,7 @@ export default function AvailableJobsPage() {
                 </div>
             ) : jobs.length === 0 ? (
                 <div className="card text-center py-20">
-                    <p className="text-4xl mb-3">📍</p>
+                    <MapPin size={48} strokeWidth={1.5} className="mb-3 mx-auto" />
                     <p className="font-semibold text-slate-700">Belum ada job tersedia.</p>
                     <p className="text-sm text-slate-400 mt-1">
                         Job baru akan muncul di sini setelah seller memproses pesanan.

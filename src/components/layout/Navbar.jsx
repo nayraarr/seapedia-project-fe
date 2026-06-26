@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/useAuth'
 import { useCart } from '../../contexts/useCart'
+import { ShoppingBag, Store, Truck, Settings } from 'lucide-react'
 
 export default function Navbar() {
     const { token, activeRole, decoded, logout } = useAuth()
@@ -28,10 +29,10 @@ export default function Navbar() {
     }
 
     const roleIcon = {
-        BUYER:  '🛍️',
-        SELLER: '🏪',
-        DRIVER: '🚚',
-        ADMIN:  '⚙️',
+        BUYER:  <ShoppingBag size={14} strokeWidth={1.5} />,
+        SELLER: <Store size={14} strokeWidth={1.5} />,
+        DRIVER: <Truck size={14} strokeWidth={1.5} />,
+        ADMIN:  <Settings size={14} strokeWidth={1.5} />,
     }
 
     const navLinks = token && activeRole ? [
@@ -86,7 +87,7 @@ export default function Navbar() {
 
                             {activeRole && (
                                 <span className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full ${roleStyle[activeRole]}`}>
-                                    <span>{roleIcon[activeRole]}</span>
+                                    <span className="inline-flex">{roleIcon[activeRole]}</span>
                                     {activeRole}
                                 </span>
                             )}
@@ -181,7 +182,7 @@ export default function Navbar() {
                             >
                                 {activeRole && (
                                     <span className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full mb-6 ${roleStyle[activeRole]}`}>
-                                        <span>{roleIcon[activeRole]}</span>
+                                        <span className="inline-flex">{roleIcon[activeRole]}</span>
                                         {activeRole}
                                     </span>
                                 )}

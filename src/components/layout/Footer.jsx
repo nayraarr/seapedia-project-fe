@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
+import { ShoppingBag, Store, Truck, Settings } from 'lucide-react'
 
 const roleData = [
-    { label: 'Pembeli', icon: '🛍️', color: 'badge-blue' },
-    { label: 'Penjual', icon: '🏪', color: 'badge-emerald' },
-    { label: 'Driver',  icon: '🚚', color: 'badge-orange' },
-    { label: 'Admin',   icon: '⚙️', color: 'badge-red' },
+    { label: 'Pembeli', icon: <ShoppingBag size={14} strokeWidth={1.5} />, color: 'badge-blue' },
+    { label: 'Penjual', icon: <Store size={14} strokeWidth={1.5} />, color: 'badge-emerald' },
+    { label: 'Driver',  icon: <Truck size={14} strokeWidth={1.5} />, color: 'badge-orange' },
+    { label: 'Admin',   icon: <Settings size={14} strokeWidth={1.5} />, color: 'badge-red' },
 ]
 
 export default function Footer() {

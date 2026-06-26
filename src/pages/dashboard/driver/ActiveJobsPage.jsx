@@ -4,6 +4,7 @@ import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
 import BackButton from '../../../components/ui/BackButton'
 import { getActiveJobs, completeJob } from '../../../services/deliveryApi'
+import { Car } from 'lucide-react'
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -73,7 +74,7 @@ export default function ActiveJobsPage() {
                 </div>
             ) : jobs.length === 0 ? (
                 <div className="card text-center py-20 animate-fade-in">
-                    <p className="text-4xl mb-3">🚗</p>
+                    <Car size={48} strokeWidth={1.5} className="mb-3 mx-auto" />
                     <p className="font-semibold text-slate-700">Belum ada job aktif.</p>
                     <p className="text-sm text-slate-400 mt-1">
                         Ambil job dari halaman Job Tersedia.

@@ -7,6 +7,7 @@ import {
     getAddresses, createAddress, updateAddress,
     deleteAddress, setDefaultAddress
 } from '../../../services/addressApi'
+import { MapPin } from 'lucide-react'
 
 const EMPTY_FORM = {
     label: '', recipientName: '', phone: '',
@@ -141,7 +142,7 @@ export default function AddressManagementPage() {
             <div className="mb-8 flex items-start justify-between animate-fade-in">
                 <div>
                     <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Buyer</span>
-                    <h1 className="text-3xl font-bold text-slate-800 mt-1">Alamat Pengiriman {'\u{1F4CD}'}</h1>
+                    <h1 className="text-3xl font-bold text-slate-800 mt-1">Alamat Pengiriman <MapPin size={28} strokeWidth={1.5} className="inline-block align-middle" /></h1>
                     <p className="text-slate-400 mt-1">Kelola alamat pengiriman kamu</p>
                 </div>
                 <Button onClick={openCreate}>+ Tambah Alamat</Button>
@@ -245,7 +246,7 @@ export default function AddressManagementPage() {
                 </div>
             ) : addresses.length === 0 ? (
                 <div className="text-center py-16 text-slate-400">
-                    <p className="text-4xl mb-3">{'\u{1F4CD}'}</p>
+                    <div className="flex justify-center mb-3"><MapPin size={48} strokeWidth={1.5} /></div>
                     <p className="font-medium">Belum ada alamat tersimpan.</p>
                     <p className="text-sm mt-1">Klik tombol <strong>+ Tambah Alamat</strong> di atas untuk mulai.</p>
                 </div>

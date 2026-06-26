@@ -4,6 +4,7 @@ import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
 import BackButton from '../../../components/ui/BackButton'
 import { getBuyerOrders } from '../../../services/orderApi'
+import { Package } from 'lucide-react'
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -64,7 +65,7 @@ export default function OrderHistoryPage() {
                 </div>
             ) : orders.length === 0 ? (
                 <div className="text-center py-20 card">
-                    <p className="text-4xl mb-3">{'\u{1F4E6}'}</p>
+                    <div className="flex justify-center mb-3"><Package size={48} strokeWidth={1.5} /></div>
                     <p className="font-semibold text-slate-700">Belum ada pesanan.</p>
                     <p className="text-sm text-slate-400 mt-1">Checkout pertama kamu akan muncul di sini.</p>
                 </div>

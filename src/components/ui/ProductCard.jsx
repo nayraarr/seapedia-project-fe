@@ -20,7 +20,7 @@ export default function ProductCard({ product }) {
         e.preventDefault()
         e.stopPropagation()
         setBusy(true)
-        await add(product.id, 1)
+        await add(product.id, 1, product.storeId)
         setBusy(false)
     }
 

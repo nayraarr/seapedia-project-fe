@@ -1,12 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/useAuth'
 import api from '../../services/api'
+import { ShoppingBag, Store, Truck, Settings, User } from 'lucide-react'
 
 const roleInfo = {
-    BUYER: { label: 'Pembeli', desc: 'Belanja produk, kelola cart dan pesanan', icon: '🛍️', accent: 'ocean', gradient: 'from-ocean-100 to-ocean-200', ring: 'ring-ocean-500' },
-    SELLER: { label: 'Penjual', desc: 'Kelola toko, produk, dan pesanan masuk', icon: '🏪', accent: 'emerald', gradient: 'from-emerald-100 to-emerald-200', ring: 'ring-emerald-500' },
-    DRIVER: { label: 'Driver', desc: 'Ambil dan antar pesanan ke pembeli', icon: '🚚', accent: 'orange', gradient: 'from-orange-100 to-amber-200', ring: 'ring-orange-500' },
-    ADMIN: { label: 'Admin', desc: 'Monitor dan kelola seluruh platform', icon: '⚙️', accent: 'red', gradient: 'from-red-100 to-red-200', ring: 'ring-red-500' },
+    BUYER: { label: 'Pembeli', desc: 'Belanja produk, kelola cart dan pesanan', icon: <ShoppingBag size={20} strokeWidth={1.5} />, accent: 'ocean', gradient: 'from-ocean-100 to-ocean-200', ring: 'ring-ocean-500' },
+    SELLER: { label: 'Penjual', desc: 'Kelola toko, produk, dan pesanan masuk', icon: <Store size={20} strokeWidth={1.5} />, accent: 'emerald', gradient: 'from-emerald-100 to-emerald-200', ring: 'ring-emerald-500' },
+    DRIVER: { label: 'Driver', desc: 'Ambil dan antar pesanan ke pembeli', icon: <Truck size={20} strokeWidth={1.5} />, accent: 'orange', gradient: 'from-orange-100 to-amber-200', ring: 'ring-orange-500' },
+    ADMIN: { label: 'Admin', desc: 'Monitor dan kelola seluruh platform', icon: <Settings size={20} strokeWidth={1.5} />, accent: 'red', gradient: 'from-red-100 to-red-200', ring: 'ring-red-500' },
 }
 
 export default function SelectRolePage() {
@@ -47,7 +48,7 @@ export default function SelectRolePage() {
 
                     <div className="flex flex-col gap-3">
                         {roles.map((role, idx) => {
-                            const info = roleInfo[role] || { label: role, desc: '', icon: '👤', gradient: 'from-slate-100 to-slate-200', ring: 'ring-slate-400' }
+                            const info = roleInfo[role] || { label: role, desc: '', icon: <User size={20} strokeWidth={1.5} />, gradient: 'from-slate-100 to-slate-200', ring: 'ring-slate-400' }
                             return (
                                 <button
                                     key={role}

@@ -2,8 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import api from '../../services/api'
 import Button from './Button'
 import Input from './Input'
-
-const STAR = '★'
+import { Star } from 'lucide-react'
 
 export default function ReviewSection() {
     const [reviews, setReviews] = useState([])
@@ -67,9 +66,7 @@ export default function ReviewSection() {
 
     const renderStars = (rating) =>
         [...Array(5)].map((_, i) => (
-            <span key={i} className={i < rating ? 'text-amber-400' : 'text-slate-200'} style={{ fontSize: 16 }}>
-                {STAR}
-            </span>
+            <Star key={i} size={16} strokeWidth={1.5} className={i < rating ? 'fill-amber-400 text-amber-400' : 'fill-none text-slate-200'} />
         ))
 
     return (
@@ -156,7 +153,7 @@ export default function ReviewSection() {
                                     star <= form.rating ? 'text-amber-400 scale-100' : 'text-slate-200 hover:text-amber-300'
                                 }`}
                             >
-                                {STAR}
+                                <Star size={24} strokeWidth={1.5} className={star <= form.rating ? 'fill-amber-400' : 'fill-none'} />
                             </button>
                         ))}
                     </div>
