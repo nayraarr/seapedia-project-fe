@@ -18,7 +18,7 @@ export default function SellerDashboard() {
 
     return (
         <MainLayout>
-            <div className="mb-8">
+            <div className="mb-8 animate-fade-in">
                 <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Dashboard</span>
                 <h1 className="text-3xl font-bold text-slate-800 mt-1">Halo, {decoded?.username}! 👋</h1>
                 <p className="text-slate-400 mt-1">Selamat datang di dashboard Penjual</p>
@@ -26,7 +26,7 @@ export default function SellerDashboard() {
 
             {/* Store Status Banner */}
             {store ? (
-                <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 mb-6 flex items-center justify-between animate-slide-up">
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-xl">
                             🏪
@@ -44,7 +44,7 @@ export default function SellerDashboard() {
                     </Link>
                 </div>
             ) : (
-                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex items-center justify-between">
+                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-6 flex items-center justify-between animate-slide-up">
                     <div className="flex items-center gap-3">
                         <span className="text-xl">⚠️</span>
                         <p className="text-amber-700 text-sm font-medium">Kamu belum punya toko.</p>
@@ -59,10 +59,10 @@ export default function SellerDashboard() {
             )}
 
             {/* Menu Cards */}
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-3 gap-4 animate-slide-up">
                 <Link
                     to="/dashboard/seller/store"
-                    className="bg-white border border-emerald-100 rounded-2xl p-6 hover:shadow-md hover:border-emerald-300 transition"
+                    className="card-hover p-6 block"
                 >
                     <div className="text-3xl mb-3">🏪</div>
                     <h3 className="font-semibold text-slate-700 mb-1">Toko Saya</h3>
@@ -71,7 +71,7 @@ export default function SellerDashboard() {
 
                 <div
                     onClick={() => navigate(store ? '/dashboard/seller/products' : '/dashboard/seller/store')}
-                    className="bg-white border border-emerald-100 rounded-2xl p-6 cursor-pointer hover:shadow-md hover:border-emerald-300 transition-all"
+                    className="card-hover p-6 cursor-pointer"
                 >
                     <div className="text-3xl mb-3">📋</div>
                     <h3 className="font-semibold text-slate-700 mb-1">Kelola Produk</h3>
@@ -80,19 +80,19 @@ export default function SellerDashboard() {
 
                 <div
                     onClick={() => navigate('/dashboard/seller/orders/incoming')}
-                    className="bg-white border border-emerald-100 rounded-2xl p-6 cursor-pointer hover:shadow-md hover:border-emerald-300 transition"
+                    className="card-hover p-6 cursor-pointer"
                 >
                     <div className="text-3xl mb-3">📬</div>
                     <h3 className="font-semibold text-slate-700 mb-1">Pesanan Masuk</h3>
                     <p className="text-slate-400 text-sm">Proses pesanan dari pembeli</p>
-                    <span className="inline-block mt-3 text-xs font-semibold text-emerald-500 bg-emerald-50 px-2.5 py-1 rounded-full">
+                    <span className="badge-emerald mt-3 inline-flex">
                         Lihat daftar
                     </span>
                 </div>
 
                 <div
                     onClick={() => navigate('/dashboard/seller/report')}
-                    className="bg-white border border-emerald-100 rounded-2xl p-6 cursor-pointer hover:shadow-md hover:border-emerald-300 transition"
+                    className="card-hover p-6 cursor-pointer"
                 >
                     <div className="text-3xl mb-3">📊</div>
                     <h3 className="font-semibold text-slate-700 mb-1">Laporan Pendapatan</h3>

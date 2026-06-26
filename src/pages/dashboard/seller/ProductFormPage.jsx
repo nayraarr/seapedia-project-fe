@@ -56,7 +56,7 @@ export default function ProductFormPage() {
 
     return (
         <MainLayout>
-            <div className="max-w-lg mx-auto">
+            <div className="max-w-lg mx-auto animate-fade-in">
                 <div className="mb-8">
                     <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Seller</span>
                     <h1 className="text-3xl font-bold text-slate-800 mt-1">
@@ -64,7 +64,7 @@ export default function ProductFormPage() {
                     </h1>
                 </div>
 
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
+                <div className="card-hover p-6">
                     {error && (
                         <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm mb-5">
                             {error}
@@ -100,7 +100,7 @@ export default function ProductFormPage() {
                                 onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
                                 rows={4}
                                 placeholder="Deskripsi produk..."
-                                className="border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition resize-none"
+                                className="input-field resize-none"
                             />
                         </div>
 

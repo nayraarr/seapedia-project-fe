@@ -61,11 +61,11 @@ export default function IncomingOrdersPage() {
         <MainLayout>
             <Link
                 to="/dashboard/seller"
-                className="inline-block mb-2 text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline"
+                className="inline-block mb-2 text-sm font-semibold text-ocean-600 hover:text-ocean-700 hover:underline"
             >
                 ← Kembali
             </Link>
-            <div className="mb-6 flex items-start justify-between gap-4">
+            <div className="mb-6 flex items-start justify-between gap-4 animate-fade-in">
                 <div>
                     <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Seller</span>
                     <h1 className="text-3xl font-bold text-slate-800 mt-1">Pesanan Saya</h1>
@@ -104,11 +104,11 @@ export default function IncomingOrdersPage() {
             {loading ? (
                 <div className="space-y-3">
                     {[1, 2, 3].map(i => (
-                        <div key={i} className="bg-white rounded-2xl h-28 border border-emerald-50 animate-pulse" />
+                        <div key={i} className="skeleton h-28" />
                     ))}
                 </div>
             ) : displayedOrders.length === 0 ? (
-                <div className="text-center py-20 bg-white border border-emerald-100 rounded-2xl">
+                <div className="text-center py-20 card animate-fade-in">
                     <p className="text-4xl mb-3">{filterTab === 'incoming' ? '📬' : '📦'}</p>
                     <p className="font-semibold text-slate-700">
                         {filterTab === 'incoming' ? 'Belum ada pesanan masuk.' : 'Belum ada pesanan diproses.'}
@@ -120,23 +120,23 @@ export default function IncomingOrdersPage() {
                     </p>
                 </div>
             ) : (
-                <div className="space-y-3">
+                <div className="space-y-3 animate-fade-in">
                     {displayedOrders.map(order => (
-                        <div key={order.orderId} className={`rounded-2xl p-5 ${
+                        <div key={order.orderId} className={`card-hover p-5 ${
                             order.overdue
-                                ? 'bg-red-50 border border-red-200'
-                                : 'bg-white border border-emerald-100'
+                                ? 'border-red-200'
+                                : ''
                         }`}>
                             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2 flex-wrap">
                                         <span className="font-bold text-slate-800 text-lg">{order.storeName}</span>
                                         {order.overdue ? (
-                                            <span className="text-xs px-2.5 py-1 rounded-full bg-red-100 text-red-700 font-semibold">
+                                            <span className="badge-red">
                                                 {order.statusLabel} ⚠️
                                             </span>
                                         ) : (
-                                            <span className="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-semibold">
+                                            <span className="badge-emerald">
                                                 {order.statusLabel}
                                             </span>
                                         )}

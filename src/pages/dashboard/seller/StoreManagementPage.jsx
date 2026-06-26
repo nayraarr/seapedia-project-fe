@@ -51,15 +51,15 @@ export default function StoreManagementPage() {
     if (loading) return (
         <MainLayout>
             <div className="max-w-2xl mx-auto space-y-4">
-                <div className="bg-white animate-pulse rounded-2xl h-40 border border-blue-50" />
-                <div className="bg-white animate-pulse rounded-2xl h-28 border border-blue-50" />
+                <div className="skeleton h-40" />
+                <div className="skeleton h-28" />
             </div>
         </MainLayout>
     )
 
     if (notFound && !showForm) return (
         <MainLayout>
-            <div className="max-w-2xl mx-auto text-center">
+            <div className="max-w-2xl mx-auto text-center animate-fade-in">
                 <p className="text-5xl mb-4">🏪</p>
                 <p className="text-slate-600 font-semibold text-lg mb-2">Kamu belum punya toko</p>
                 <p className="text-slate-400 text-sm mb-6">Buat toko dulu supaya bisa menjual produk.</p>
@@ -72,15 +72,15 @@ export default function StoreManagementPage() {
 
     if (showForm) return (
         <MainLayout>
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto animate-fade-in">
                 <button
                     onClick={() => setShowForm(false)}
-                    className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm font-medium mb-6"
+                    className="inline-flex items-center gap-1 text-ocean-600 hover:text-ocean-700 text-sm font-medium mb-6"
                 >
                     ← Kembali
                 </button>
 
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
+                <div className="card-hover p-6">
                     <h2 className="text-lg font-bold text-slate-700 mb-5">
                         {store ? 'Edit Toko' : 'Buat Toko Baru'}
                     </h2>
@@ -108,7 +108,7 @@ export default function StoreManagementPage() {
                                 onChange={e => setForm({ ...form, description: e.target.value })}
                                 rows={3}
                                 placeholder="Ceritakan tentang toko kamu..."
-                                className="border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition resize-none"
+                                className="input-field resize-none"
                             />
                         </div>
 
@@ -130,15 +130,15 @@ export default function StoreManagementPage() {
         <MainLayout>
             <Link
                 to="/dashboard/seller"
-                className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm font-medium mb-6"
+                className="inline-flex items-center gap-1 text-ocean-600 hover:text-ocean-700 text-sm font-medium mb-6"
             >
                 ← Kembali ke Dashboard
             </Link>
 
-            <div className="max-w-2xl mx-auto space-y-5">
+            <div className="max-w-2xl mx-auto space-y-5 animate-fade-in">
 
                 {}
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
+                <div className="card-hover p-6">
                     <div className="flex items-start gap-5">
                         <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-3xl flex-shrink-0">
                             🏪
@@ -151,7 +151,7 @@ export default function StoreManagementPage() {
                                         {store.description || 'Belum ada deskripsi toko.'}
                                     </p>
                                     <div className="flex items-center gap-3 mt-3">
-                                        <span className="text-xs font-semibold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full">
+                                        <span className="badge-emerald">
                                             Toko Aktif
                                         </span>
                                         <span className="text-slate-300 text-xs">
@@ -175,7 +175,7 @@ export default function StoreManagementPage() {
                 </div>
 
                 {}
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
+                <div className="card-hover p-6">
                     <h2 className="text-base font-bold text-slate-700 mb-4">Informasi Toko</h2>
                     <div className="space-y-3">
                         <div className="flex justify-between items-center py-2 border-b border-slate-50">
@@ -200,7 +200,7 @@ export default function StoreManagementPage() {
                 </div>
 
                 {}
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
+                <div className="card-hover p-6">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-base font-bold text-slate-700">
                             Produk Toko
