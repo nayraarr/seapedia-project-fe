@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import MainLayout from '../components/layout/MainLayout'
+import BackButton from '../components/ui/BackButton'
 
 export default function NotFound() {
     return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="text-center py-24 animate-fade-in">
                 <div className="text-8xl font-extrabold text-gradient mb-4">404</div>
                 <h1 className="text-2xl font-bold text-slate-800 mb-2">Halaman tidak ditemukan</h1>

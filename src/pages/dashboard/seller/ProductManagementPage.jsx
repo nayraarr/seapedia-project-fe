@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
 import ConfirmDialog from '../../../components/ui/ConfirmDialog'
+import BackButton from '../../../components/ui/BackButton'
 import { getMyProducts, deleteProduct } from '../../../services/productApi'
 import { getMyStore } from '../../../services/storeApi'
 
@@ -50,6 +51,7 @@ export default function ProductManagementPage() {
 
     if (loading) return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="space-y-4">
                 {[...Array(4)].map((_, i) => (
                     <div key={i} className="skeleton h-24" />
@@ -60,6 +62,7 @@ export default function ProductManagementPage() {
 
     return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="mb-8 flex items-center justify-between animate-fade-in">
                 <div>
                     <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Seller</span>

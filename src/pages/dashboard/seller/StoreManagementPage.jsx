@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
 import ProductCard from '../../../components/ui/ProductCard'
@@ -7,6 +7,7 @@ import Input from '../../../components/ui/Input'
 import { createStore, getMyStore, updateStore } from '../../../services/storeApi'
 import { getMyProducts } from '../../../services/productApi'
 import { useAuth } from '../../../contexts/useAuth'
+import BackButton from '../../../components/ui/BackButton'
 
 export default function StoreManagementPage() {
     const [store, setStore] = useState(null)
@@ -73,12 +74,6 @@ export default function StoreManagementPage() {
     if (showForm) return (
         <MainLayout>
             <div className="max-w-2xl mx-auto animate-fade-in">
-                <button
-                    onClick={() => setShowForm(false)}
-                    className="inline-flex items-center gap-1 text-ocean-600 hover:text-ocean-700 text-sm font-medium mb-6"
-                >
-                    ← Kembali
-                </button>
 
                 <div className="card-hover p-6">
                     <h2 className="text-lg font-bold text-slate-700 mb-5">
@@ -128,12 +123,7 @@ export default function StoreManagementPage() {
 
     return (
         <MainLayout>
-            <Link
-                to="/dashboard/seller"
-                className="inline-flex items-center gap-1 text-ocean-600 hover:text-ocean-700 text-sm font-medium mb-6"
-            >
-                ← Kembali ke Dashboard
-            </Link>
+            <BackButton className="mb-3" />
 
             <div className="max-w-2xl mx-auto space-y-5 animate-fade-in">
 

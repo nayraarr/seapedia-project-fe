@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import MainLayout from '../../../components/layout/MainLayout'
+import BackButton from '../../../components/ui/BackButton'
 import { getWallet, topUp, getTransactions } from '../../../services/walletApi'
 
 const TOPUP_PRESETS = [10000, 25000, 50000, 100000, 250000, 500000]
@@ -63,6 +64,7 @@ export default function WalletPage() {
 
     return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="mb-8 animate-fade-in">
                 <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Buyer</span>
                 <h1 className="text-3xl font-bold text-slate-800 mt-1">Wallet Saya {'\u{1F4B3}'}</h1>

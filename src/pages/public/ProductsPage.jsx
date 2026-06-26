@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import MainLayout from '../../components/layout/MainLayout'
 import ProductCard from '../../components/ui/ProductCard'
+import BackButton from '../../components/ui/BackButton'
 import api from '../../services/api'
 
 export default function ProductsPage() {
@@ -21,6 +22,7 @@ export default function ProductsPage() {
 
     return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
                 <div>
                     <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Katalog</span>

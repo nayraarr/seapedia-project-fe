@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
+import BackButton from '../../../components/ui/BackButton'
 import { useCart } from '../../../contexts/useCart'
 import { useAuth } from '../../../contexts/useAuth'
 import { getAddresses } from '../../../services/addressApi'
@@ -170,6 +171,7 @@ export default function CartPage() {
     if (activeRole && activeRole !== 'BUYER') {
         return (
             <MainLayout>
+                <BackButton className="mb-3" />
                 <div className="text-center py-24">
                     <p className="text-5xl mb-4">{'\u{1F6AB}'}</p>
                     <p className="text-slate-600 font-semibold">Halaman ini hanya untuk Pembeli.</p>
@@ -185,6 +187,7 @@ export default function CartPage() {
 
     return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="mb-6 flex items-center justify-between gap-4 animate-fade-in">
                 <div>
                     <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Keranjang</span>

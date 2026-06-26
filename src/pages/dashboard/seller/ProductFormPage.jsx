@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Input from '../../../components/ui/Input'
 import Button from '../../../components/ui/Button'
+import BackButton from '../../../components/ui/BackButton'
 import { createProduct, updateProduct, getMyProducts } from '../../../services/productApi'
 import { getMyStore } from '../../../services/storeApi'
 
@@ -56,6 +57,7 @@ export default function ProductFormPage() {
 
     return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="max-w-lg mx-auto animate-fade-in">
                 <div className="mb-8">
                     <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Seller</span>

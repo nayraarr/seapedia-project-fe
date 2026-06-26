@@ -49,7 +49,7 @@ export default function AdminUserDetailPage() {
 
     return (
         <MainLayout>
-            <BackButton className="mb-2" />
+            <BackButton className="mb-3" />
 
             {loading ? (
                 <div className="skeleton h-64" />

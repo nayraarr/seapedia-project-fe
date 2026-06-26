@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
 import Button from '../../components/ui/Button'
+import BackButton from '../../components/ui/BackButton'
 import api from '../../services/api'
 import { useAuth } from '../../contexts/useAuth'
 import { useCart } from '../../contexts/useCart'
@@ -41,6 +42,7 @@ export default function ProductDetailPage() {
 
     if (loading) return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="animate-pulse space-y-4">
                 <div className="skeleton rounded-2xl h-72" />
                 <div className="skeleton rounded-xl h-8 w-1/2" />
@@ -51,6 +53,7 @@ export default function ProductDetailPage() {
 
     if (notFound) return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="text-center py-24 animate-fade-in">
                 <div className="w-20 h-20 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-5">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -59,24 +62,14 @@ export default function ProductDetailPage() {
                 </div>
                 <h2 className="text-xl font-bold text-slate-700 mb-2">Produk tidak ditemukan</h2>
                 <p className="text-slate-400 text-sm mb-6">Produk mungkin telah dihapus atau tidak tersedia.</p>
-                <Link to="/products" className="inline-flex items-center gap-2 text-ocean-600 font-semibold hover:underline">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Kembali ke produk
-                </Link>
+                <BackButton to="/products" label="Kembali ke produk" />
             </div>
         </MainLayout>
     )
 
     return (
         <MainLayout>
-            <Link to="/products" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-ocean-600 hover:text-ocean-700 transition mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                Kembali ke produk
-            </Link>
+            <BackButton className="mb-3" />
 
             <div className="card p-6 sm:p-8 md:flex gap-8 animate-fade-in">
                 <div className="ocean-gradient-subtle rounded-2xl w-full md:w-80 h-72 flex flex-col items-center justify-center text-ocean-300 flex-shrink-0 mb-6 md:mb-0 border border-ocean-100">

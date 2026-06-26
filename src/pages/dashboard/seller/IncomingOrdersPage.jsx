@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
+import BackButton from '../../../components/ui/BackButton'
 import { getSellerIncomingOrders, processSellerOrder } from '../../../services/orderApi'
 
 function formatRupiah(amount) {
@@ -59,12 +60,7 @@ export default function IncomingOrdersPage() {
 
     return (
         <MainLayout>
-            <Link
-                to="/dashboard/seller"
-                className="inline-block mb-2 text-sm font-semibold text-ocean-600 hover:text-ocean-700 hover:underline"
-            >
-                ← Kembali
-            </Link>
+            <BackButton className="mb-3" />
             <div className="mb-6 flex items-start justify-between gap-4 animate-fade-in">
                 <div>
                     <span className="text-xs font-bold text-emerald-500 uppercase tracking-widest">Seller</span>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
+import BackButton from '../../../components/ui/BackButton'
 import { getDriverReport, getJobHistory } from '../../../services/deliveryApi'
 
 function formatRupiah(amount) {
@@ -50,12 +51,7 @@ export default function DriverIncomeReportPage() {
 
     return (
         <MainLayout>
-            <Link
-                to="/dashboard/driver"
-                className="inline-block mb-2 text-sm font-semibold text-ocean-600 hover:text-ocean-700 hover:underline"
-            >
-                ← Kembali
-            </Link>
+            <BackButton className="mb-3" />
             <div className="mb-6 animate-fade-in">
                 <span className="text-xs font-bold text-orange-500 uppercase tracking-widest">Driver</span>
                 <h1 className="text-3xl font-bold text-slate-800 mt-1">Riwayat & Penghasilan</h1>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import MainLayout from '../../../components/layout/MainLayout'
+import BackButton from '../../../components/ui/BackButton'
 import Button from '../../../components/ui/Button'
 import ConfirmDialog from '../../../components/ui/ConfirmDialog'
 import {
@@ -106,6 +107,7 @@ export default function AddressManagementPage() {
 
     return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="mb-8 flex items-start justify-between animate-fade-in">
                 <div>
                     <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Buyer</span>

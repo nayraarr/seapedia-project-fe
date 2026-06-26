@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
 import ProductCard from '../../components/ui/ProductCard'
 import Button from '../../components/ui/Button'
+import BackButton from '../../components/ui/BackButton'
 import { getStoreById, getMyStore } from '../../services/storeApi'
 import { useAuth } from '../../contexts/useAuth'
 import api from '../../services/api'
@@ -36,6 +37,7 @@ export default function StoreDetailPage() {
 
     if (loading) return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="max-w-2xl mx-auto space-y-4 animate-pulse">
                 <div className="skeleton rounded-2xl h-36" />
                 <div className="skeleton rounded-2xl h-72" />
@@ -45,6 +47,7 @@ export default function StoreDetailPage() {
 
     if (notFound) return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="text-center py-24 animate-fade-in">
                 <div className="w-20 h-20 rounded-2xl bg-ocean-50 flex items-center justify-center mx-auto mb-5">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-ocean-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,24 +56,14 @@ export default function StoreDetailPage() {
                 </div>
                 <h2 className="text-xl font-bold text-slate-700 mb-2">Toko tidak ditemukan</h2>
                 <p className="text-slate-400 text-sm mb-6">Toko mungkin sudah tidak aktif.</p>
-                <Link to="/stores" className="inline-flex items-center gap-2 text-ocean-600 font-semibold hover:underline">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                    Kembali ke toko
-                </Link>
+                <BackButton to="/stores" label="Kembali ke toko" />
             </div>
         </MainLayout>
     )
 
     return (
         <MainLayout>
-            <Link to="/stores" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-ocean-600 hover:text-ocean-700 transition mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                Kembali ke toko
-            </Link>
+            <BackButton className="mb-3" />
 
             <div className="max-w-2xl mx-auto space-y-5">
                 <div className="card p-6 animate-fade-in">

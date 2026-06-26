@@ -102,7 +102,7 @@ export default function Navbar() {
                             </Link>
 
                             {decoded?.roles?.length > 1 && (
-                                <Link to="/select-role" className="px-3 py-2 text-xs font-medium text-slate-400 hover:text-ocean-500 hover:bg-ocean-50 rounded-lg transition underline underline-offset-2">
+                                <Link to="/select-role" className="px-3 py-1 text-xs font-semibold text-ocean-600 border border-ocean-200 rounded-full hover:bg-ocean-50 hover:border-ocean-300 transition">
                                     Ganti Role
                                 </Link>
                             )}
