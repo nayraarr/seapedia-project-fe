@@ -36,24 +36,28 @@ export default function StoreDetailPage() {
 
     if (loading) return (
         <MainLayout>
-            <div className="max-w-2xl mx-auto space-y-4">
-                <div className="bg-white animate-pulse rounded-2xl h-36 border border-blue-50" />
-                <div className="bg-white animate-pulse rounded-2xl h-24 border border-blue-50" />
+            <div className="max-w-2xl mx-auto space-y-4 animate-pulse">
+                <div className="skeleton rounded-2xl h-36" />
+                <div className="skeleton rounded-2xl h-72" />
             </div>
         </MainLayout>
     )
 
     if (notFound) return (
         <MainLayout>
-            <div className="text-center py-24">
-                <p className="text-5xl mb-4">🔍</p>
-                <p className="text-slate-600 font-semibold text-lg mb-2">Toko tidak ditemukan</p>
+            <div className="text-center py-24 animate-fade-in">
+                <div className="w-20 h-20 rounded-2xl bg-ocean-50 flex items-center justify-center mx-auto mb-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-ocean-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h2 className="text-xl font-bold text-slate-700 mb-2">Toko tidak ditemukan</h2>
                 <p className="text-slate-400 text-sm mb-6">Toko mungkin sudah tidak aktif.</p>
-                <Link
-                    to="/stores"
-                    className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:underline"
-                >
-                    ← Kembali ke pencarian toko
+                <Link to="/stores" className="inline-flex items-center gap-2 text-ocean-600 font-semibold hover:underline">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Kembali ke toko
                 </Link>
             </div>
         </MainLayout>
@@ -61,43 +65,35 @@ export default function StoreDetailPage() {
 
     return (
         <MainLayout>
-            <Link
-                to="/stores"
-                className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 text-sm font-medium mb-6"
-            >
-                ← Kembali ke pencarian toko
+            <Link to="/stores" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-ocean-600 hover:text-ocean-700 transition mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+                Kembali ke toko
             </Link>
 
             <div className="max-w-2xl mx-auto space-y-5">
-
-                {}
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
+                <div className="card p-6 animate-fade-in">
                     <div className="flex items-start gap-5">
-                        <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-3xl flex-shrink-0">
-                            🏪
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center flex-shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
                         </div>
                         <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-4">
                                 <div>
-                                    <h1 className="text-2xl font-bold text-slate-800">{store.name}</h1>
-                                    <p className="text-slate-400 text-sm mt-1 leading-relaxed">
+                                    <h1 className="text-xl sm:text-2xl font-extrabold text-slate-800 tracking-tight">{store.name}</h1>
+                                    <p className="text-slate-500 text-sm mt-1 leading-relaxed">
                                         {store.description || 'Belum ada deskripsi toko.'}
                                     </p>
                                     <div className="flex items-center gap-3 mt-3">
-                                        <span className="text-xs font-semibold bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full">
-                                            Toko Aktif
-                                        </span>
-                                        <span className="text-slate-300 text-xs">
-                                            Seller: {store.ownerUsername}
-                                        </span>
+                                        <span className="badge-emerald text-xs">Toko Aktif</span>
+                                        <span className="text-xs text-slate-400">Seller: {store.ownerUsername}</span>
                                     </div>
                                 </div>
                                 {isOwner && (
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => navigate(`/dashboard/seller/store`)}
-                                    >
+                                    <Button variant="outline" size="sm" onClick={() => navigate('/dashboard/seller/store')}>
                                         Edit
                                     </Button>
                                 )}
@@ -106,50 +102,41 @@ export default function StoreDetailPage() {
                     </div>
                 </div>
 
-                {}
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
-                    <h2 className="text-base font-bold text-slate-700 mb-4">Informasi Toko</h2>
+                <div className="card p-6 animate-fade-in">
+                    <h2 className="text-base font-bold text-slate-700 mb-4 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-ocean-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Informasi Toko
+                    </h2>
                     <div className="space-y-3">
-                        <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                            <span className="text-sm text-slate-400">Nama Toko</span>
-                            <span className="text-sm font-semibold text-slate-700">{store.name}</span>
-                        </div>
-                        <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                            <span className="text-sm text-slate-400">Penjual</span>
-                            <span className="text-sm font-semibold text-slate-700">{store.ownerUsername}</span>
-                        </div>
-                        <div className="flex justify-between items-center py-2">
-                            <span className="text-sm text-slate-400">Bergabung sejak</span>
-                            <span className="text-sm font-semibold text-slate-700">
-                                {store.createdAt
-                                    ? new Date(store.createdAt).toLocaleDateString('id-ID', {
-                                        day: 'numeric', month: 'long', year: 'numeric'
-                                    })
-                                    : '-'}
-                            </span>
-                        </div>
+                        <InfoRow label="Nama Toko" value={store.name} />
+                        <InfoRow label="Penjual" value={store.ownerUsername} />
+                        <InfoRow label="Bergabung sejak" value={store.createdAt
+                            ? new Date(store.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+                            : '-'
+                        } />
                     </div>
                 </div>
 
-                {}
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
+                <div className="card p-6 animate-fade-in">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-base font-bold text-slate-700">
+                        <h2 className="text-base font-bold text-slate-700 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-ocean-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
                             Produk Toko
-                            <span className="ml-2 text-xs font-normal text-slate-400">({products.length} produk)</span>
+                            <span className="ml-1 text-xs font-normal text-slate-400">({products.length} produk)</span>
                         </h2>
                         {isOwner && (
-                            <Button
-                                size="sm"
-                                onClick={() => navigate('/dashboard/seller/products/new')}
-                            >
+                            <Button size="sm" onClick={() => navigate('/dashboard/seller/products/new')}>
                                 + Tambah Produk
                             </Button>
                         )}
                     </div>
                     {products.length === 0 ? (
-                        <div className="bg-emerald-50 rounded-xl p-6 text-center">
-                            <p className="text-emerald-300 text-sm font-medium">Belum ada produk di toko ini</p>
+                        <div className="bg-gradient-to-r from-emerald-50 to-emerald-50/50 rounded-xl p-8 text-center border border-emerald-100">
+                            <p className="text-emerald-500 font-medium">Belum ada produk di toko ini</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 gap-4">
@@ -159,8 +146,16 @@ export default function StoreDetailPage() {
                         </div>
                     )}
                 </div>
-
             </div>
         </MainLayout>
+    )
+}
+
+function InfoRow({ label, value }) {
+    return (
+        <div className="flex justify-between items-center py-2 border-b border-ocean-50 last:border-0">
+            <span className="text-sm text-slate-400">{label}</span>
+            <span className="text-sm font-semibold text-slate-700">{value}</span>
+        </div>
     )
 }
