@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import MainLayout from '../../../components/layout/MainLayout'
+import BackButton from '../../../components/ui/BackButton'
 import Button from '../../../components/ui/Button'
 import ConfirmDialog from '../../../components/ui/ConfirmDialog'
 import {
     getAddresses, createAddress, updateAddress,
     deleteAddress, setDefaultAddress
 } from '../../../services/addressApi'
+import { MapPin } from 'lucide-react'
 
 const EMPTY_FORM = {
     label: '', recipientName: '', phone: '',
@@ -20,6 +22,7 @@ export default function AddressManagementPage() {
     const [form, setForm] = useState(EMPTY_FORM)
     const [formLoading, setFormLoading] = useState(false)
     const [error, setError] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({})
     const [success, setSuccess] = useState('')
     const [refresh, setRefresh] = useState(0)
     const [deleteTarget, setDeleteTarget] = useState(null)
@@ -35,6 +38,7 @@ export default function AddressManagementPage() {
         setEditTarget(null)
         setForm(EMPTY_FORM)
         setError('')
+        setFieldErrors({})
         setSuccess('')
         setShowForm(true)
     }
@@ -51,6 +55,7 @@ export default function AddressManagementPage() {
             isDefault: addr.isDefault,
         })
         setError('')
+        setFieldErrors({})
         setSuccess('')
         setShowForm(true)
     }
@@ -58,12 +63,34 @@ export default function AddressManagementPage() {
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target
         setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
+        if (fieldErrors[name]) {
+            setFieldErrors(prev => ({ ...prev, [name]: '' }))
+        }
+    }
+
+    const validate = () => {
+        const errors = {}
+        if (!form.label.trim()) errors.label = 'Label tidak boleh kosong'
+        if (!form.recipientName.trim()) errors.recipientName = 'Nama penerima tidak boleh kosong'
+        if (!form.phone.trim()) errors.phone = 'No. telepon tidak boleh kosong'
+        if (!form.fullAddress.trim()) errors.fullAddress = 'Alamat lengkap tidak boleh kosong'
+        if (!form.city.trim()) errors.city = 'Kota tidak boleh kosong'
+        if (!form.postalCode.trim()) errors.postalCode = 'Kode pos tidak boleh kosong'
+        return errors
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
+        setFieldErrors({})
         setSuccess('')
+
+        const clientErrors = validate()
+        if (Object.keys(clientErrors).length > 0) {
+            setFieldErrors(clientErrors)
+            return
+        }
+
         setFormLoading(true)
         try {
             if (editTarget) {
@@ -76,7 +103,12 @@ export default function AddressManagementPage() {
             setRefresh(prev => prev + 1)
             setShowForm(false)
         } catch (err) {
-            setError(err.response?.data?.message || 'Gagal menyimpan alamat.')
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setError(data?.message || 'Gagal menyimpan alamat.')
+            }
         } finally {
             setFormLoading(false)
         }
@@ -106,10 +138,11 @@ export default function AddressManagementPage() {
 
     return (
         <MainLayout>
-            <div className="mb-8 flex items-start justify-between">
+            <BackButton className="mb-3" />
+            <div className="mb-8 flex items-start justify-between animate-fade-in">
                 <div>
-                    <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">Buyer</span>
-                    <h1 className="text-3xl font-bold text-slate-800 mt-1">Alamat Pengiriman 📍</h1>
+                    <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Buyer</span>
+                    <h1 className="text-3xl font-bold text-slate-800 mt-1">Alamat Pengiriman <MapPin size={28} strokeWidth={1.5} className="inline-block align-middle" /></h1>
                     <p className="text-slate-400 mt-1">Kelola alamat pengiriman kamu</p>
                 </div>
                 <Button onClick={openCreate}>+ Tambah Alamat</Button>
@@ -126,9 +159,8 @@ export default function AddressManagementPage() {
                 </div>
             )}
 
-            {/* Form inline */}
             {showForm && (
-                <div className="bg-white border border-blue-100 rounded-2xl p-6 mb-6">
+                <div className="card p-6 mb-6 animate-slide-up">
                     <h2 className="font-bold text-slate-700 mb-5">
                         {editTarget ? 'Edit Alamat' : 'Tambah Alamat Baru'}
                     </h2>
@@ -150,8 +182,13 @@ export default function AddressManagementPage() {
                                     onChange={handleChange}
                                     placeholder={field.placeholder}
                                     required
-                                    className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition"
+                                    className={`input-field ${fieldErrors[field.name] ? 'input-error' : ''}`}
                                 />
+                                {fieldErrors[field.name] && (
+                                    <p className="text-xs text-red-500 font-medium flex items-center gap-1 mt-0.5">
+                                        {fieldErrors[field.name]}
+                                    </p>
+                                )}
                             </div>
                         ))}
 
@@ -166,8 +203,13 @@ export default function AddressManagementPage() {
                                 placeholder="Jl. Contoh No. 1, RT/RW ..."
                                 required
                                 rows={3}
-                                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition resize-none"
+                                className={`input-field resize-none ${fieldErrors.fullAddress ? 'input-error' : ''}`}
                             />
+                            {fieldErrors.fullAddress && (
+                                <p className="text-xs text-red-500 font-medium flex items-center gap-1 mt-0.5">
+                                    {fieldErrors.fullAddress}
+                                </p>
+                            )}
                         </div>
 
                         <div className="sm:col-span-2 flex items-center gap-2">
@@ -177,7 +219,7 @@ export default function AddressManagementPage() {
                                 id="isDefault"
                                 checked={form.isDefault}
                                 onChange={handleChange}
-                                className="w-4 h-4 accent-blue-500"
+                                className="w-4 h-4 accent-ocean-500"
                             />
                             <label htmlFor="isDefault" className="text-sm text-slate-600">
                                 Jadikan alamat default
@@ -196,34 +238,33 @@ export default function AddressManagementPage() {
                 </div>
             )}
 
-            {/* List Alamat */}
             {loading ? (
                 <div className="grid sm:grid-cols-2 gap-4">
                     {[...Array(4)].map((_, i) => (
-                        <div key={i} className="bg-white animate-pulse rounded-2xl h-40 border border-blue-50" />
+                        <div key={i} className="skeleton h-40" />
                     ))}
                 </div>
             ) : addresses.length === 0 ? (
                 <div className="text-center py-16 text-slate-400">
-                    <p className="text-4xl mb-3">📍</p>
+                    <div className="flex justify-center mb-3"><MapPin size={48} strokeWidth={1.5} /></div>
                     <p className="font-medium">Belum ada alamat tersimpan.</p>
                     <p className="text-sm mt-1">Klik tombol <strong>+ Tambah Alamat</strong> di atas untuk mulai.</p>
                 </div>
             ) : (
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-2 gap-4 animate-slide-up">
                     {addresses.map(addr => (
                         <div
                             key={addr.id}
-                            className={`bg-white rounded-2xl p-5 border transition
+                            className={`card-hover p-5 transition
                                 ${addr.isDefault
-                                ? 'border-blue-400 ring-1 ring-blue-200'
-                                : 'border-blue-100 hover:border-blue-200'}`}
+                                ? 'border-ocean-400 ring-1 ring-ocean-200'
+                                : ''}`}
                         >
                             <div className="flex items-start justify-between mb-2">
                                 <div className="flex items-center gap-2">
                                     <span className="font-bold text-slate-700">{addr.label}</span>
                                     {addr.isDefault && (
-                                        <span className="text-xs bg-blue-100 text-blue-600 font-bold px-2 py-0.5 rounded-full">
+                                        <span className="badge-blue">
                                             Default
                                         </span>
                                     )}

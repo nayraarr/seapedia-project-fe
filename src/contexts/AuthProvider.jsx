@@ -1,39 +1,48 @@
 import { useState, useMemo } from 'react'
 import { AuthContext } from './authContext'
+import { isTokenExpired } from '../utils/token'
+import api from '../services/api'
 
 export function AuthProvider({ children }) {
-    const [token, setToken] = useState(localStorage.getItem('token'))
-    const [user, setUser] = useState(null)
-
-    const decodeToken = (tkn) => {
-        if (!tkn) return null
-        try {
-            return JSON.parse(atob(tkn.split('.')[1]))
-        } catch {
+    const [token, setToken] = useState(() => {
+        const stored = localStorage.getItem('token')
+        if (isTokenExpired(stored)) {
+            localStorage.removeItem('token')
             return null
         }
-    }
-
-    const decoded = decodeToken(token)
-    const activeRole = decoded?.activeRole || null
-    const roles = decoded?.roles || []
+        return stored
+    })
+    const [user, setUser] = useState(null)
 
     const login = (newToken) => {
         localStorage.setItem('token', newToken)
         setToken(newToken)
     }
 
-    const logout = () => {
-        localStorage.removeItem('token')
-        setToken(null)
-        setUser(null)
+    const logout = async () => {
+        try {
+            await api.post('/auth/logout')
+        } catch (error) {
+            console.error('Logout failed:', error)
+        } finally {
+            localStorage.removeItem('token')
+            setToken(null)
+            setUser(null)
+        }
     }
 
-    const value = useMemo(
-        () => ({ token, user, activeRole, roles, login, logout, decoded }),
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [token, user]
-    )
+    const value = useMemo(() => {
+        const decodeToken = (tkn) => {
+            if (!tkn) return null
+            try {
+                return JSON.parse(atob(tkn.split('.')[1]))
+            } catch {
+                return null
+            }
+        }
+        const d = decodeToken(token)
+        return { token, user, activeRole: d?.activeRole || null, roles: d?.roles || [], login, logout, decoded: d, isTokenExpired }
+    }, [token, user])
 
     return (
         <AuthContext.Provider value={value}>

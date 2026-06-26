@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
+import BackButton from '../../../components/ui/BackButton'
 import { getDriverReport, getJobHistory } from '../../../services/deliveryApi'
+import { ClipboardList, CheckCircle, Car, Wallet } from 'lucide-react'
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -42,45 +44,38 @@ export default function DriverIncomeReportPage() {
     }, [])
 
     const summaryCards = report ? [
-        { label: 'Total Job Diambil', value: report.totalJobsTaken, icon: '📋', color: 'blue' },
-        { label: 'Job Selesai', value: report.completedJobs, icon: '✅', color: 'emerald' },
-        { label: 'Job Aktif', value: report.activeJobs, icon: '🚗', color: 'orange' },
-        { label: 'Total Pendapatan', value: formatRupiah(report.totalIncome), icon: '💰', color: 'blue' },
+        { label: 'Total Job Diambil', value: report.totalJobsTaken, icon: <ClipboardList size={24} strokeWidth={1.5} />, color: 'blue' },
+        { label: 'Job Selesai', value: report.completedJobs, icon: <CheckCircle size={24} strokeWidth={1.5} />, color: 'emerald' },
+        { label: 'Job Aktif', value: report.activeJobs, icon: <Car size={24} strokeWidth={1.5} />, color: 'orange' },
+        { label: 'Total Pendapatan', value: formatRupiah(report.totalIncome), icon: <Wallet size={24} strokeWidth={1.5} />, color: 'blue' },
     ] : []
 
     return (
         <MainLayout>
-            <Link
-                to="/dashboard/driver"
-                className="inline-block mb-2 text-sm font-semibold text-blue-600 hover:text-blue-700 hover:underline"
-            >
-                ← Kembali
-            </Link>
-            <div className="mb-6">
+            <BackButton className="mb-3" />
+            <div className="mb-6 animate-fade-in">
                 <span className="text-xs font-bold text-orange-500 uppercase tracking-widest">Driver</span>
                 <h1 className="text-3xl font-bold text-slate-800 mt-1">Riwayat & Penghasilan</h1>
-                <p className="text-slate-400 mt-1">Rekap penghasilan harian</p>
+                <p className="text-slate-400 mt-1">Rekap penghasilan</p>
             </div>
 
             {error && (
-                <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 animate-fade-in">
                     {error}
                 </div>
             )}
 
             {loading ? (
-                <div className="space-y-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {[1, 2, 3, 4].map(i => (
-                            <div key={i} className="bg-white rounded-2xl h-28 border border-orange-50 animate-pulse" />
-                        ))}
-                    </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {[1, 2, 3, 4].map(i => (
+                        <div key={i} className="skeleton h-28" />
+                    ))}
                 </div>
             ) : (
-                <>
+                <div className="animate-slide-up">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         {summaryCards.map(card => (
-                            <div key={card.label} className={`bg-white border border-${card.color}-100 rounded-2xl p-5`}>
+                            <div key={card.label} className="card p-5">
                                 <p className="text-2xl mb-2">{card.icon}</p>
                                 <p className="text-2xl font-bold text-slate-800">{card.value}</p>
                                 <p className="text-xs text-slate-400 mt-1">{card.label}</p>
@@ -88,7 +83,7 @@ export default function DriverIncomeReportPage() {
                         ))}
                     </div>
 
-                    <div className="bg-white border border-orange-100 rounded-2xl p-5">
+                    <div className="card p-5">
                         <h2 className="font-bold text-slate-800 mb-4">Riwayat Job Selesai</h2>
                         {history.length === 0 ? (
                             <p className="text-sm text-slate-400 text-center py-8">
@@ -96,11 +91,12 @@ export default function DriverIncomeReportPage() {
                             </p>
                         ) : (
                             <div className="space-y-3">
-                                {history.map(job => (
+                                {history.map((job, i) => (
                                     <Link
                                         key={job.deliveryJobId}
                                         to={`/dashboard/driver/jobs/${job.deliveryJobId}`}
-                                        className="block border border-slate-200 rounded-xl p-4 hover:shadow-md hover:border-orange-200 transition-all duration-200 cursor-pointer"
+                                        className="block card card-hover p-4"
+                                        style={{ animationDelay: `${i * 0.05}s` }}
                                     >
                                         <div className="flex justify-between items-start gap-4">
                                             <div>
@@ -122,7 +118,7 @@ export default function DriverIncomeReportPage() {
                             </div>
                         )}
                     </div>
-                </>
+                </div>
             )}
         </MainLayout>
     )

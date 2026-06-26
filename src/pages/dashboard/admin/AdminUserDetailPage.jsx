@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import BackButton from '../../../components/ui/BackButton'
 import { getAdminUsers, getAdminUserWallet, getAdminUserFinancialSummary } from '../../../services/adminApi'
+import { Wallet } from 'lucide-react'
 
 function formatCurrency(amount) {
     if (amount == null) return '—'
@@ -49,19 +50,19 @@ export default function AdminUserDetailPage() {
 
     return (
         <MainLayout>
-            <BackButton className="mb-2" />
+            <BackButton className="mb-3" />
 
             {loading ? (
-                <div className="bg-white rounded-2xl h-64 border border-red-50 animate-pulse" />
+                <div className="skeleton h-64" />
             ) : error ? (
-                <div className="bg-white border border-red-100 rounded-2xl p-8 text-center">
+                <div className="card p-8 text-center animate-fade-in">
                     <p className="text-red-600 font-semibold">{error}</p>
                 </div>
             ) : (
-                <div className="space-y-4 max-w-lg">
-                    <div className="bg-white border border-red-100 rounded-2xl p-6">
+                <div className="space-y-4 max-w-lg mx-auto animate-slide-up">
+                    <div className="card p-6">
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center text-white text-2xl font-bold">
+                            <div className="w-16 h-16 rounded-full ocean-gradient flex items-center justify-center text-white text-2xl font-bold shadow-card">
                                 {user.username.charAt(0).toUpperCase()}
                             </div>
                             <div>
@@ -75,7 +76,7 @@ export default function AdminUserDetailPage() {
                                 <p className="text-xs font-semibold text-slate-400 uppercase">Role</p>
                                 <p className="font-medium text-slate-800 mt-0.5">
                                     {user.isAdmin
-                                        ? <span className="text-red-600 font-bold">Admin</span>
+                                        ? <span className="badge-red">Admin</span>
                                         : (user.roles || []).join(', ')}
                                 </p>
                             </div>
@@ -90,8 +91,8 @@ export default function AdminUserDetailPage() {
                         </div>
                     </div>
 
-                    <div className="bg-white border border-red-100 rounded-2xl p-6">
-                        <h2 className="font-bold text-slate-800 mb-4">💰 Informasi Keuangan</h2>
+                    <div className="card p-6">
+                        <h2 className="font-bold text-slate-800 mb-4"><Wallet size={24} strokeWidth={1.5} className="inline-flex mr-2" /> Informasi Keuangan</h2>
                         <div className="space-y-4 text-sm">
                             <div className="border-b border-slate-100 pb-3">
                                 <p className="text-xs font-semibold text-slate-400 uppercase">Saldo Wallet</p>
@@ -107,7 +108,7 @@ export default function AdminUserDetailPage() {
                             {(user.roles || []).includes('DRIVER') && (
                                 <div>
                                     <p className="text-xs font-semibold text-slate-400 uppercase">Pendapatan sebagai Driver</p>
-                                    <p className="text-lg font-bold text-blue-600 mt-1">{formatCurrency(financial?.driverEarnings)}</p>
+                                    <p className="text-lg font-bold text-ocean-600 mt-1">{formatCurrency(financial?.driverEarnings)}</p>
                                 </div>
                             )}
                         </div>

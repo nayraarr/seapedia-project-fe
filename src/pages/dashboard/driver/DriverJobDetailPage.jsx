@@ -21,14 +21,12 @@ export default function DriverJobDetailPage() {
     const [error, setError] = useState('')
     const [actionLoading, setActionLoading] = useState(false)
 
-    const loadJob = () => {
+    useEffect(() => {
         getJobDetail(jobId)
             .then(res => setJob(res.data.data))
             .catch(() => setError('Gagal memuat detail job.'))
             .finally(() => setLoading(false))
-    }
-
-    useEffect(() => { loadJob() }, [jobId])
+    }, [jobId])
 
     const handleTake = async () => {
         setActionLoading(true)
@@ -58,26 +56,25 @@ export default function DriverJobDetailPage() {
         <MainLayout>
             {loading ? (
                 <div className="space-y-4">
-                    <div className="bg-white rounded-2xl h-24 border border-orange-50 animate-pulse" />
-                    <div className="bg-white rounded-2xl h-96 border border-orange-50 animate-pulse" />
+                    <div className="skeleton h-24" />
+                    <div className="skeleton h-96" />
                 </div>
             ) : error ? (
-                <div className="bg-white border border-red-100 rounded-2xl p-8 text-center">
+                <div className="card p-8 text-center animate-fade-in">
                     <p className="text-red-600 font-semibold">{error}</p>
                     <Link to="/dashboard/driver/jobs" className="inline-block mt-4">
                         <Button variant="outline">Kembali ke Job Tersedia</Button>
                     </Link>
                 </div>
             ) : (
-                <>
+                <div className="animate-fade-in">
                     <OrderDetailView
                         order={job}
                         title="Detail Job Pengiriman"
                         subtitle="Driver"
-                        backLabel="← Kembali"
                     />
                     {job.status === 'SELESAI' && (
-                        <div className="bg-gradient-to-r from-emerald-50 to-white border border-emerald-200 rounded-2xl p-5 mt-6">
+                        <div className="ocean-gradient-subtle border border-ocean-200 rounded-2xl p-5 mt-6 animate-slide-up">
                             <h2 className="font-bold text-slate-800 mb-3">Pendapatan</h2>
                             <div className="flex items-center justify-between">
                                 <div>
@@ -89,20 +86,20 @@ export default function DriverJobDetailPage() {
                         </div>
                     )}
                     {job.status === 'MENUNGGU_PENGIRIM' && (
-                        <div className="mt-6 flex justify-center">
-                            <Button variant="orange" disabled={actionLoading} onClick={handleTake} className="min-w-[240px] text-base py-3">
+                        <div className="mt-6 flex justify-center animate-slide-up">
+                            <Button variant="orange" disabled={actionLoading} onClick={handleTake} className="w-full sm:w-auto sm:min-w-[240px] text-base py-3">
                                 {actionLoading ? 'Mengambil...' : 'Ambil Job Ini'}
                             </Button>
                         </div>
                     )}
                     {job.status === 'SEDANG_DIKIRIM' && (
-                        <div className="mt-6 flex justify-center">
-                            <Button variant="emerald" disabled={actionLoading} onClick={handleComplete} className="min-w-[240px] text-base py-3">
+                        <div className="mt-6 flex justify-center animate-slide-up">
+                            <Button variant="emerald" disabled={actionLoading} onClick={handleComplete} className="w-full sm:w-auto sm:min-w-[240px] text-base py-3">
                                 {actionLoading ? 'Menyelesaikan...' : 'Selesaikan Pengiriman'}
                             </Button>
                         </div>
                     )}
-                </>
+                </div>
             )}
         </MainLayout>
     )

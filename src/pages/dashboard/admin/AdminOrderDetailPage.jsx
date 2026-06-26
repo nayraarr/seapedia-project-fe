@@ -21,23 +21,24 @@ export default function AdminOrderDetailPage() {
         <MainLayout>
             {loading ? (
                 <div className="space-y-4">
-                    <div className="bg-white rounded-2xl h-24 border border-red-50 animate-pulse" />
-                    <div className="bg-white rounded-2xl h-96 border border-red-50 animate-pulse" />
+                    <div className="skeleton h-24" />
+                    <div className="skeleton h-96" />
                 </div>
             ) : error ? (
-                <div className="bg-white border border-red-100 rounded-2xl p-8 text-center">
+                <div className="card p-8 text-center animate-fade-in">
                     <p className="text-red-600 font-semibold">{error}</p>
-                    <Link to="/dashboard/admin" className="inline-block mt-4 text-sm font-semibold text-blue-600 hover:underline">
+                    <Link to="/dashboard/admin" className="inline-block mt-4 text-sm font-semibold text-ocean-600 hover:underline">
                         ← Kembali ke Dashboard Admin
                     </Link>
                 </div>
             ) : (
-                <OrderDetailView
-                    order={order}
-                    title="Detail Pesanan"
-                    subtitle="Admin"
-                    backLabel="← Kembali"
-                />
+                <div className="animate-fade-in">
+                    <OrderDetailView
+                        order={order}
+                        title="Detail Pesanan"
+                        subtitle="Admin"
+                    />
+                </div>
             )}
         </MainLayout>
     )

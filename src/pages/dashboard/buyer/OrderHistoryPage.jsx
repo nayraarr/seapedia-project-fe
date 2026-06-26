@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
+import BackButton from '../../../components/ui/BackButton'
 import { getBuyerOrders } from '../../../services/orderApi'
+import { Package } from 'lucide-react'
 
 function formatRupiah(amount) {
     return new Intl.NumberFormat('id-ID', {
@@ -37,9 +39,10 @@ export default function OrderHistoryPage() {
 
     return (
         <MainLayout>
-            <div className="mb-6 flex items-start justify-between gap-4">
+            <BackButton className="mb-3" />
+            <div className="mb-6 flex items-start justify-between gap-4 animate-fade-in">
                 <div>
-                    <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">Buyer</span>
+                    <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Buyer</span>
                     <h1 className="text-3xl font-bold text-slate-800 mt-1">Riwayat Pesanan</h1>
                     <p className="text-slate-400 mt-1">Lihat daftar checkout yang sudah berhasil dibuat</p>
                 </div>
@@ -57,28 +60,28 @@ export default function OrderHistoryPage() {
             {loading ? (
                 <div className="space-y-3">
                     {[1, 2, 3].map(i => (
-                        <div key={i} className="bg-white rounded-2xl h-28 border border-blue-50 animate-pulse" />
+                        <div key={i} className="skeleton h-28" />
                     ))}
                 </div>
             ) : orders.length === 0 ? (
-                <div className="text-center py-20 bg-white border border-blue-100 rounded-2xl">
-                    <p className="text-4xl mb-3">📦</p>
+                <div className="text-center py-20 card">
+                    <div className="flex justify-center mb-3"><Package size={48} strokeWidth={1.5} /></div>
                     <p className="font-semibold text-slate-700">Belum ada pesanan.</p>
                     <p className="text-sm text-slate-400 mt-1">Checkout pertama kamu akan muncul di sini.</p>
                 </div>
             ) : (
-                <div className="space-y-3">
+                <div className="space-y-3 animate-slide-up">
                     {orders.map(order => (
                         <Link
                             key={order.orderId}
                             to={`/dashboard/buyer/orders/${order.orderId}`}
-                            className="block bg-white border border-blue-100 rounded-2xl p-5 hover:border-blue-300 hover:shadow-sm transition"
+                            className="block card-hover p-5"
                         >
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                 <div>
                                     <div className="flex items-center gap-2 flex-wrap">
                                         <span className="font-bold text-slate-800">{order.storeName}</span>
-                                        <span className="text-xs px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 font-semibold">
+                                        <span className="badge-blue">
                                             {order.statusLabel}
                                         </span>
                                     </div>
@@ -89,7 +92,7 @@ export default function OrderHistoryPage() {
                                 </div>
                                 <div className="text-left md:text-right">
                                     <p className="text-xs text-slate-400">Total</p>
-                                    <p className="text-lg font-bold text-blue-700">{formatRupiah(order.totalAmount)}</p>
+                                    <p className="text-lg font-bold text-ocean-700">{formatRupiah(order.totalAmount)}</p>
                                 </div>
                             </div>
                         </Link>

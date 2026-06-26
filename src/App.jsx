@@ -43,13 +43,18 @@ import Toast from './components/ui/Toast'
 
 // route guards
 function ProtectedRoute({ children, requiredRole, allowedRoles }) {
-  const { token, activeRole } = useAuth()
-  if (!token) return <Navigate to="/login" />
+  const { token, activeRole, isTokenExpired } = useAuth()
+
+  if (!token || isTokenExpired(token)) {
+    return <Navigate to="/login" />
+  }
+
   const roles = allowedRoles || (requiredRole ? [requiredRole] : null)
   if (roles && !roles.includes(activeRole)) {
     if (!activeRole) return <Navigate to="/select-role" />
     return <Navigate to={`/dashboard/${activeRole.toLowerCase()}`} />
   }
+
   return children
 }
 
@@ -59,7 +64,7 @@ export default function App() {
 
   return (
       <BrowserRouter>
-        <Toast message={toast} onClose={dismissToast} />
+        <Toast message={toast?.message} type={toast?.type} onClose={dismissToast} />
         <Routes>
           {/* public */}
           <Route path="/" element={<HomePage />} />

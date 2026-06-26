@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import Button from '../../../components/ui/Button'
+import BackButton from '../../../components/ui/BackButton'
 import { getBuyerSpendingReport } from '../../../services/orderApi'
 
 function formatRupiah(amount) {
@@ -31,9 +32,10 @@ export default function SpendingReportPage() {
 
     return (
         <MainLayout>
-            <div className="mb-6 flex items-start justify-between gap-4">
+            <BackButton className="mb-3" />
+            <div className="mb-6 flex items-start justify-between gap-4 animate-fade-in">
                 <div>
-                    <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">Buyer</span>
+                    <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Buyer</span>
                     <h1 className="text-3xl font-bold text-slate-800 mt-1">Laporan Pengeluaran</h1>
                     <p className="text-slate-400 mt-1">Ringkasan transaksi belanjamu di SEAPEDIA</p>
                 </div>
@@ -51,13 +53,13 @@ export default function SpendingReportPage() {
             {loading ? (
                 <div className="grid md:grid-cols-3 gap-4">
                     {[1, 2, 3].map(i => (
-                        <div key={i} className="bg-white rounded-2xl h-28 border border-blue-50 animate-pulse" />
+                        <div key={i} className="skeleton h-28" />
                     ))}
                 </div>
             ) : report && (
-                <div className="space-y-6">
+                <div className="space-y-6 animate-slide-up">
                     <div className="grid md:grid-cols-3 gap-4">
-                        <SummaryCard label="Total Belanja" value={formatRupiah(report.totalSpent)} accent="text-blue-700" />
+                        <SummaryCard label="Total Belanja" value={formatRupiah(report.totalSpent)} accent="text-ocean-700" />
                         <SummaryCard label="Total Hemat dari Diskon" value={formatRupiah(report.totalDiscountSaved)} accent="text-emerald-600" />
                         <SummaryCard label="Total Pesanan" value={`${report.totalOrders} pesanan`} accent="text-slate-700" />
                     </div>
@@ -67,11 +69,11 @@ export default function SpendingReportPage() {
                         <SummaryCard label="Total Ongkos Kirim" value={formatRupiah(report.totalDeliveryFee)} accent="text-slate-700" small />
                     </div>
 
-                    <div className="bg-white border border-blue-100 rounded-2xl p-5">
+                    <div className="card p-5">
                         <h2 className="font-bold text-slate-800 mb-4">Status Pesanan</h2>
                         <div className="flex flex-wrap gap-2">
                             {report.statusBreakdown.map(s => (
-                                <span key={s.status} className="text-xs font-semibold px-3 py-1.5 rounded-full bg-blue-50 text-blue-700">
+                                <span key={s.status} className="badge-blue">
                                     {s.statusLabel}: {s.count}
                                 </span>
                             ))}
@@ -83,7 +85,7 @@ export default function SpendingReportPage() {
                         )}
                     </div>
 
-                    <div className="bg-white border border-blue-100 rounded-2xl p-5">
+                    <div className="card p-5">
                         <h2 className="font-bold text-slate-800 mb-4">Transaksi Terakhir</h2>
                         {report.recentOrders.length === 0 ? (
                             <p className="text-sm text-slate-400">Belum ada transaksi.</p>
@@ -93,14 +95,14 @@ export default function SpendingReportPage() {
                                     <Link
                                         key={order.orderId}
                                         to={`/dashboard/buyer/orders/${order.orderId}`}
-                                        className="block border border-slate-200 rounded-xl p-4 hover:border-blue-300 transition"
+                                        className="block border border-slate-200 rounded-xl p-4 hover:border-ocean-200 hover:shadow-card-hover transition"
                                     >
                                         <div className="flex justify-between items-center gap-3">
                                             <div>
                                                 <p className="font-semibold text-slate-700 text-sm">{order.storeName}</p>
                                                 <p className="text-xs text-slate-400">{formatDate(order.createdAt)} • {order.statusLabel}</p>
                                             </div>
-                                            <p className="font-bold text-blue-700">{formatRupiah(order.totalAmount)}</p>
+                                            <p className="font-bold text-ocean-700">{formatRupiah(order.totalAmount)}</p>
                                         </div>
                                     </Link>
                                 ))}
@@ -115,7 +117,7 @@ export default function SpendingReportPage() {
 
 function SummaryCard({ label, value, accent, small }) {
     return (
-        <div className="bg-white border border-blue-100 rounded-2xl p-5">
+        <div className="card p-5">
             <p className="text-xs uppercase tracking-wide text-slate-400 font-semibold">{label}</p>
             <p className={`mt-1 font-bold ${small ? 'text-lg' : 'text-2xl'} ${accent}`}>{value}</p>
         </div>
