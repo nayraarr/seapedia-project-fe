@@ -159,16 +159,6 @@ export default function Navbar() {
                         </>
                     ) : (
                         <>
-                            <div className="h-px bg-ocean-50 my-2" />
-                            {activeRole && (
-                                <div className="flex items-center gap-2 px-3 py-2">
-                                    <span className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full ${roleStyle[activeRole]}`}>
-                                        <span>{roleIcon[activeRole]}</span>
-                                        {activeRole}
-                                    </span>
-                                    <span className="text-sm font-semibold text-slate-700">{decoded?.username}</span>
-                                </div>
-                            )}
                             {activeRole === 'BUYER' && (
                                 <MobileLink to="/dashboard/buyer/cart" onClick={() => setMenuOpen(false)}>
                                     Keranjang {itemCount > 0 ? `(${itemCount})` : ''}
@@ -181,7 +171,28 @@ export default function Navbar() {
                                 <MobileLink to="/dashboard/seller/orders/incoming" onClick={() => setMenuOpen(false)}>Pesanan Masuk</MobileLink>
                             )}
                             <MobileLink to={getDashboardLink()} onClick={() => setMenuOpen(false)}>Dashboard</MobileLink>
-                            <MobileLink to="/profile" onClick={() => setMenuOpen(false)}>Profil</MobileLink>
+
+                            <div className="h-px bg-ocean-50 my-2" />
+
+                            <Link
+                                to="/profile"
+                                onClick={() => setMenuOpen(false)}
+                                className="block px-3 py-2.5 rounded-lg hover:bg-ocean-50 transition"
+                            >
+                                {activeRole && (
+                                    <span className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full mb-6 ${roleStyle[activeRole]}`}>
+                                        <span>{roleIcon[activeRole]}</span>
+                                        {activeRole}
+                                    </span>
+                                )}
+                                <div className="flex items-center gap-2">
+                                    <div className="w-6 h-6 rounded-full ocean-gradient flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
+                                        {decoded?.username?.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className="text-sm font-semibold text-slate-700">{decoded?.username}</span>
+                                </div>
+                            </Link>
+
                             {decoded?.roles?.length > 1 && (
                                 <MobileLink to="/select-role" onClick={() => setMenuOpen(false)}>Ganti Role</MobileLink>
                             )}
