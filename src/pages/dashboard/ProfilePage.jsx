@@ -5,10 +5,10 @@ import { useAuth } from '../../contexts/useAuth'
 import api from '../../services/api'
 
 const roleInfo = {
-    BUYER:  { label: 'Pembeli', badge: 'bg-blue-100 text-blue-700',     border: 'border-blue-400 bg-blue-50',     desc: 'Belanja produk & kelola pesanan' },
-    SELLER: { label: 'Penjual', badge: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-400 bg-emerald-50', desc: 'Kelola toko & produk' },
-    DRIVER: { label: 'Driver',  badge: 'bg-orange-100 text-orange-700',  border: 'border-orange-400 bg-orange-50',  desc: 'Antar pesanan & lihat penghasilan' },
-    ADMIN:  { label: 'Admin',   badge: 'bg-red-100 text-red-700',        border: 'border-red-400 bg-red-50',        desc: 'Monitor & kelola platform' },
+    BUYER:  { label: 'Pembeli', badge: 'badge-blue', border: 'border-ocean-200 bg-ocean-50/50', desc: 'Belanja produk & kelola pesanan', icon: '🛍️' },
+    SELLER: { label: 'Penjual', badge: 'badge-emerald', border: 'border-emerald-200 bg-emerald-50/50', desc: 'Kelola toko & produk', icon: '🏪' },
+    DRIVER: { label: 'Driver',  badge: 'badge-orange', border: 'border-orange-200 bg-orange-50/50', desc: 'Antar pesanan & lihat penghasilan', icon: '🚚' },
+    ADMIN:  { label: 'Admin',   badge: 'badge-red', border: 'border-red-200 bg-red-50/50', desc: 'Monitor & kelola platform', icon: '⚙️' },
 }
 
 const formatCurrency = (amount) =>
@@ -55,7 +55,7 @@ export default function ProfilePage() {
         <MainLayout>
             <div className="max-w-2xl mx-auto space-y-4">
                 {[...Array(4)].map((_, i) => (
-                    <div key={i} className="bg-white animate-pulse rounded-2xl h-32 border border-blue-50" />
+                    <div key={i} className="skeleton rounded-2xl h-32" />
                 ))}
             </div>
         </MainLayout>
@@ -64,76 +64,64 @@ export default function ProfilePage() {
     return (
         <MainLayout>
             <div className="max-w-2xl mx-auto space-y-5">
-
-                {/* Profile Header */}
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
+                <div className="card p-6 animate-fade-in">
                     <div className="flex items-center gap-5">
-                        <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-2xl font-extrabold text-blue-600 flex-shrink-0">
+                        <div className="w-16 h-16 rounded-full ocean-gradient flex items-center justify-center text-2xl font-extrabold text-white shadow-md flex-shrink-0">
                             {decoded?.username?.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-slate-800">{profile?.username}</h1>
+                            <h1 className="text-xl font-extrabold text-slate-800 tracking-tight">{profile?.username}</h1>
                             <p className="text-slate-400 text-sm">{profile?.email}</p>
                             <p className="text-slate-300 text-xs mt-1">
                                 Bergabung sejak{' '}
                                 {profile?.createdAt
-                                    ? new Date(profile.createdAt).toLocaleDateString('id-ID', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                    })
+                                    ? new Date(profile.createdAt).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })
                                     : '-'}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                {/* Active Role */}
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
+                <div className="card p-6 animate-fade-in">
                     <h2 className="text-base font-bold text-slate-700 mb-4">Role Aktif</h2>
                     {activeRole ? (
-                        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${roleInfo[activeRole]?.badge || 'bg-slate-100 text-slate-600'}`}>
+                        <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${roleInfo[activeRole]?.badge || 'badge-slate'}`}>
                             <span className="w-1.5 h-1.5 rounded-full bg-current" />
                             {roleInfo[activeRole]?.label || activeRole}
-                        </div>
+                        </span>
                     ) : (
                         <p className="text-slate-400 text-sm">Belum ada role aktif</p>
                     )}
                 </div>
 
-                {/* All Roles */}
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
+                <div className="card p-6 animate-fade-in">
                     <h2 className="text-base font-bold text-slate-700 mb-4">Role yang Dimiliki</h2>
                     <div className="space-y-3">
                         {roles.map(role => {
-                            const info = roleInfo[role] || {
-                                label: role,
-                                badge: 'bg-slate-100 text-slate-600',
-                                border: 'border-slate-200',
-                                desc: '',
-                            }
+                            const info = roleInfo[role] || { label: role, badge: 'badge-slate', border: 'border-slate-200', desc: '', icon: '👤' }
                             const isActive = role === activeRole
                             return (
                                 <div
                                     key={role}
-                                    className={`flex items-center justify-between p-4 rounded-xl border-2 transition ${
-                                        isActive ? info.border : 'border-slate-100 hover:border-blue-200'
+                                    className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
+                                        isActive ? info.border : 'border-slate-100 hover:border-ocean-200 hover:bg-ocean-50/30'
                                     }`}
                                 >
                                     <div className="flex items-center gap-3">
+                                        <span className="text-lg">{info.icon}</span>
                                         <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${info.badge}`}>
                                             {info.label}
                                         </span>
-                                        <span className="text-sm text-slate-400">{info.desc}</span>
+                                        <span className="text-sm text-slate-400 hidden sm:inline">{info.desc}</span>
                                     </div>
                                     {isActive ? (
-                                        <span className="text-xs text-blue-600 font-bold bg-blue-50 px-2.5 py-1 rounded-full">
+                                        <span className="text-xs text-ocean-600 font-bold bg-ocean-50 px-2.5 py-1 rounded-full border border-ocean-200">
                                             Aktif
                                         </span>
                                     ) : (
                                         <button
                                             onClick={() => handleSwitchRole(role)}
-                                            className="text-xs text-slate-400 hover:text-blue-600 font-semibold underline transition"
+                                            className="text-xs text-slate-400 hover:text-ocean-600 font-semibold hover:underline transition"
                                         >
                                             Gunakan
                                         </button>
@@ -144,8 +132,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                {/* Financial Summary */}
-                <div className="bg-white border border-blue-100 rounded-2xl p-6">
+                <div className="card p-6 animate-fade-in">
                     <div className="mb-5">
                         <h2 className="text-base font-bold text-slate-700">Ringkasan Keuangan</h2>
                         <p className="text-xs text-slate-400 mt-0.5">Saldo real berdasarkan aktivitas akun</p>
@@ -153,10 +140,10 @@ export default function ProfilePage() {
 
                     <div className="grid grid-cols-1 gap-3">
                         {roles.includes('BUYER') && (
-                            <div className="flex items-center justify-between bg-blue-50 border border-blue-100 rounded-xl p-4">
+                            <div className="flex items-center justify-between bg-ocean-50 border border-ocean-100 rounded-xl p-4">
                                 <div>
-                                    <p className="text-xs text-blue-500 font-semibold mb-1">Saldo Wallet</p>
-                                    <p className="text-lg font-extrabold text-blue-700">
+                                    <p className="text-xs text-ocean-600 font-semibold mb-1">Saldo Wallet</p>
+                                    <p className="text-lg font-extrabold text-ocean-700">
                                         {summary ? formatCurrency(summary.walletBalance) : '—'}
                                     </p>
                                 </div>
@@ -184,12 +171,11 @@ export default function ProfilePage() {
                                         {summary ? formatCurrency(summary.driverEarnings) : '—'}
                                     </p>
                                 </div>
-                                <span className="text-2xl">🚗</span>
+                                <span className="text-2xl">🚚</span>
                             </div>
                         )}
                     </div>
                 </div>
-
             </div>
         </MainLayout>
     )
