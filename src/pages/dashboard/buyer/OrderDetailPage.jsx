@@ -37,7 +37,6 @@ export default function OrderDetailPage() {
                     order={order}
                     title="Detail Pesanan"
                     subtitle="Buyer"
-                    backLabel={'\u2190 Kembali'}
                 />
             )}
         </MainLayout>

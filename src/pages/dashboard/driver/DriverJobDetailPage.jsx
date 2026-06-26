@@ -72,7 +72,6 @@ export default function DriverJobDetailPage() {
                         order={job}
                         title="Detail Job Pengiriman"
                         subtitle="Driver"
-                        backLabel="← Kembali"
                     />
                     {job.status === 'SELESAI' && (
                         <div className="ocean-gradient-subtle border border-ocean-200 rounded-2xl p-5 mt-6 animate-slide-up">
@@ -88,14 +87,14 @@ export default function DriverJobDetailPage() {
                     )}
                     {job.status === 'MENUNGGU_PENGIRIM' && (
                         <div className="mt-6 flex justify-center animate-slide-up">
-                            <Button variant="orange" disabled={actionLoading} onClick={handleTake} className="min-w-[240px] text-base py-3">
+                            <Button variant="orange" disabled={actionLoading} onClick={handleTake} className="w-full sm:w-auto sm:min-w-[240px] text-base py-3">
                                 {actionLoading ? 'Mengambil...' : 'Ambil Job Ini'}
                             </Button>
                         </div>
                     )}
                     {job.status === 'SEDANG_DIKIRIM' && (
                         <div className="mt-6 flex justify-center animate-slide-up">
-                            <Button variant="emerald" disabled={actionLoading} onClick={handleComplete} className="min-w-[240px] text-base py-3">
+                            <Button variant="emerald" disabled={actionLoading} onClick={handleComplete} className="w-full sm:w-auto sm:min-w-[240px] text-base py-3">
                                 {actionLoading ? 'Menyelesaikan...' : 'Selesaikan Pengiriman'}
                             </Button>
                         </div>

@@ -37,7 +37,6 @@ export default function AdminOrderDetailPage() {
                         order={order}
                         title="Detail Pesanan"
                         subtitle="Admin"
-                        backLabel="← Kembali"
                     />
                 </div>
             )}

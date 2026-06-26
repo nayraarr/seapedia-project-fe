@@ -53,11 +53,10 @@ export default function SellerOrderDetailPage() {
                         order={order}
                         title="Detail Pesanan Masuk"
                         subtitle="Seller"
-                        backLabel="← Kembali"
                     />
                     {order.status === 'SEDANG_DIKEMAS' && (
                         <div className="mt-6 flex justify-center">
-                            <Button variant="emerald" disabled={processing} onClick={handleProcess} className="min-w-[240px] text-base py-3">
+                            <Button variant="emerald" disabled={processing} onClick={handleProcess} className="w-full sm:w-auto sm:min-w-[240px] text-base py-3">
                                 {processing ? 'Memproses...' : 'Proses Pesanan'}
                             </Button>
                         </div>

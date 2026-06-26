@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
 import { useAuth } from '../../contexts/useAuth'
 import api from '../../services/api'
+import BackButton from '../../components/ui/BackButton'
 
 const roleInfo = {
     BUYER:  { label: 'Pembeli', badge: 'badge-blue', border: 'border-ocean-200 bg-ocean-50/50', desc: 'Belanja produk & kelola pesanan', icon: '🛍️' },
@@ -53,6 +54,7 @@ export default function ProfilePage() {
 
     if (loading) return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="max-w-2xl mx-auto space-y-4">
                 {[...Array(4)].map((_, i) => (
                     <div key={i} className="skeleton rounded-2xl h-32" />
@@ -63,6 +65,7 @@ export default function ProfilePage() {
 
     return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="max-w-2xl mx-auto space-y-5">
                 <div className="card p-6 animate-fade-in">
                     <div className="flex items-center gap-5">

@@ -226,21 +226,24 @@ export default function OrderDetailView({ order, title, subtitle, backLabel }) {
                             Riwayat Status
                         </h2>
                         <div className="space-y-4">
-                            {order.statusHistory?.map((item, idx) => (
-                                <div key={`${item.status}-${item.changedAt}`} className="relative pl-5">
-                                    <div className={`absolute left-1.5 top-2 w-2 h-2 rounded-full ${
-                                        idx === 0 ? 'bg-ocean-500 ring-2 ring-ocean-200' : 'bg-slate-300'
-                                    }`} />
-                                    {idx < order.statusHistory.length - 1 && (
-                                        <div className="absolute left-[7px] top-4 bottom-0 w-0.5 bg-slate-200" />
-                                    )}
-                                    <div>
-                                        <p className="font-semibold text-slate-700 text-sm">{item.statusLabel}</p>
-                                        <p className="text-xs text-slate-400">{formatDate(item.changedAt)}</p>
-                                        {item.note && <p className="text-xs text-slate-500 mt-0.5">{item.note}</p>}
+                            {order.statusHistory?.map((item, idx) => {
+                                const isLast = idx === order.statusHistory.length - 1
+                                return (
+                                    <div key={`${item.status}-${item.changedAt}`} className="relative pl-5">
+                                        <div className={`absolute left-1.5 top-2 w-2 h-2 rounded-full ${
+                                            isLast ? 'bg-ocean-500 ring-2 ring-ocean-200' : 'bg-slate-300'
+                                        }`} />
+                                        {!isLast && (
+                                            <div className="absolute left-[7px] top-4 bottom-0 w-0.5 bg-slate-200" />
+                                        )}
+                                        <div>
+                                            <p className="font-semibold text-slate-700 text-sm">{item.statusLabel}</p>
+                                            <p className="text-xs text-slate-400">{formatDate(item.changedAt)}</p>
+                                            {item.note && <p className="text-xs text-slate-500 mt-0.5">{item.note}</p>}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
                     </div>
                 </div>
