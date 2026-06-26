@@ -1,1 +1,229 @@
 @import "tailwindcss";
+
+@theme {
+  --font-inter: 'Inter', sans-serif;
+
+  --color-ocean-50: #eff6ff;
+  --color-ocean-100: #dbeafe;
+  --color-ocean-200: #bfdbfe;
+  --color-ocean-300: #93c5fd;
+  --color-ocean-400: #60a5fa;
+  --color-ocean-500: #3b82f6;
+  --color-ocean-600: #2563eb;
+  --color-ocean-700: #1d4ed8;
+  --color-ocean-800: #1e40af;
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+
+  --shadow-card: 0 1px 3px 0 rgb(59 130 246 / 0.08), 0 1px 2px -1px rgb(59 130 246 / 0.06);
+  --shadow-card-hover: 0 4px 12px -2px rgb(59 130 246 / 0.15), 0 2px 4px -2px rgb(59 130 246 / 0.1);
+  --shadow-elevated: 0 8px 24px -4px rgb(59 130 246 / 0.12), 0 4px 8px -4px rgb(59 130 246 / 0.08);
+  --shadow-modal: 0 20px 60px -8px rgb(15 23 42 / 0.2);
+}
+
+@layer base {
+  body {
+    font-family: var(--font-inter);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-ocean-400);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  input, select, textarea, button {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  .skeleton {
+    @apply bg-gradient-to-r from-slate-100 via-blue-50 to-slate-100 bg-[length:200%_100%] animate-pulse rounded-lg;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none;
+  }
+
+  .badge-blue {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none bg-ocean-100 text-ocean-700;
+  }
+
+  .badge-emerald {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none bg-emerald-100 text-emerald-700;
+  }
+
+  .badge-orange {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none bg-orange-100 text-orange-600;
+  }
+
+  .badge-red {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none bg-red-100 text-red-600;
+  }
+
+  .badge-slate {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none bg-slate-100 text-slate-600;
+  }
+
+  .card {
+    @apply bg-white rounded-xl border border-ocean-100 shadow-card transition-all duration-200;
+  }
+
+  .card-hover {
+    @apply bg-white rounded-xl border border-ocean-100 shadow-card transition-all duration-200 hover:shadow-card-hover hover:border-ocean-200;
+  }
+
+  .card-elevated {
+    @apply bg-white rounded-xl border border-ocean-100 shadow-card transition-all duration-200 shadow-elevated;
+  }
+
+  .input-field {
+    @apply w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-white
+           focus:outline-none focus:ring-2 focus:ring-ocean-300 focus:border-transparent
+           transition placeholder:text-slate-400 disabled:opacity-50 disabled:bg-slate-50;
+  }
+
+  .input-error {
+    @apply w-full border-red-300 rounded-xl px-4 py-2.5 text-sm bg-red-50/30
+           focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-transparent
+           transition placeholder:text-slate-400 disabled:opacity-50 disabled:bg-slate-50;
+  }
+
+  .ocean-gradient {
+    @apply bg-gradient-to-br from-ocean-500 via-ocean-600 to-ocean-800;
+  }
+
+  .ocean-gradient-subtle {
+    @apply bg-gradient-to-br from-ocean-50 via-blue-50 to-white;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-ocean-600 to-ocean-400 bg-clip-text text-transparent;
+  }
+
+  .wave-divider {
+    position: relative;
+  }
+
+  .wave-divider::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--color-ocean-400), var(--color-ocean-600), var(--color-ocean-400));
+    border-radius: 0 0 3px 3px;
+  }
+
+  .status-tracker {
+    @apply flex items-start justify-between gap-1;
+  }
+
+  .status-step {
+    @apply flex-1 flex flex-col items-center relative;
+  }
+
+  .status-dot {
+    @apply relative z-10 w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-300;
+  }
+
+  .status-line {
+    @apply hidden sm:block absolute -left-[calc(50%+12px)] top-4 w-[calc(100%-24px)] h-1 -translate-y-1/2 rounded-full;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--color-slate-300);
+    border-radius: 999px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: var(--color-slate-400);
+  }
+
+  @keyframes slide-up {
+    from { transform: translateY(12px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes slide-down {
+    from { transform: translateY(-8px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes scale-in {
+    from { transform: scale(0.95); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes bounce-in {
+    0%   { transform: scale(0); }
+    50%  { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes cart-bounce {
+    0%   { transform: scale(1); }
+    30%  { transform: scale(1.35); }
+    60%  { transform: scale(0.85); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+
+  .animate-slide-down {
+    animation: slide-down 0.2s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.2s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.25s ease-out;
+  }
+
+  .animate-bounce-in {
+    animation: bounce-in 0.4s ease-out;
+  }
+
+  .animate-cart-bounce {
+    animation: cart-bounce 0.4s ease-out;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 1.5s infinite linear;
+    background: linear-gradient(90deg, var(--color-slate-100) 0%, var(--color-blue-50) 50%, var(--color-slate-100) 100%);
+    background-size: 200% 100%;
+  }
+}

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { isTokenExpiringSoon } from '../contexts/AuthProvider'
+import { isTokenExpiringSoon } from '../utils/token'
 
 let isRefreshing = false
 let refreshSubscribers = []
