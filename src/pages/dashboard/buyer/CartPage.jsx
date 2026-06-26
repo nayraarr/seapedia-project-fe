@@ -42,7 +42,7 @@ export default function CartPage() {
     const [selectedAddressId, setSelectedAddressId] = useState('')
     const [deliveryMethod, setDeliveryMethod] = useState('REGULAR')
     const [discountCode, setDiscountCode] = useState('')
-    const [discountCheck, setDiscountCheck] = useState(null) // hasil dari endpoint validate
+    const [discountCheck, setDiscountCheck] = useState(null)
     const [discountCheckLoading, setDiscountCheckLoading] = useState(false)
     const [previewData, setPreviewData] = useState(null)
     const [error, setError] = useState('')
@@ -167,12 +167,11 @@ export default function CartPage() {
         }
     }
 
-    // Redirect jika bukan BUYER
     if (activeRole && activeRole !== 'BUYER') {
         return (
             <MainLayout>
                 <div className="text-center py-24">
-                    <p className="text-5xl mb-4">🚫</p>
+                    <p className="text-5xl mb-4">{'\u{1F6AB}'}</p>
                     <p className="text-slate-600 font-semibold">Halaman ini hanya untuk Pembeli.</p>
                 </div>
             </MainLayout>
@@ -186,10 +185,10 @@ export default function CartPage() {
 
     return (
         <MainLayout>
-            <div className="mb-6 flex items-center justify-between gap-4">
+            <div className="mb-6 flex items-center justify-between gap-4 animate-fade-in">
                 <div>
-                    <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">Keranjang</span>
-                    <h1 className="text-2xl font-bold text-slate-800 mt-1">Keranjang Belanja 🛒</h1>
+                    <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Keranjang</span>
+                    <h1 className="text-2xl font-bold text-slate-800 mt-1">Keranjang Belanja {'\u{1F6D2}'}</h1>
                 </div>
                 {!isEmpty && (
                     <div className="flex items-center gap-2">
@@ -207,8 +206,8 @@ export default function CartPage() {
                 )}
             </div>
 
-            <div className="mb-4 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex items-start gap-3 text-sm text-blue-700">
-                <span className="text-lg flex-shrink-0">ℹ️</span>
+            <div className="mb-4 ocean-gradient-subtle border border-ocean-200 rounded-xl px-4 py-3 flex items-start gap-3 text-sm text-ocean-700">
+                <span className="text-lg flex-shrink-0">{'\u2139\uFE0F'}</span>
                 <p>
                     Keranjang SEAPEDIA hanya dapat memuat produk dari <strong>satu toko</strong> sekaligus.
                     Checkout akan menampilkan subtotal, ongkir, PPN 12%, dan total akhir sebelum dikonfirmasi.
@@ -228,16 +227,16 @@ export default function CartPage() {
             )}
 
             {loading && (
-                <div className="space-y-3 animate-pulse">
+                <div className="space-y-3">
                     {[1, 2, 3].map(i => (
-                        <div key={i} className="bg-white rounded-2xl h-24 border border-blue-50" />
+                        <div key={i} className="skeleton h-24" />
                     ))}
                 </div>
             )}
 
             {!loading && isEmpty && (
                 <div className="text-center py-24">
-                    <p className="text-6xl mb-4">🛒</p>
+                    <p className="text-6xl mb-4">{'\u{1F6D2}'}</p>
                     <p className="text-slate-600 font-semibold text-lg mb-2">Keranjangmu masih kosong</p>
                     <p className="text-slate-400 text-sm mb-6">Yuk, temukan produk segar dari laut!</p>
                     <Link to="/products">
@@ -250,7 +249,7 @@ export default function CartPage() {
                 <div className="grid lg:grid-cols-3 gap-6">
                     <div className="lg:col-span-2 space-y-3">
                         <div className="flex items-center gap-2 mb-1">
-                            <span className="text-base">🏪</span>
+                            <span className="text-base">{'\u{1F3EA}'}</span>
                             <Link
                                 to={`/stores/${cart.storeId}`}
                                 className="text-sm font-bold text-emerald-700 hover:underline"
@@ -263,20 +262,20 @@ export default function CartPage() {
                         {cart.items.map(item => (
                             <div
                                 key={item.cartItemId}
-                                className="bg-white border border-blue-100 rounded-2xl p-4 flex items-center gap-4"
+                                className="card-hover p-4 flex items-center gap-4"
                             >
-                                <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center text-2xl flex-shrink-0">
-                                    🐟
+                                <div className="w-14 h-14 rounded-xl bg-ocean-50 flex items-center justify-center text-2xl flex-shrink-0">
+                                    {'\u{1F41F}'}
                                 </div>
 
                                 <div className="flex-1 min-w-0">
                                     <Link
                                         to={`/products/${item.productId}`}
-                                        className="font-semibold text-slate-800 hover:text-blue-600 transition text-sm truncate block"
+                                        className="font-semibold text-slate-800 hover:text-ocean-600 transition text-sm truncate block"
                                     >
                                         {item.productName}
                                     </Link>
-                                    <p className="text-blue-600 font-bold text-sm mt-0.5">
+                                    <p className="text-ocean-600 font-bold text-sm mt-0.5">
                                         {formatRupiah(item.productPrice)}
                                     </p>
                                 </div>
@@ -285,7 +284,7 @@ export default function CartPage() {
                                     <button
                                         onClick={() => handleQtyChange(item.cartItemId, item.quantity - 1)}
                                         disabled={item.quantity <= 1 || busyItem === item.cartItemId}
-                                        className="w-7 h-7 rounded-lg border border-blue-200 text-blue-600 font-bold text-base hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                        className="w-7 h-7 rounded-lg border border-ocean-200 text-ocean-600 font-bold text-base hover:bg-ocean-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
                                     >
                                         −
                                     </button>
@@ -295,7 +294,7 @@ export default function CartPage() {
                                     <button
                                         onClick={() => handleQtyChange(item.cartItemId, item.quantity + 1)}
                                         disabled={busyItem === item.cartItemId}
-                                        className="w-7 h-7 rounded-lg border border-blue-200 text-blue-600 font-bold text-base hover:bg-blue-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                        className="w-7 h-7 rounded-lg border border-ocean-200 text-ocean-600 font-bold text-base hover:bg-ocean-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
                                     >
                                         +
                                     </button>
@@ -325,7 +324,7 @@ export default function CartPage() {
                     </div>
 
                     <div className="lg:col-span-1">
-                        <div className="bg-white border border-blue-100 rounded-2xl p-5 sticky top-24 space-y-4">
+                        <div className="card p-5 sticky top-24 space-y-4">
                             <div>
                                 <h2 className="font-bold text-slate-800 text-base">Checkout</h2>
                                 <p className="text-xs text-slate-400 mt-1">
@@ -341,7 +340,7 @@ export default function CartPage() {
                                     <select
                                         value={selectedAddressId}
                                         onChange={(e) => setSelectedAddressId(e.target.value)}
-                                        className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                        className="input-field"
                                     >
                                         {addresses.length === 0 && (
                                             <option value="">Belum ada alamat</option>
@@ -371,8 +370,8 @@ export default function CartPage() {
                                                 onClick={() => setDeliveryMethod(option.value)}
                                                 className={`flex items-center justify-between rounded-xl border px-4 py-3 text-sm transition text-left ${
                                                     deliveryMethod === option.value
-                                                        ? 'border-blue-500 bg-blue-50 text-blue-700'
-                                                        : 'border-slate-200 hover:border-blue-300 text-slate-600'
+                                                        ? 'border-ocean-500 bg-ocean-50 text-ocean-700'
+                                                        : 'border-slate-200 hover:border-ocean-300 text-slate-600'
                                                 }`}
                                             >
                                                 <span className="font-semibold">{option.label}</span>
@@ -395,7 +394,7 @@ export default function CartPage() {
                                                 setDiscountCheck(null)
                                             }}
                                             placeholder="Masukkan kode (opsional)"
-                                            className="flex-1 border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 uppercase"
+                                            className="input-field uppercase"
                                         />
                                         <Button
                                             variant="outline"
@@ -416,7 +415,7 @@ export default function CartPage() {
                                                 <div className="flex items-center justify-between gap-2">
                                                     <span>
                                                         <span className="font-bold uppercase mr-1">
-                                                            {discountCheck.source === 'VOUCHER' ? '🎟️ Voucher' : '🏷️ Promo'}
+                                                            {discountCheck.source === 'VOUCHER' ? '\u{1F39F}\uFE0F Voucher' : '\u{1F3F7}\uFE0F Promo'}
                                                         </span>
                                                         berlaku
                                                     </span>
@@ -433,19 +432,19 @@ export default function CartPage() {
                                         <button
                                             type="button"
                                             onClick={() => setShowAvailableDiscounts(!showAvailableDiscounts)}
-                                            className="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1"
+                                            className="text-xs text-ocean-600 hover:text-ocean-800 font-semibold flex items-center gap-1"
                                         >
-                                            {showAvailableDiscounts ? '▲' : '▼'} Lihat kode diskon tersedia
+                                            {showAvailableDiscounts ? '\u25B2' : '\u25BC'} Lihat kode diskon tersedia
                                         </button>
                                         {showAvailableDiscounts && (
                                             <div className="mt-2 space-y-2">
                                                 {availableVouchers.filter(v => v.active && !v.expired && v.remainingUsage > 0).length > 0 && (
                                                     <div>
-                                                        <p className="text-xs font-semibold text-slate-500 mb-1">🎟️ Voucher</p>
+                                                        <p className="text-xs font-semibold text-slate-500 mb-1">{'\u{1F39F}\uFE0F'} Voucher</p>
                                                         <div className="space-y-1">
                                                             {availableVouchers.filter(v => v.active && !v.expired && v.remainingUsage > 0).slice(0, 5).map(v => (
-                                                                <div key={v.id} className="flex items-center justify-between bg-blue-50 rounded-lg px-3 py-1.5 text-xs">
-                                                                    <span className="font-mono font-bold text-blue-700">{v.code}</span>
+                                                                <div key={v.id} className="flex items-center justify-between bg-ocean-50 rounded-lg px-3 py-1.5 text-xs">
+                                                                    <span className="font-mono font-bold text-ocean-700">{v.code}</span>
                                                                     <span className="text-slate-500">
                                                                         {v.discountType === 'PERCENTAGE' ? `${v.discountValue}%` : formatRupiah(v.discountValue)}
                                                                         {v.remainingUsage > 0 && ` (sisa ${v.remainingUsage})`}
@@ -457,7 +456,7 @@ export default function CartPage() {
                                                 )}
                                                 {availablePromos.filter(p => p.active && !p.expired).length > 0 && (
                                                     <div>
-                                                        <p className="text-xs font-semibold text-slate-500 mb-1">🏷️ Promo</p>
+                                                        <p className="text-xs font-semibold text-slate-500 mb-1">{'\u{1F3F7}\uFE0F'} Promo</p>
                                                         <div className="space-y-1">
                                                             {availablePromos.filter(p => p.active && !p.expired).slice(0, 5).map(p => (
                                                                 <div key={p.id} className="flex items-center justify-between bg-orange-50 rounded-lg px-3 py-1.5 text-xs">
@@ -479,7 +478,7 @@ export default function CartPage() {
                                     </div>
                                 </div>
 
-                                <div className="space-y-2 text-sm text-slate-600 border-t border-blue-50 pt-3">
+                                <div className="space-y-2 text-sm text-slate-600 border-t border-ocean-50 pt-3">
                                     <div className="flex justify-between">
                                         <span>Toko</span>
                                         <span className="font-semibold text-emerald-700">{cart.storeName ?? '-'}</span>
@@ -494,10 +493,10 @@ export default function CartPage() {
                                     </div>
                                 </div>
 
-                                <div className="border-t border-blue-50 pt-3 space-y-1">
+                                <div className="border-t border-ocean-50 pt-3 space-y-1">
                                     <div className="flex justify-between items-center">
                                         <span className="font-bold text-slate-700">Subtotal <span className="text-xs font-normal text-slate-400">(sebelum diskon & PPN)</span></span>
-                                        <span className="text-lg font-extrabold text-blue-600">
+                                        <span className="text-lg font-extrabold text-ocean-600">
                                             {formatRupiah(cart.grandTotal)}
                                         </span>
                                     </div>
@@ -543,8 +542,8 @@ export default function CartPage() {
             )}
 
             {checkoutModalOpen && previewData && (
-                <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4">
-                    <div className="bg-white rounded-2xl shadow-xl border border-blue-100 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4 animate-fade-in">
+                    <div className="bg-white rounded-2xl shadow-modal border border-ocean-100 w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-scale-in">
                         <div className="p-6 border-b border-slate-100">
                             <div className="flex items-start justify-between gap-4">
                                 <div>
@@ -557,7 +556,7 @@ export default function CartPage() {
                                     className="text-slate-400 hover:text-slate-700"
                                     onClick={() => setCheckoutModalOpen(false)}
                                 >
-                                    ✕
+                                    {'\u2715'}
                                 </button>
                             </div>
                         </div>
@@ -604,7 +603,7 @@ export default function CartPage() {
                             </div>
 
                             <div className="space-y-3">
-                                <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm space-y-2">
+                                <div className="rounded-2xl border border-ocean-200 bg-ocean-50 p-4 text-sm space-y-2">
                                     <div className="flex justify-between">
                                         <span>Subtotal</span>
                                         <span className="font-semibold">{formatRupiah(previewData.subtotal)}</span>
@@ -615,7 +614,7 @@ export default function CartPage() {
                                             <span className="font-semibold">−{formatRupiah(previewData.discountAmount)}</span>
                                         </div>
                                     )}
-                                    <div className="flex justify-between text-slate-500 text-xs border-t border-blue-50 pt-1">
+                                    <div className="flex justify-between text-slate-500 text-xs border-t border-ocean-50 pt-1">
                                         <span>Dasar Pengenaan Pajak</span>
                                         <span>{formatRupiah(previewData.taxBase)}</span>
                                     </div>
@@ -627,9 +626,9 @@ export default function CartPage() {
                                         <span>PPN {previewData.taxRatePercent}%</span>
                                         <span className="font-semibold">{formatRupiah(previewData.taxAmount)}</span>
                                     </div>
-                                    <div className="flex justify-between border-t border-blue-100 pt-2">
+                                    <div className="flex justify-between border-t border-ocean-100 pt-2">
                                         <span className="font-bold text-slate-700">Total</span>
-                                        <span className="font-extrabold text-blue-700">{formatRupiah(previewData.totalAmount)}</span>
+                                        <span className="font-extrabold text-ocean-700">{formatRupiah(previewData.totalAmount)}</span>
                                     </div>
                                     <p className="text-xs text-slate-500">
                                         Diskon dipotong dari subtotal sebelum PPN 12%.
@@ -674,8 +673,8 @@ export default function CartPage() {
             )}
 
             {clearConfirm && (
-                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
-                    <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl">
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4 animate-fade-in">
+                    <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-modal animate-scale-in">
                         <p className="text-slate-800 font-bold text-lg mb-2">Kosongkan Keranjang?</p>
                         <p className="text-slate-500 text-sm mb-6">
                             Semua item akan dihapus dari keranjang. Tindakan ini tidak bisa dibatalkan.

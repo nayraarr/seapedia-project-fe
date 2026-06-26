@@ -16,7 +16,7 @@ function formatDate(iso) {
 }
 
 const TYPE_LABEL = { TOPUP: 'Top Up', PAYMENT: 'Pembayaran', REFUND: 'Refund' }
-const TYPE_COLOR = { TOPUP: 'text-emerald-600', PAYMENT: 'text-red-500', REFUND: 'text-blue-500' }
+const TYPE_COLOR = { TOPUP: 'text-emerald-600', PAYMENT: 'text-red-500', REFUND: 'text-ocean-500' }
 const TYPE_SIGN  = { TOPUP: '+', PAYMENT: '-', REFUND: '+' }
 
 export default function WalletPage() {
@@ -63,21 +63,20 @@ export default function WalletPage() {
 
     return (
         <MainLayout>
-            <div className="mb-8">
-                <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">Buyer</span>
-                <h1 className="text-3xl font-bold text-slate-800 mt-1">Wallet Saya 💳</h1>
+            <div className="mb-8 animate-fade-in">
+                <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Buyer</span>
+                <h1 className="text-3xl font-bold text-slate-800 mt-1">Wallet Saya {'\u{1F4B3}'}</h1>
                 <p className="text-slate-400 mt-1">Kelola saldo dan riwayat transaksi</p>
             </div>
 
             {loading ? (
                 <div className="space-y-4">
-                    <div className="bg-white animate-pulse rounded-2xl h-36 border border-blue-50" />
-                    <div className="bg-white animate-pulse rounded-2xl h-48 border border-blue-50" />
+                    <div className="skeleton h-36" />
+                    <div className="skeleton h-48" />
                 </div>
             ) : (
-                <div className="grid md:grid-cols-2 gap-6">
-                    {/* Saldo */}
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl p-6 text-white shadow-lg">
+                <div className="grid md:grid-cols-2 gap-6 animate-slide-up">
+                    <div className="ocean-gradient rounded-2xl p-6 text-white shadow-card">
                         <p className="text-sm opacity-80 mb-1">Saldo Saat Ini</p>
                         <p className="text-4xl font-bold tracking-tight">
                             {wallet ? formatRupiah(wallet.balance) : 'Rp0'}
@@ -89,8 +88,7 @@ export default function WalletPage() {
                         )}
                     </div>
 
-                    {/* Form Top Up */}
-                    <div className="bg-white rounded-2xl p-6 border border-blue-100">
+                    <div className="card p-6">
                         <h2 className="font-bold text-slate-700 mb-4">Top Up Saldo</h2>
 
                         {error && (
@@ -112,8 +110,8 @@ export default function WalletPage() {
                                     onClick={() => setAmount(String(preset))}
                                     className={`text-xs font-semibold py-2 rounded-xl border transition
                                         ${String(amount) === String(preset)
-                                        ? 'bg-blue-600 text-white border-blue-600'
-                                        : 'bg-white text-slate-600 border-slate-200 hover:border-blue-400'}`}
+                                        ? 'bg-ocean-600 text-white border-ocean-600'
+                                        : 'bg-white text-slate-600 border-slate-200 hover:border-ocean-400'}`}
                                 >
                                     {formatRupiah(preset)}
                                 </button>
@@ -127,12 +125,12 @@ export default function WalletPage() {
                                 onChange={e => setAmount(e.target.value)}
                                 placeholder="Atau masukkan nominal lain..."
                                 min={1000}
-                                className="border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition"
+                                className="input-field"
                             />
                             <button
                                 type="submit"
                                 disabled={topUpLoading}
-                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-xl transition disabled:opacity-50"
+                                className="bg-ocean-600 hover:bg-ocean-700 text-white font-semibold py-2.5 rounded-xl transition disabled:opacity-50"
                             >
                                 {topUpLoading ? 'Memproses...' : 'Top Up Sekarang'}
                             </button>
@@ -141,9 +139,8 @@ export default function WalletPage() {
                 </div>
             )}
 
-            {/* Riwayat Transaksi */}
             {!loading && (
-                <div className="mt-6 bg-white rounded-2xl border border-blue-100 overflow-hidden">
+                <div className="mt-6 card overflow-hidden">
                     <div className="px-6 py-4 border-b border-slate-100">
                         <h2 className="font-bold text-slate-700">Riwayat Transaksi</h2>
                     </div>

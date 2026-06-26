@@ -21,12 +21,12 @@ export default function OrderDetailPage() {
     return (
         <MainLayout>
             {loading ? (
-                <div className="space-y-4">
-                    <div className="bg-white rounded-2xl h-24 border border-blue-50 animate-pulse" />
-                    <div className="bg-white rounded-2xl h-96 border border-blue-50 animate-pulse" />
+                <div className="space-y-4 animate-fade-in">
+                    <div className="skeleton h-24" />
+                    <div className="skeleton h-96" />
                 </div>
             ) : error ? (
-                <div className="bg-white border border-red-100 rounded-2xl p-8 text-center">
+                <div className="card border-red-200 p-8 text-center animate-fade-in">
                     <p className="text-red-600 font-semibold">{error}</p>
                     <Link to="/dashboard/buyer/orders" className="inline-block mt-4">
                         <Button variant="outline">Kembali ke Riwayat</Button>
@@ -37,7 +37,7 @@ export default function OrderDetailPage() {
                     order={order}
                     title="Detail Pesanan"
                     subtitle="Buyer"
-                    backLabel="← Kembali"
+                    backLabel={'\u2190 Kembali'}
                 />
             )}
         </MainLayout>

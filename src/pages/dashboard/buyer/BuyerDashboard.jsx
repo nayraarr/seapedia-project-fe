@@ -32,9 +32,7 @@ export default function BuyerDashboard() {
                 setWallet(walletRes.data.data)
                 const topUps = txRes.data.data.filter(tx => tx.type === 'TOPUP')
                 if (topUps.length > 0) setLastTopUp(topUps[0])
-            } catch {
-                // silently — wallet auto-create, tidak perlu error UI di dashboard
-            } finally {
+            } catch { /* empty */ } finally {
                 setLoading(false)
             }
         }
@@ -44,40 +42,40 @@ export default function BuyerDashboard() {
     const menuCards = [
         {
             label: 'Wallet & Saldo',
-            icon: '💳',
+            icon: '\u{1F4B3}',
             desc: 'Kelola saldo dan top up',
             path: '/dashboard/buyer/wallet',
             active: true,
             extra: loading ? null : (
-                <p className="text-blue-600 font-bold text-lg mt-1">
+                <p className="text-ocean-600 font-bold text-lg mt-1">
                     {formatRupiah(wallet?.balance)}
                 </p>
             )
         },
         {
             label: 'Alamat Pengiriman',
-            icon: '📍',
+            icon: '\u{1F4CD}',
             desc: 'Kelola alamat pengiriman kamu',
             path: '/dashboard/buyer/addresses',
             active: true,
         },
         {
             label: 'Keranjang',
-            icon: '🛒',
+            icon: '\u{1F6D2}',
             desc: 'Ringkasan cart satu toko',
             path: '/dashboard/buyer/cart',
             active: true,
         },
         {
             label: 'Riwayat Pesanan',
-            icon: '📦',
+            icon: '\u{1F4E6}',
             desc: 'Lacak semua transaksimu',
             path: '/dashboard/buyer/orders',
             active: true,
         },
         {
             label: 'Laporan Pengeluaran',
-            icon: '📊',
+            icon: '\u{1F4CA}',
             desc: 'Ringkasan total belanja kamu',
             path: '/dashboard/buyer/report',
             active: true,
@@ -86,30 +84,30 @@ export default function BuyerDashboard() {
 
     return (
         <MainLayout>
-            <div className="mb-8">
-                <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">Dashboard</span>
+            <div className="mb-8 animate-fade-in">
+                <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Dashboard</span>
                 <h1 className="text-3xl font-bold text-slate-800 mt-1">
-                    Halo, {decoded?.username}! 👋
+                    Halo, {decoded?.username}! {'\u{1F44B}'}
                 </h1>
                 <p className="text-slate-400 mt-1">Selamat datang di dashboard Pembeli</p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-3 gap-4 animate-slide-up">
                 {menuCards.map(card => (
                     <div
                         key={card.label}
                         onClick={() => card.path && navigate(card.path)}
-                        className={`bg-white border rounded-2xl p-6 transition
+                        className={`card p-6 transition
                             ${card.active
-                            ? 'border-blue-200 hover:shadow-md hover:border-blue-400 cursor-pointer'
-                            : 'border-blue-100 opacity-70 cursor-default'}`}
+                            ? 'card-hover cursor-pointer'
+                            : 'border-ocean-100 opacity-70 cursor-default'}`}
                     >
                         <div className="text-3xl mb-3">{card.icon}</div>
                         <h3 className="font-semibold text-slate-700 mb-1">{card.label}</h3>
                         <p className="text-slate-400 text-sm">{card.desc}</p>
                         {card.extra}
                         {!card.active && (
-                            <span className="inline-block mt-3 text-xs font-semibold text-blue-400 bg-blue-50 px-2.5 py-1 rounded-full">
+                            <span className="inline-block mt-3 badge-blue">
                                 Segera hadir
                             </span>
                         )}
@@ -117,10 +115,9 @@ export default function BuyerDashboard() {
                 ))}
             </div>
 
-            {/* ── Last top-up info ── */}
             {!loading && lastTopUp && (
-                <div className="mt-6 bg-white border border-green-100 rounded-2xl p-5 flex items-center gap-4">
-                    <span className="text-2xl">✅</span>
+                <div className="mt-6 card p-5 flex items-center gap-4 animate-slide-up">
+                    <span className="text-2xl">{'\u2705'}</span>
                     <div>
                         <p className="text-sm font-semibold text-slate-700">Top Up Terakhir</p>
                         <p className="text-slate-500 text-sm">

@@ -106,10 +106,10 @@ export default function AddressManagementPage() {
 
     return (
         <MainLayout>
-            <div className="mb-8 flex items-start justify-between">
+            <div className="mb-8 flex items-start justify-between animate-fade-in">
                 <div>
-                    <span className="text-xs font-bold text-blue-500 uppercase tracking-widest">Buyer</span>
-                    <h1 className="text-3xl font-bold text-slate-800 mt-1">Alamat Pengiriman 📍</h1>
+                    <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Buyer</span>
+                    <h1 className="text-3xl font-bold text-slate-800 mt-1">Alamat Pengiriman {'\u{1F4CD}'}</h1>
                     <p className="text-slate-400 mt-1">Kelola alamat pengiriman kamu</p>
                 </div>
                 <Button onClick={openCreate}>+ Tambah Alamat</Button>
@@ -126,9 +126,8 @@ export default function AddressManagementPage() {
                 </div>
             )}
 
-            {/* Form inline */}
             {showForm && (
-                <div className="bg-white border border-blue-100 rounded-2xl p-6 mb-6">
+                <div className="card p-6 mb-6 animate-slide-up">
                     <h2 className="font-bold text-slate-700 mb-5">
                         {editTarget ? 'Edit Alamat' : 'Tambah Alamat Baru'}
                     </h2>
@@ -150,7 +149,7 @@ export default function AddressManagementPage() {
                                     onChange={handleChange}
                                     placeholder={field.placeholder}
                                     required
-                                    className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition"
+                                    className="input-field"
                                 />
                             </div>
                         ))}
@@ -166,7 +165,7 @@ export default function AddressManagementPage() {
                                 placeholder="Jl. Contoh No. 1, RT/RW ..."
                                 required
                                 rows={3}
-                                className="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition resize-none"
+                                className="input-field resize-none"
                             />
                         </div>
 
@@ -177,7 +176,7 @@ export default function AddressManagementPage() {
                                 id="isDefault"
                                 checked={form.isDefault}
                                 onChange={handleChange}
-                                className="w-4 h-4 accent-blue-500"
+                                className="w-4 h-4 accent-ocean-500"
                             />
                             <label htmlFor="isDefault" className="text-sm text-slate-600">
                                 Jadikan alamat default
@@ -196,34 +195,33 @@ export default function AddressManagementPage() {
                 </div>
             )}
 
-            {/* List Alamat */}
             {loading ? (
                 <div className="grid sm:grid-cols-2 gap-4">
                     {[...Array(4)].map((_, i) => (
-                        <div key={i} className="bg-white animate-pulse rounded-2xl h-40 border border-blue-50" />
+                        <div key={i} className="skeleton h-40" />
                     ))}
                 </div>
             ) : addresses.length === 0 ? (
                 <div className="text-center py-16 text-slate-400">
-                    <p className="text-4xl mb-3">📍</p>
+                    <p className="text-4xl mb-3">{'\u{1F4CD}'}</p>
                     <p className="font-medium">Belum ada alamat tersimpan.</p>
                     <p className="text-sm mt-1">Klik tombol <strong>+ Tambah Alamat</strong> di atas untuk mulai.</p>
                 </div>
             ) : (
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-2 gap-4 animate-slide-up">
                     {addresses.map(addr => (
                         <div
                             key={addr.id}
-                            className={`bg-white rounded-2xl p-5 border transition
+                            className={`card-hover p-5 transition
                                 ${addr.isDefault
-                                ? 'border-blue-400 ring-1 ring-blue-200'
-                                : 'border-blue-100 hover:border-blue-200'}`}
+                                ? 'border-ocean-400 ring-1 ring-ocean-200'
+                                : ''}`}
                         >
                             <div className="flex items-start justify-between mb-2">
                                 <div className="flex items-center gap-2">
                                     <span className="font-bold text-slate-700">{addr.label}</span>
                                     {addr.isDefault && (
-                                        <span className="text-xs bg-blue-100 text-blue-600 font-bold px-2 py-0.5 rounded-full">
+                                        <span className="badge-blue">
                                             Default
                                         </span>
                                     )}
