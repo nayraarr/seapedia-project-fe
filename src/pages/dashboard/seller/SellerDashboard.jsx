@@ -38,7 +38,7 @@ export default function SellerDashboard() {
                     </div>
                     <Link
                         to="/dashboard/seller/store"
-                        className="text-sm font-semibold text-emerald-700 hover:text-emerald-900 transition"
+                        className="text-sm font-semibold bg-emerald-400 hover:bg-emerald-500 text-white px-4 py-1.5 rounded-xl transition"
                     >
                         Kelola →
                     </Link>

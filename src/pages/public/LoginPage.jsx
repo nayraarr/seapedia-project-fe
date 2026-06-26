@@ -10,12 +10,35 @@ export default function LoginPage() {
     const navigate = useNavigate()
     const [form, setForm] = useState({ username: '', password: '' })
     const [error, setError] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({})
     const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+
+    const handleChange = (field, value) => {
+        setForm(prev => ({ ...prev, [field]: value }))
+        if (fieldErrors[field]) {
+            setFieldErrors(prev => ({ ...prev, [field]: '' }))
+        }
+    }
+
+    const validate = () => {
+        const errors = {}
+        if (!form.username.trim()) errors.username = 'Username tidak boleh kosong'
+        if (!form.password.trim()) errors.password = 'Password tidak boleh kosong'
+        return errors
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
+        setFieldErrors({})
+
+        const clientErrors = validate()
+        if (Object.keys(clientErrors).length > 0) {
+            setFieldErrors(clientErrors)
+            return
+        }
+
         setLoading(true)
         try {
             const res = await api.post('/auth/login', form)
@@ -27,7 +50,12 @@ export default function LoginPage() {
                 navigate(`/dashboard/${data.activeRole.toLowerCase()}`)
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'Login gagal.')
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setError(data?.message || 'Login gagal.')
+            }
         } finally {
             setLoading(false)
         }
@@ -68,15 +96,17 @@ export default function LoginPage() {
                         <Input
                             label="Username"
                             value={form.username}
-                            onChange={e => setForm({ ...form, username: e.target.value })}
+                            onChange={e => handleChange('username', e.target.value)}
                             placeholder="Masukkan username"
+                            error={fieldErrors.username}
                         />
                         <Input
                             label="Password"
                             type={showPassword ? 'text' : 'password'}
                             value={form.password}
-                            onChange={e => setForm({ ...form, password: e.target.value })}
+                            onChange={e => handleChange('password', e.target.value)}
                             placeholder="••••••••"
+                            error={fieldErrors.password}
                             rightElement={(
                                 <button type="button" onClick={() => setShowPassword(p => !p)} className="text-slate-400 hover:text-ocean-500 transition cursor-pointer">
                                     {showPassword ? (

@@ -27,6 +27,7 @@ export default function WalletPage() {
     const [loading, setLoading] = useState(true)
     const [topUpLoading, setTopUpLoading] = useState(false)
     const [error, setError] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({})
     const [success, setSuccess] = useState('')
     const [refresh, setRefresh] = useState(0)
 
@@ -56,7 +57,12 @@ export default function WalletPage() {
             setAmount('')
             setRefresh(prev => prev + 1)
         } catch (err) {
-            setError(err.response?.data?.message || 'Gagal melakukan top up.')
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setError(data?.message || 'Gagal melakukan top up.')
+            }
         } finally {
             setTopUpLoading(false)
         }

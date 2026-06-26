@@ -14,6 +14,7 @@ export default function ProductFormPage() {
     const [form, setForm] = useState({ name: '', description: '', price: '', stock: '' })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({})
     const [checkingStore, setCheckingStore] = useState(true)
 
     useEffect(() => {
@@ -39,9 +40,32 @@ export default function ProductFormPage() {
 
     if (checkingStore) return null
 
+    const handleChange = (field, value) => {
+        setForm(prev => ({ ...prev, [field]: value }))
+        if (fieldErrors[field]) {
+            setFieldErrors(prev => ({ ...prev, [field]: '' }))
+        }
+    }
+
+    const validate = () => {
+        const errors = {}
+        if (!form.name.trim()) errors.name = 'Nama produk tidak boleh kosong'
+        if (!form.price || Number(form.price) < 1) errors.price = 'Harga harus lebih dari 0'
+        if (!form.stock || Number(form.stock) < 0) errors.stock = 'Stok tidak boleh negatif'
+        return errors
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
+        setFieldErrors({})
+
+        const clientErrors = validate()
+        if (Object.keys(clientErrors).length > 0) {
+            setFieldErrors(clientErrors)
+            return
+        }
+
         setLoading(true)
         try {
             const payload = { ...form, price: Number(form.price), stock: Number(form.stock) }
@@ -49,7 +73,12 @@ export default function ProductFormPage() {
             else await createProduct(payload)
             navigate('/dashboard/seller/products')
         } catch (err) {
-            setError(err.response?.data?.message || 'Gagal menyimpan produk.')
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setError(data?.message || 'Gagal menyimpan produk.')
+            }
         } finally {
             setLoading(false)
         }
@@ -77,22 +106,25 @@ export default function ProductFormPage() {
                         <Input
                             label="Nama Produk *"
                             value={form.name}
-                            onChange={e => setForm(prev => ({ ...prev, name: e.target.value }))}
+                            onChange={e => handleChange('name', e.target.value)}
                             placeholder="Nama produk"
+                            error={fieldErrors.name}
                         />
                         <Input
                             label="Harga (Rp) *"
                             type="number"
                             value={form.price}
-                            onChange={e => setForm(prev => ({ ...prev, price: e.target.value }))}
+                            onChange={e => handleChange('price', e.target.value)}
                             placeholder="Contoh: 50000"
+                            error={fieldErrors.price}
                         />
                         <Input
                             label="Stok *"
                             type="number"
                             value={form.stock}
-                            onChange={e => setForm(prev => ({ ...prev, stock: e.target.value }))}
+                            onChange={e => handleChange('stock', e.target.value)}
                             placeholder="Jumlah stok tersedia"
+                            error={fieldErrors.stock}
                         />
 
                         <div className="flex flex-col gap-1.5">

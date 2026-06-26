@@ -10,6 +10,7 @@ export default function ReviewSection() {
     const [form, setForm] = useState({ reviewerName: '', rating: 5, comment: '' })
     const [submitting, setSubmitting] = useState(false)
     const [error, setError] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({})
     const [success, setSuccess] = useState('')
 
     const fetchReviews = useCallback(() => {
@@ -20,14 +21,32 @@ export default function ReviewSection() {
 
     useEffect(() => { fetchReviews() }, [fetchReviews])
 
+    const handleChange = (field, value) => {
+        setForm(prev => ({ ...prev, [field]: value }))
+        if (fieldErrors[field]) {
+            setFieldErrors(prev => ({ ...prev, [field]: '' }))
+        }
+    }
+
+    const validate = () => {
+        const errors = {}
+        if (!form.reviewerName.trim()) errors.reviewerName = 'Nama tidak boleh kosong'
+        if (!form.comment.trim()) errors.comment = 'Komentar tidak boleh kosong'
+        return errors
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
         setSuccess('')
-        if (!form.reviewerName.trim() || !form.comment.trim()) {
-            setError('Nama dan komentar wajib diisi.')
+        setFieldErrors({})
+
+        const clientErrors = validate()
+        if (Object.keys(clientErrors).length > 0) {
+            setFieldErrors(clientErrors)
             return
         }
+
         setSubmitting(true)
         try {
             await api.post('/reviews', form)
@@ -35,7 +54,12 @@ export default function ReviewSection() {
             setForm({ reviewerName: '', rating: 5, comment: '' })
             fetchReviews()
         } catch (err) {
-            setError(err.response?.data?.message || 'Gagal mengirim review.')
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setError(data?.message || 'Gagal mengirim review.')
+            }
         } finally {
             setSubmitting(false)
         }
@@ -117,7 +141,8 @@ export default function ReviewSection() {
                     <Input
                         placeholder="Nama kamu"
                         value={form.reviewerName}
-                        onChange={e => setForm({ ...form, reviewerName: e.target.value })}
+                        onChange={e => handleChange('reviewerName', e.target.value)}
+                        error={fieldErrors.reviewerName}
                     />
 
                     <div className="flex items-center gap-2">
@@ -139,10 +164,15 @@ export default function ReviewSection() {
                     <textarea
                         placeholder="Ceritakan pengalamanmu menggunakan SEAPEDIA..."
                         value={form.comment}
-                        onChange={e => setForm({ ...form, comment: e.target.value })}
+                        onChange={e => handleChange('comment', e.target.value)}
                         rows={3}
-                        className="input-field resize-none min-h-[100px]"
+                        className={`input-field resize-none min-h-[100px] ${fieldErrors.comment ? 'input-error' : ''}`}
                     />
+                    {fieldErrors.comment && (
+                        <p className="text-xs text-red-500 font-medium flex items-center gap-1 mt-0.5">
+                            {fieldErrors.comment}
+                        </p>
+                    )}
 
                     <Button type="submit" disabled={submitting} fullWidth>
                         {submitting ? (

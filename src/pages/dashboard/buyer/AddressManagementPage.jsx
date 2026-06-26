@@ -21,6 +21,7 @@ export default function AddressManagementPage() {
     const [form, setForm] = useState(EMPTY_FORM)
     const [formLoading, setFormLoading] = useState(false)
     const [error, setError] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({})
     const [success, setSuccess] = useState('')
     const [refresh, setRefresh] = useState(0)
     const [deleteTarget, setDeleteTarget] = useState(null)
@@ -36,6 +37,7 @@ export default function AddressManagementPage() {
         setEditTarget(null)
         setForm(EMPTY_FORM)
         setError('')
+        setFieldErrors({})
         setSuccess('')
         setShowForm(true)
     }
@@ -52,6 +54,7 @@ export default function AddressManagementPage() {
             isDefault: addr.isDefault,
         })
         setError('')
+        setFieldErrors({})
         setSuccess('')
         setShowForm(true)
     }
@@ -59,12 +62,34 @@ export default function AddressManagementPage() {
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target
         setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
+        if (fieldErrors[name]) {
+            setFieldErrors(prev => ({ ...prev, [name]: '' }))
+        }
+    }
+
+    const validate = () => {
+        const errors = {}
+        if (!form.label.trim()) errors.label = 'Label tidak boleh kosong'
+        if (!form.recipientName.trim()) errors.recipientName = 'Nama penerima tidak boleh kosong'
+        if (!form.phone.trim()) errors.phone = 'No. telepon tidak boleh kosong'
+        if (!form.fullAddress.trim()) errors.fullAddress = 'Alamat lengkap tidak boleh kosong'
+        if (!form.city.trim()) errors.city = 'Kota tidak boleh kosong'
+        if (!form.postalCode.trim()) errors.postalCode = 'Kode pos tidak boleh kosong'
+        return errors
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
+        setFieldErrors({})
         setSuccess('')
+
+        const clientErrors = validate()
+        if (Object.keys(clientErrors).length > 0) {
+            setFieldErrors(clientErrors)
+            return
+        }
+
         setFormLoading(true)
         try {
             if (editTarget) {
@@ -77,7 +102,12 @@ export default function AddressManagementPage() {
             setRefresh(prev => prev + 1)
             setShowForm(false)
         } catch (err) {
-            setError(err.response?.data?.message || 'Gagal menyimpan alamat.')
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setError(data?.message || 'Gagal menyimpan alamat.')
+            }
         } finally {
             setFormLoading(false)
         }
@@ -151,8 +181,13 @@ export default function AddressManagementPage() {
                                     onChange={handleChange}
                                     placeholder={field.placeholder}
                                     required
-                                    className="input-field"
+                                    className={`input-field ${fieldErrors[field.name] ? 'input-error' : ''}`}
                                 />
+                                {fieldErrors[field.name] && (
+                                    <p className="text-xs text-red-500 font-medium flex items-center gap-1 mt-0.5">
+                                        {fieldErrors[field.name]}
+                                    </p>
+                                )}
                             </div>
                         ))}
 
@@ -167,8 +202,13 @@ export default function AddressManagementPage() {
                                 placeholder="Jl. Contoh No. 1, RT/RW ..."
                                 required
                                 rows={3}
-                                className="input-field resize-none"
+                                className={`input-field resize-none ${fieldErrors.fullAddress ? 'input-error' : ''}`}
                             />
+                            {fieldErrors.fullAddress && (
+                                <p className="text-xs text-red-500 font-medium flex items-center gap-1 mt-0.5">
+                                    {fieldErrors.fullAddress}
+                                </p>
+                            )}
                         </div>
 
                         <div className="sm:col-span-2 flex items-center gap-2">

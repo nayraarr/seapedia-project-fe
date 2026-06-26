@@ -456,6 +456,7 @@ export default function AdminDashboard() {
     const [listLoading, setListLoading] = useState(true)
     const [submitting, setSubmitting] = useState(false)
     const [message, setMessage] = useState({ type: '', text: '' })
+    const [fieldErrors, setFieldErrors] = useState({})
     const [selectedItem, setSelectedItem] = useState(null)
     const [detailItem, setDetailItem] = useState(null)
 
@@ -527,17 +528,40 @@ export default function AdminDashboard() {
     const handleVoucherChange = (e) => {
         const { name, value } = e.target
         setVoucherForm(prev => ({ ...prev, [name]: name === 'code' ? value.toUpperCase() : value }))
+        if (fieldErrors[name]) {
+            setFieldErrors(prev => ({ ...prev, [name]: '' }))
+        }
     }
 
     const handlePromoChange = (e) => {
         const { name, value } = e.target
         setPromoForm(prev => ({ ...prev, [name]: name === 'code' ? value.toUpperCase() : value }))
+        if (fieldErrors[name]) {
+            setFieldErrors(prev => ({ ...prev, [name]: '' }))
+        }
+    }
+
+    const validateVoucher = () => {
+        const errors = {}
+        if (!voucherForm.code.trim()) errors.code = 'Kode voucher tidak boleh kosong'
+        if (!voucherForm.discountValue || Number(voucherForm.discountValue) < 1) errors.discountValue = 'Nilai diskon harus lebih dari 0'
+        if (!voucherForm.usageLimit || Number(voucherForm.usageLimit) < 1) errors.usageLimit = 'Batas pemakaian harus diisi'
+        if (!voucherForm.expiryDate) errors.expiryDate = 'Tanggal berlaku harus diisi'
+        return errors
     }
 
     const handleCreateVoucher = async (e) => {
         e.preventDefault()
-        setSubmitting(true)
         setMessage({ type: '', text: '' })
+        setFieldErrors({})
+
+        const clientErrors = validateVoucher()
+        if (Object.keys(clientErrors).length > 0) {
+            setFieldErrors(clientErrors)
+            return
+        }
+
+        setSubmitting(true)
         try {
             const payload = {
                 code: voucherForm.code,
@@ -554,16 +578,37 @@ export default function AdminDashboard() {
             setVoucherForm(initialVoucherForm)
             await fetchVouchers()
         } catch (err) {
-            setMessage({ type: 'error', text: err.response?.data?.message || 'Gagal membuat voucher.' })
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setMessage({ type: 'error', text: data?.message || 'Gagal membuat voucher.' })
+            }
         } finally {
             setSubmitting(false)
         }
     }
 
+    const validatePromo = () => {
+        const errors = {}
+        if (!promoForm.code.trim()) errors.code = 'Kode promo tidak boleh kosong'
+        if (!promoForm.discountValue || Number(promoForm.discountValue) < 1) errors.discountValue = 'Nilai diskon harus lebih dari 0'
+        if (!promoForm.expiryDate) errors.expiryDate = 'Tanggal berlaku harus diisi'
+        return errors
+    }
+
     const handleCreatePromo = async (e) => {
         e.preventDefault()
-        setSubmitting(true)
         setMessage({ type: '', text: '' })
+        setFieldErrors({})
+
+        const clientErrors = validatePromo()
+        if (Object.keys(clientErrors).length > 0) {
+            setFieldErrors(clientErrors)
+            return
+        }
+
+        setSubmitting(true)
         try {
             const payload = {
                 code: promoForm.code,
@@ -579,7 +624,12 @@ export default function AdminDashboard() {
             setPromoForm(initialPromoForm)
             await fetchPromos()
         } catch (err) {
-            setMessage({ type: 'error', text: err.response?.data?.message || 'Gagal membuat promo.' })
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setMessage({ type: 'error', text: data?.message || 'Gagal membuat promo.' })
+            }
         } finally {
             setSubmitting(false)
         }
@@ -757,7 +807,7 @@ export default function AdminDashboard() {
             <div className="flex gap-1 mb-6 bg-red-50 rounded-xl p-1 w-fit animate-fade-in">
                 {tabs.map(t => (
                     <button key={t.key}
-                            onClick={() => { setActiveTab(t.key); setMessage({ type: '', text: '' }) }}
+                            onClick={() => { setActiveTab(t.key); setMessage({ type: '', text: '' }); setFieldErrors({}) }}
                             className={`px-5 py-2 text-sm font-semibold rounded-lg transition ${
                                 activeTab === t.key ? 'bg-white text-red-700 shadow-sm' : 'text-red-500 hover:text-red-700'
                             }`}
@@ -779,13 +829,13 @@ export default function AdminDashboard() {
                         <div className="card p-6">
                             <h2 className="font-bold text-slate-700 text-lg mb-4">Buat Voucher Baru</h2>
                             <form onSubmit={handleCreateVoucher} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Kode Voucher</label><input name="code" value={voucherForm.code} onChange={handleVoucherChange} required className={inputClass} placeholder="CONTOH50" /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Kode Voucher</label><input name="code" value={voucherForm.code} onChange={handleVoucherChange} required className={`${inputClass} ${fieldErrors.code ? 'input-error' : ''}`} placeholder="CONTOH50" />{fieldErrors.code && <p className="text-xs text-red-500 mt-0.5">{fieldErrors.code}</p>}</div>
                                 <div><label className="block text-xs font-semibold text-slate-500 mb-1">Tipe Diskon</label><select name="discountType" value={voucherForm.discountType} onChange={handleVoucherChange} className={inputClass}><option value="PERCENTAGE">Persen (%)</option><option value="FIXED">Nominal (Rp)</option></select></div>
-                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Nilai Diskon</label><input name="discountValue" type="number" value={voucherForm.discountValue} onChange={handleVoucherChange} required min="1" className={inputClass} placeholder={voucherForm.discountType === 'PERCENTAGE' ? '10' : '5000'} /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Nilai Diskon</label><input name="discountValue" type="number" value={voucherForm.discountValue} onChange={handleVoucherChange} required min="1" className={`${inputClass} ${fieldErrors.discountValue ? 'input-error' : ''}`} placeholder={voucherForm.discountType === 'PERCENTAGE' ? '10' : '5000'} />{fieldErrors.discountValue && <p className="text-xs text-red-500 mt-0.5">{fieldErrors.discountValue}</p>}</div>
                                 <div><label className="block text-xs font-semibold text-slate-500 mb-1">Maks Diskon (kosongkan jika %)</label><input name="maxDiscountAmount" type="number" value={voucherForm.maxDiscountAmount} onChange={handleVoucherChange} min="1" className={inputClass} placeholder="Rp" /></div>
                                 <div><label className="block text-xs font-semibold text-slate-500 mb-1">Min Pembelian</label><input name="minPurchaseAmount" type="number" value={voucherForm.minPurchaseAmount} onChange={handleVoucherChange} min="0" className={inputClass} placeholder="0" /></div>
-                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Batas Pemakaian</label><input name="usageLimit" type="number" value={voucherForm.usageLimit} onChange={handleVoucherChange} required min="1" className={inputClass} placeholder="100" /></div>
-                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Berlaku Sampai</label><input name="expiryDate" type="datetime-local" value={voucherForm.expiryDate} onChange={handleVoucherChange} required className={inputClass} /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Batas Pemakaian</label><input name="usageLimit" type="number" value={voucherForm.usageLimit} onChange={handleVoucherChange} required min="1" className={`${inputClass} ${fieldErrors.usageLimit ? 'input-error' : ''}`} placeholder="100" />{fieldErrors.usageLimit && <p className="text-xs text-red-500 mt-0.5">{fieldErrors.usageLimit}</p>}</div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Berlaku Sampai</label><input name="expiryDate" type="datetime-local" value={voucherForm.expiryDate} onChange={handleVoucherChange} required className={`${inputClass} ${fieldErrors.expiryDate ? 'input-error' : ''}`} />{fieldErrors.expiryDate && <p className="text-xs text-red-500 mt-0.5">{fieldErrors.expiryDate}</p>}</div>
                                 <div className="md:col-span-2 lg:col-span-3"><label className="block text-xs font-semibold text-slate-500 mb-1">Deskripsi (opsional)</label><input name="description" value={voucherForm.description} onChange={handleVoucherChange} className={inputClass} placeholder="Deskripsi voucher" /></div>
                                 <div className="md:col-span-2 lg:col-span-3 flex justify-end">
                                     <Button type="submit" disabled={submitting}>{submitting ? 'Menyimpan...' : 'Buat Voucher'}</Button>
@@ -830,12 +880,12 @@ export default function AdminDashboard() {
                         <div className="card p-6">
                             <h2 className="font-bold text-slate-700 text-lg mb-4">Buat Promo Baru</h2>
                             <form onSubmit={handleCreatePromo} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Kode Promo</label><input name="code" value={promoForm.code} onChange={handlePromoChange} required className={inputClass} placeholder="PROMO60" /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Kode Promo</label><input name="code" value={promoForm.code} onChange={handlePromoChange} required className={`${inputClass} ${fieldErrors.code ? 'input-error' : ''}`} placeholder="PROMO60" />{fieldErrors.code && <p className="text-xs text-red-500 mt-0.5">{fieldErrors.code}</p>}</div>
                                 <div><label className="block text-xs font-semibold text-slate-500 mb-1">Tipe Diskon</label><select name="discountType" value={promoForm.discountType} onChange={handlePromoChange} className={inputClass}><option value="PERCENTAGE">Persen (%)</option><option value="FIXED">Nominal (Rp)</option></select></div>
-                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Nilai Diskon</label><input name="discountValue" type="number" value={promoForm.discountValue} onChange={handlePromoChange} required min="1" className={inputClass} placeholder={promoForm.discountType === 'PERCENTAGE' ? '10' : '5000'} /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Nilai Diskon</label><input name="discountValue" type="number" value={promoForm.discountValue} onChange={handlePromoChange} required min="1" className={`${inputClass} ${fieldErrors.discountValue ? 'input-error' : ''}`} placeholder={promoForm.discountType === 'PERCENTAGE' ? '10' : '5000'} />{fieldErrors.discountValue && <p className="text-xs text-red-500 mt-0.5">{fieldErrors.discountValue}</p>}</div>
                                 <div><label className="block text-xs font-semibold text-slate-500 mb-1">Maks Diskon (kosongkan jika %)</label><input name="maxDiscountAmount" type="number" value={promoForm.maxDiscountAmount} onChange={handlePromoChange} min="1" className={inputClass} placeholder="Rp" /></div>
                                 <div><label className="block text-xs font-semibold text-slate-500 mb-1">Min Pembelian</label><input name="minPurchaseAmount" type="number" value={promoForm.minPurchaseAmount} onChange={handlePromoChange} min="0" className={inputClass} placeholder="0" /></div>
-                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Berlaku Sampai</label><input name="expiryDate" type="datetime-local" value={promoForm.expiryDate} onChange={handlePromoChange} required className={inputClass} /></div>
+                                <div><label className="block text-xs font-semibold text-slate-500 mb-1">Berlaku Sampai</label><input name="expiryDate" type="datetime-local" value={promoForm.expiryDate} onChange={handlePromoChange} required className={`${inputClass} ${fieldErrors.expiryDate ? 'input-error' : ''}`} />{fieldErrors.expiryDate && <p className="text-xs text-red-500 mt-0.5">{fieldErrors.expiryDate}</p>}</div>
                                 <div className="md:col-span-2 lg:col-span-3"><label className="block text-xs font-semibold text-slate-500 mb-1">Deskripsi (opsional)</label><input name="description" value={promoForm.description} onChange={handlePromoChange} className={inputClass} placeholder="Deskripsi promo" /></div>
                                 <div className="md:col-span-2 lg:col-span-3 flex justify-end">
                                     <Button type="submit" disabled={submitting}>{submitting ? 'Menyimpan...' : 'Buat Promo'}</Button>

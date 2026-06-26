@@ -16,8 +16,16 @@ export default function RegisterPage() {
     const navigate = useNavigate()
     const [form, setForm] = useState({ username: '', email: '', password: '', roles: [] })
     const [error, setError] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({})
     const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+
+    const handleChange = (field, value) => {
+        setForm(prev => ({ ...prev, [field]: value }))
+        if (fieldErrors[field]) {
+            setFieldErrors(prev => ({ ...prev, [field]: '' }))
+        }
+    }
 
     const toggleRole = (role) => {
         setForm(prev => ({
@@ -28,13 +36,28 @@ export default function RegisterPage() {
         }))
     }
 
+    const validate = () => {
+        const errors = {}
+        if (!form.username.trim()) errors.username = 'Username tidak boleh kosong'
+        if (!form.email.trim()) errors.email = 'Email tidak boleh kosong'
+        else if (!/\S+@\S+\.\S+/.test(form.email)) errors.email = 'Format email tidak valid'
+        if (!form.password.trim()) errors.password = 'Password tidak boleh kosong'
+        else if (form.password.length < 6) errors.password = 'Password minimal 6 karakter'
+        if (form.roles.length === 0) errors.roles = 'Pilih minimal satu role'
+        return errors
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
-        if (form.roles.length === 0) {
-            setError('Pilih minimal satu role.')
+        setFieldErrors({})
+
+        const clientErrors = validate()
+        if (Object.keys(clientErrors).length > 0) {
+            setFieldErrors(clientErrors)
             return
         }
+
         setLoading(true)
         try {
             const res = await api.post('/auth/register', form)
@@ -46,7 +69,12 @@ export default function RegisterPage() {
                 navigate(`/dashboard/${data.activeRole.toLowerCase()}`)
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'Registrasi gagal.')
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setError(data?.message || 'Registrasi gagal.')
+            }
         } finally {
             setLoading(false)
         }
@@ -87,22 +115,25 @@ export default function RegisterPage() {
                         <Input
                             label="Username"
                             value={form.username}
-                            onChange={e => setForm({ ...form, username: e.target.value })}
+                            onChange={e => handleChange('username', e.target.value)}
                             placeholder="username kamu"
+                            error={fieldErrors.username}
                         />
                         <Input
                             label="Email"
                             type="email"
                             value={form.email}
-                            onChange={e => setForm({ ...form, email: e.target.value })}
+                            onChange={e => handleChange('email', e.target.value)}
                             placeholder="email@kamu.com"
+                            error={fieldErrors.email}
                         />
                         <Input
                             label="Password"
                             type={showPassword ? 'text' : 'password'}
                             value={form.password}
-                            onChange={e => setForm({ ...form, password: e.target.value })}
+                            onChange={e => handleChange('password', e.target.value)}
                             placeholder="min. 6 karakter"
+                            error={fieldErrors.password}
                             rightElement={(
                                 <button type="button" onClick={() => setShowPassword(p => !p)} className="text-slate-400 hover:text-ocean-500 transition cursor-pointer">
                                     {showPassword ? (
@@ -123,6 +154,11 @@ export default function RegisterPage() {
                             <label className="text-sm font-semibold text-slate-700 block mb-3">
                                 Pilih Role <span className="text-slate-400 font-normal">(boleh lebih dari satu)</span>
                             </label>
+                            {fieldErrors.roles && (
+                                <p className="text-xs text-red-500 font-medium flex items-center gap-1 mt-0.5 mb-2">
+                                    {fieldErrors.roles}
+                                </p>
+                            )}
                             <div className="flex gap-3">
                                 {ROLES.map(role => {
                                     const active = form.roles.includes(role.key)

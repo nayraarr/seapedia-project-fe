@@ -18,6 +18,7 @@ export default function StoreManagementPage() {
     const [form, setForm] = useState({ name: '', description: '' })
     const [submitting, setSubmitting] = useState(false)
     const [error, setError] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({})
     const navigate = useNavigate()
     const { decoded } = useAuth()
 
@@ -32,9 +33,30 @@ export default function StoreManagementPage() {
             .finally(() => setLoading(false))
     }, [])
 
+    const handleChange = (field, value) => {
+        setForm(prev => ({ ...prev, [field]: value }))
+        if (fieldErrors[field]) {
+            setFieldErrors(prev => ({ ...prev, [field]: '' }))
+        }
+    }
+
+    const validate = () => {
+        const errors = {}
+        if (!form.name.trim()) errors.name = 'Nama toko tidak boleh kosong'
+        return errors
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
+        setFieldErrors({})
+
+        const clientErrors = validate()
+        if (Object.keys(clientErrors).length > 0) {
+            setFieldErrors(clientErrors)
+            return
+        }
+
         setSubmitting(true)
         try {
             const res = store
@@ -43,7 +65,12 @@ export default function StoreManagementPage() {
             setStore(res.data.data)
             setShowForm(false)
         } catch (err) {
-            setError(err.response?.data?.message || 'Gagal menyimpan toko.')
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setError(data?.message || 'Gagal menyimpan toko.')
+            }
         } finally {
             setSubmitting(false)
         }
@@ -90,8 +117,9 @@ export default function StoreManagementPage() {
                         <Input
                             label="Nama Toko *"
                             value={form.name}
-                            onChange={e => setForm({ ...form, name: e.target.value })}
+                            onChange={e => handleChange('name', e.target.value)}
                             placeholder="Nama toko harus unik"
+                            error={fieldErrors.name}
                         />
 
                         <div className="flex flex-col gap-1.5">

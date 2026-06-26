@@ -47,6 +47,7 @@ export default function CartPage() {
     const [discountCheckLoading, setDiscountCheckLoading] = useState(false)
     const [previewData, setPreviewData] = useState(null)
     const [error, setError] = useState('')
+    const [fieldErrors, setFieldErrors] = useState({})
     const [success, setSuccess] = useState('')
     const [checkoutModalOpen, setCheckoutModalOpen] = useState(false)
     const [availableVouchers, setAvailableVouchers] = useState([])
@@ -109,10 +110,11 @@ export default function CartPage() {
             const res = await validateDiscountCode(code)
             setDiscountCheck(res.data.data)
         } catch (err) {
+            const data = err.response?.data
             setDiscountCheck({
                 valid: false,
                 source: 'NONE',
-                message: err.response?.data?.message || 'Gagal memvalidasi kode diskon.',
+                message: data?.fieldErrors?.code || data?.message || 'Gagal memvalidasi kode diskon.',
             })
         } finally {
             setDiscountCheckLoading(false)
@@ -133,7 +135,12 @@ export default function CartPage() {
             setPreviewData(res.data.data)
             setCheckoutModalOpen(true)
         } catch (err) {
-            setError(err.response?.data?.message || 'Gagal memuat ringkasan checkout.')
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setError(data?.message || 'Gagal memuat ringkasan checkout.')
+            }
         } finally {
             setPreviewLoading(false)
         }
@@ -162,7 +169,12 @@ export default function CartPage() {
             ])
             navigate(`/dashboard/buyer/orders/${res.data.data.orderId}`)
         } catch (err) {
-            setError(err.response?.data?.message || 'Checkout gagal.')
+            const data = err.response?.data
+            if (data?.fieldErrors && Object.keys(data.fieldErrors).length > 0) {
+                setFieldErrors(data.fieldErrors)
+            } else {
+                setError(data?.message || 'Checkout gagal.')
+            }
         } finally {
             setCheckoutLoading(false)
         }
