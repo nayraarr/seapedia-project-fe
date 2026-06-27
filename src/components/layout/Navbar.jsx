@@ -50,9 +50,7 @@ export default function Navbar() {
         <nav className="w-full bg-white/95 backdrop-blur-md border-b border-ocean-100 px-4 sm:px-6 sticky top-0 z-50 shadow-sm">
             <div className="max-w-6xl mx-auto w-full flex items-center justify-between h-16">
                 <Link to="/" className="flex items-center gap-1.5 group">
-                    <div className="w-8 h-8 rounded-lg ocean-gradient flex items-center justify-center shadow-sm group-hover:shadow-md transition-shadow">
-                        <span className="text-white font-extrabold text-sm">S</span>
-                    </div>
+                    <img src="/logo.png" alt="SEAPEDIA" className="h-8 w-auto" />
                     <span className="text-xl font-extrabold tracking-tight text-ocean-600">
                         SEA<span className="text-ocean-300">PEDIA</span>
                     </span>
