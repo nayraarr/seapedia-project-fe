@@ -3,11 +3,13 @@ import { useState } from 'react'
 import Button from './Button'
 import { useAuth } from '../../contexts/useAuth'
 import { useCart } from '../../contexts/useCart'
+import { Star, Store } from 'lucide-react'
 
 export default function ProductCard({ product }) {
     const { token, activeRole } = useAuth()
     const { add } = useCart()
     const [busy, setBusy] = useState(false)
+    const [imgError, setImgError] = useState(false)
 
     const formatPrice = (price) =>
         new Intl.NumberFormat('id-ID', {
@@ -24,73 +26,102 @@ export default function ProductCard({ product }) {
         setBusy(false)
     }
 
-    const gradientMap = [
-        'from-ocean-100 to-ocean-200',
-        'from-emerald-100 to-emerald-200',
-        'from-orange-100 to-amber-200',
-        'from-violet-100 to-violet-200',
-        'from-rose-100 to-rose-200',
-        'from-cyan-100 to-cyan-200',
-    ]
-
-    const bgGradient = gradientMap[(product.name?.length || 0) % gradientMap.length]
+    const hasImage = product.imageUrl && !imgError
+    const hasDiscount = product.discountPercent && product.discountPercent > 0
+    const originalPrice = hasDiscount ? Math.round(product.price / (1 - product.discountPercent / 100)) : null
+    const hasRating = product.rating !== null && product.rating !== undefined
+    const hasSold = product.soldCount !== null && product.soldCount !== undefined && product.soldCount > 0
 
     return (
-        <div className="card-hover group overflow-hidden">
-            <Link to={`/products/${product.id}`} className="block p-4">
-                <div className={`bg-gradient-to-br ${bgGradient} rounded-xl h-36 mb-4 flex items-center justify-center relative overflow-hidden`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        <Link to={`/products/${product.id}`} className="group block bg-white rounded-lg border border-slate-200 hover:border-slate-300 hover:shadow-card-hover transition-all duration-200 overflow-hidden">
+            <div className={`relative aspect-[4/3] bg-slate-100 overflow-hidden ${!hasImage ? 'flex items-center justify-center' : ''}`}>
+                {hasImage ? (
+                    <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={() => setImgError(true)}
+                    />
+                ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
                     </svg>
-                    {product.stock <= 0 && (
-                        <span className="absolute top-2 right-2 badge-red text-[10px]">Habis</span>
+                )}
+
+                {hasDiscount && (
+                    <span className="discount-badge">-{product.discountPercent}%</span>
+                )}
+
+                {product.stock > 0 && product.stock <= 5 && (
+                    <span className="absolute top-0 right-0 bg-orange-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-bl-md">
+                        Stok Terbatas
+                    </span>
+                )}
+
+                {product.stock <= 0 && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                        <span className="bg-black/70 text-white text-xs font-bold px-3 py-1 rounded">Habis</span>
+                    </div>
+                )}
+            </div>
+
+            <div className="p-2.5">
+                <h3 className="text-sm font-semibold text-slate-800 line-clamp-2 leading-snug min-h-[2.5rem]">
+                    {product.name}
+                </h3>
+
+                <div className="mt-1">
+                    {hasDiscount && originalPrice && (
+                        <span className="text-[11px] text-slate-400 line-through mr-1">{formatPrice(originalPrice)}</span>
                     )}
-                    {product.stock > 0 && product.stock <= 5 && (
-                        <span className="absolute top-2 right-2 badge-orange text-[10px]">Sisa {product.stock}</span>
+                    <p className="text-base font-extrabold text-slate-800">
+                        {formatPrice(product.price)}
+                    </p>
+                </div>
+
+                <div className="flex items-center gap-2 mt-1.5 text-[11px] text-slate-400">
+                    {hasRating && (
+                        <span className="flex items-center gap-0.5">
+                            <Star size={11} className="text-amber-400" fill="#fbbf24" strokeWidth={1.5} />
+                            {product.rating}
+                        </span>
+                    )}
+                    {hasSold && (
+                        <span>{hasRating ? '| ' : ''}Terjual {product.soldCount}</span>
                     )}
                 </div>
-                <h3 className="font-semibold text-slate-800 text-sm truncate mb-1 group-hover:text-ocean-600 transition-colors">{product.name}</h3>
-                <p className="text-ocean-600 font-bold text-base">{formatPrice(product.price)}</p>
+
                 {product.storeName && (
-                    <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-400">
-                        <div className="w-4 h-4 rounded bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-2.5 h-2.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
-                        </div>
+                    <div className="flex items-center gap-1 mt-1 text-[11px] text-slate-400 truncate">
+                        <Store size={11} strokeWidth={1.5} className="flex-shrink-0" />
                         <span className="truncate">{product.storeName}</span>
                     </div>
                 )}
-            </Link>
+            </div>
 
-            {token && activeRole === 'BUYER' && (
-                <div className="px-4 pb-4 pt-0">
+            {token && activeRole === 'BUYER' && product.stock > 0 && (
+                <div className="px-2.5 pb-2.5 pt-0">
                     <Button
                         variant="primary"
                         size="sm"
                         onClick={handleAdd}
-                        disabled={busy || product.stock <= 0}
+                        disabled={busy}
                         fullWidth
                     >
                         {busy ? (
-                            <span className="flex items-center gap-1.5">
-                                <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24" fill="none">
+                            <span className="flex items-center gap-1">
+                                <svg className="animate-spin h-3 w-3" viewBox="0 0 24 24" fill="none">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                                 </svg>
-                                Menambah...
+                                +
                             </span>
                         ) : (
-                            <span className="flex items-center gap-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                </svg>
-                                Keranjang
-                            </span>
+                            <span className="flex items-center gap-1">+ Keranjang</span>
                         )}
                     </Button>
                 </div>
             )}
-        </div>
+        </Link>
     )
 }

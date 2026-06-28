@@ -30,10 +30,8 @@ export default function SelectRolePage() {
 
             <div className="w-full max-w-lg">
                 <div className="text-center mb-8 animate-fade-in">
-                    <Link to="/" className="inline-flex items-center gap-2">
-                        <div className="w-10 h-10 rounded-xl ocean-gradient flex items-center justify-center shadow-md">
-                            <span className="text-white font-extrabold text-lg">S</span>
-                        </div>
+                    <Link to="/" className="inline-flex items-center gap-3">
+                        <img src="/logo.png" alt="SEAPEDIA" className="h-10 w-auto" />
                         <span className="text-3xl font-extrabold tracking-tight text-ocean-600">
                             SEA<span className="text-ocean-300">PEDIA</span>
                         </span>

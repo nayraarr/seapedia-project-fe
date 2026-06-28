@@ -69,8 +69,8 @@ export default function IncomeReportPage() {
                         <SummaryCard label="Total Diskon Diberikan ke Buyer" value={formatRupiah(report.totalDiscountGiven)} accent="text-slate-700" small />
                     </div>
 
-                    <div className="card-hover p-5">
-                        <h2 className="font-bold text-slate-800 mb-4">Status Pesanan</h2>
+                    <div className="card-hover p-4">
+                        <h2 className="font-bold text-slate-800 mb-3 text-sm">Status Pesanan</h2>
                         <div className="flex flex-wrap gap-2">
                             {report.statusBreakdown.map(s => (
                                 <span key={s.status} className="badge-emerald">
@@ -85,8 +85,8 @@ export default function IncomeReportPage() {
                         )}
                     </div>
 
-                    <div className="card-hover p-5">
-                        <h2 className="font-bold text-slate-800 mb-4">Pesanan Terakhir</h2>
+                    <div className="card-hover p-4">
+                        <h2 className="font-bold text-slate-800 mb-3 text-sm">Pesanan Terakhir</h2>
                         {report.recentOrders.length === 0 ? (
                             <p className="text-sm text-slate-400">Belum ada pesanan masuk.</p>
                         ) : (
@@ -117,9 +117,9 @@ export default function IncomeReportPage() {
 
 function SummaryCard({ label, value, accent, small }) {
     return (
-        <div className="card-hover p-5">
-            <p className="text-xs uppercase tracking-wide text-slate-400 font-semibold">{label}</p>
-            <p className={`mt-1 font-bold ${small ? 'text-lg' : 'text-2xl'} ${accent}`}>{value}</p>
+        <div className="card-hover p-4">
+            <p className="text-[11px] uppercase tracking-wide text-slate-500 font-semibold">{label}</p>
+            <p className={`mt-1 font-bold ${small ? 'text-base' : 'text-xl'} ${accent || 'text-slate-800'}`}>{value}</p>
         </div>
     )
 }

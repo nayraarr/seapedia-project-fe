@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
+import BackButton from '../../../components/ui/BackButton'
 import Button from '../../../components/ui/Button'
 import OrderDetailView from '../../../components/ui/OrderDetailView'
 import { getJobDetail, takeJob, completeJob } from '../../../services/deliveryApi'
@@ -60,11 +61,11 @@ export default function DriverJobDetailPage() {
                     <div className="skeleton h-96" />
                 </div>
             ) : error ? (
-                <div className="card p-8 text-center animate-fade-in">
+                <div className="card-hover p-4 text-center animate-fade-in">
                     <p className="text-red-600 font-semibold">{error}</p>
-                    <Link to="/dashboard/driver/jobs" className="inline-block mt-4">
-                        <Button variant="outline">Kembali ke Job Tersedia</Button>
-                    </Link>
+                    <div className="mt-4 inline-block">
+                        <BackButton to="/dashboard/driver/jobs" label="Kembali ke Job Tersedia" />
+                    </div>
                 </div>
             ) : (
                 <div className="animate-fade-in">
@@ -74,14 +75,14 @@ export default function DriverJobDetailPage() {
                         subtitle="Driver"
                     />
                     {job.status === 'SELESAI' && (
-                        <div className="ocean-gradient-subtle border border-ocean-200 rounded-2xl p-5 mt-6 animate-slide-up">
+                        <div className="border border-ocean-200 rounded-lg p-4 mt-6 animate-slide-up">
                             <h2 className="font-bold text-slate-800 mb-3">Pendapatan</h2>
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm text-slate-500">Biaya Pengiriman</p>
-                                    <p className="text-sm text-slate-400 text-xs">{job.deliveryMethodLabel}</p>
+                                    <p className="text-xs text-slate-400">{job.deliveryMethodLabel}</p>
                                 </div>
-                                <p className="text-2xl font-extrabold text-emerald-600">{formatRupiah(job.deliveryFee)}</p>
+                                <p className="text-xl font-extrabold text-emerald-600">{formatRupiah(job.deliveryFee)}</p>
                             </div>
                         </div>
                     )}

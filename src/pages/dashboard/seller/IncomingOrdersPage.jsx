@@ -73,19 +73,19 @@ export default function IncomingOrdersPage() {
                 </Link>
             </div>
 
-            <div className="flex gap-1 mb-6 bg-emerald-50 rounded-xl p-1 w-fit">
+            <div className="flex gap-1 mb-6 bg-emerald-100 rounded-lg p-1 w-fit">
                 <button
                     onClick={() => setFilterTab('incoming')}
-                    className={`px-4 py-2 text-sm font-semibold rounded-lg transition ${
-                        filterTab === 'incoming' ? 'bg-white text-emerald-700 shadow-sm' : 'text-emerald-500 hover:text-emerald-700'
+                    className={`px-4 py-2 text-sm font-semibold rounded-md transition ${
+                        filterTab === 'incoming' ? 'bg-white text-emerald-800 shadow-sm' : 'text-emerald-600 hover:text-emerald-800'
                     }`}
                 >
                     Masuk ({incomingOrders.length})
                 </button>
                 <button
                     onClick={() => setFilterTab('processed')}
-                    className={`px-4 py-2 text-sm font-semibold rounded-lg transition ${
-                        filterTab === 'processed' ? 'bg-white text-emerald-700 shadow-sm' : 'text-emerald-500 hover:text-emerald-700'
+                    className={`px-4 py-2 text-sm font-semibold rounded-md transition ${
+                        filterTab === 'processed' ? 'bg-white text-emerald-800 shadow-sm' : 'text-emerald-600 hover:text-emerald-800'
                     }`}
                 >
                     Diproses ({processedOrders.length})
@@ -93,7 +93,7 @@ export default function IncomingOrdersPage() {
             </div>
 
             {error && (
-                <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">
                     {error}
                 </div>
             )}
@@ -106,7 +106,7 @@ export default function IncomingOrdersPage() {
                 </div>
             ) : displayedOrders.length === 0 ? (
                 <div className="text-center py-20 card animate-fade-in">
-                    <p className="text-4xl mb-3">{filterTab === 'incoming' ? <Inbox size={48} strokeWidth={1.5} /> : <Package size={48} strokeWidth={1.5} />}</p>
+                    <div className="flex justify-center mb-3">{filterTab === 'incoming' ? <Inbox size={48} strokeWidth={1.5} /> : <Package size={48} strokeWidth={1.5} />}</div>
                     <p className="font-semibold text-slate-700">
                         {filterTab === 'incoming' ? 'Belum ada pesanan masuk.' : 'Belum ada pesanan diproses.'}
                     </p>
@@ -119,7 +119,7 @@ export default function IncomingOrdersPage() {
             ) : (
                 <div className="space-y-3 animate-fade-in">
                     {displayedOrders.map(order => (
-                        <div key={order.orderId} className={`card-hover p-5 ${
+                        <div key={order.orderId} className={`card-hover p-4 ${
                             order.overdue
                                 ? 'border-red-200'
                                 : ''
@@ -150,7 +150,7 @@ export default function IncomingOrdersPage() {
                                 <div className="flex items-center gap-3 flex-shrink-0">
                                     <div className="text-right">
                                         <p className="text-xs text-slate-400">Total</p>
-                                        <p className="text-lg font-bold text-emerald-700">{formatRupiah(order.totalAmount)}</p>
+                                        <p className="text-base font-bold text-emerald-700">{formatRupiah(order.totalAmount)}</p>
                                     </div>
                                     {order.status === 'SEDANG_DIKEMAS' && (
                                         <Button

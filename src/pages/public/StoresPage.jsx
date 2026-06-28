@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
-import BackButton from '../../components/ui/BackButton'
 import { getAllStores } from '../../services/storeApi'
 
 export default function StoresPage() {
@@ -22,7 +21,6 @@ export default function StoresPage() {
 
     return (
         <MainLayout>
-            <BackButton className="mb-3" />
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
                 <div>
                     <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Toko</span>

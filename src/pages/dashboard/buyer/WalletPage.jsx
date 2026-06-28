@@ -85,39 +85,39 @@ export default function WalletPage() {
                 </div>
             ) : (
                 <div className="grid md:grid-cols-2 gap-6 animate-slide-up">
-                    <div className="ocean-gradient rounded-2xl p-6 text-white shadow-card">
-                        <p className="text-sm opacity-80 mb-1">Saldo Saat Ini</p>
-                        <p className="text-4xl font-bold tracking-tight">
+                    <div className="ocean-gradient rounded-lg p-6 sm:p-8 text-white shadow-card flex flex-col justify-center min-h-[200px]">
+                        <p className="text-base opacity-80 mb-2">Saldo Saat Ini</p>
+                        <p className="text-4xl sm:text-5xl font-bold tracking-tight">
                             {wallet ? formatRupiah(wallet.balance) : 'Rp0'}
                         </p>
                         {wallet?.updatedAt && (
-                            <p className="text-xs opacity-60 mt-2">
+                            <p className="text-sm opacity-60 mt-3">
                                 Diperbarui: {formatDate(wallet.updatedAt)}
                             </p>
                         )}
                     </div>
 
-                    <div className="card p-6">
-                        <h2 className="font-bold text-slate-700 mb-4">Top Up Saldo</h2>
+                    <div className="card-hover p-4">
+                        <h2 className="font-bold text-slate-700 mb-3 text-sm">Top Up Saldo</h2>
 
                         {error && (
-                            <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                            <div className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">
                                 {error}
                             </div>
                         )}
                         {success && (
-                            <div className="mb-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
+                            <div className="mb-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2.5">
                                 {success}
                             </div>
                         )}
 
-                        <div className="grid grid-cols-3 gap-2 mb-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
                             {TOPUP_PRESETS.map(preset => (
                                 <button
                                     key={preset}
                                     type="button"
                                     onClick={() => setAmount(String(preset))}
-                                    className={`text-xs font-semibold py-2 rounded-xl border transition
+                                    className={`text-xs font-semibold py-2 rounded-lg border transition
                                         ${String(amount) === String(preset)
                                         ? 'bg-ocean-600 text-white border-ocean-600'
                                         : 'bg-white text-slate-600 border-slate-200 hover:border-ocean-400'}`}
@@ -139,7 +139,7 @@ export default function WalletPage() {
                             <button
                                 type="submit"
                                 disabled={topUpLoading}
-                                className="bg-ocean-600 hover:bg-ocean-700 text-white font-semibold py-2.5 rounded-xl transition disabled:opacity-50"
+                                className="bg-ocean-600 hover:bg-ocean-700 text-white font-semibold py-2.5 rounded-lg transition disabled:opacity-50"
                             >
                                 {topUpLoading ? 'Memproses...' : 'Top Up Sekarang'}
                             </button>
@@ -150,7 +150,7 @@ export default function WalletPage() {
 
             {!loading && (
                 <div className="mt-6 card overflow-hidden">
-                    <div className="px-6 py-4 border-b border-slate-100">
+                    <div className="px-4 py-3 border-b border-slate-100">
                         <h2 className="font-bold text-slate-700">Riwayat Transaksi</h2>
                     </div>
                     {transactions.length === 0 ? (

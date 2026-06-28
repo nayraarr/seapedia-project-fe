@@ -58,7 +58,7 @@ export default function ProfilePage() {
             <BackButton className="mb-3" />
             <div className="max-w-2xl mx-auto space-y-4">
                 {[...Array(4)].map((_, i) => (
-                    <div key={i} className="skeleton rounded-2xl h-32" />
+                    <div key={i} className="skeleton rounded-lg h-32" />
                 ))}
             </div>
         </MainLayout>
@@ -68,8 +68,8 @@ export default function ProfilePage() {
         <MainLayout>
             <BackButton className="mb-3" />
             <div className="max-w-2xl mx-auto space-y-5">
-                <div className="card p-6 animate-fade-in">
-                    <div className="flex items-center gap-5">
+                <div className="card-hover p-4 animate-fade-in">
+                    <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full ocean-gradient flex items-center justify-center text-2xl font-extrabold text-white shadow-md flex-shrink-0">
                             {decoded?.username?.charAt(0).toUpperCase()}
                         </div>
@@ -86,8 +86,8 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="card p-6 animate-fade-in">
-                    <h2 className="text-base font-bold text-slate-700 mb-4">Role Aktif</h2>
+                <div className="card-hover p-4 animate-fade-in">
+                    <h2 className="text-sm font-bold text-slate-700 mb-3">Role Aktif</h2>
                     {activeRole ? (
                         <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${roleInfo[activeRole]?.badge || 'badge-slate'}`}>
                             <span className="w-1.5 h-1.5 rounded-full bg-current" />
@@ -98,8 +98,8 @@ export default function ProfilePage() {
                     )}
                 </div>
 
-                <div className="card p-6 animate-fade-in">
-                    <h2 className="text-base font-bold text-slate-700 mb-4">Role yang Dimiliki</h2>
+                <div className="card-hover p-4 animate-fade-in">
+                    <h2 className="text-sm font-bold text-slate-700 mb-3">Role yang Dimiliki</h2>
                     <div className="space-y-3">
                         {roles.map(role => {
                             const info = roleInfo[role] || { label: role, badge: 'badge-slate', border: 'border-slate-200', desc: '', icon: <User size={20} strokeWidth={1.5} /> }
@@ -107,8 +107,8 @@ export default function ProfilePage() {
                             return (
                                 <div
                                     key={role}
-                                    className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
-                                        isActive ? info.border : 'border-slate-100 hover:border-ocean-200 hover:bg-ocean-50/30'
+                                    className={`flex items-center justify-between p-3 rounded-lg border-2 transition-all ${
+                                        isActive ? info.border : 'border-slate-200 hover:border-ocean-200 hover:bg-ocean-50/30'
                                     }`}
                                 >
                                     <div className="flex items-center gap-3">
@@ -136,18 +136,18 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="card p-6 animate-fade-in">
-                    <div className="mb-5">
-                        <h2 className="text-base font-bold text-slate-700">Ringkasan Keuangan</h2>
+                <div className="card-hover p-4 animate-fade-in">
+                    <div className="mb-4">
+                        <h2 className="text-sm font-bold text-slate-700">Ringkasan Keuangan</h2>
                         <p className="text-xs text-slate-400 mt-0.5">Saldo real berdasarkan aktivitas akun</p>
                     </div>
 
                     <div className="grid grid-cols-1 gap-3">
                         {roles.includes('BUYER') && (
-                            <div className="flex items-center justify-between bg-ocean-50 border border-ocean-100 rounded-xl p-4">
+                            <div className="flex items-center justify-between bg-ocean-50 border border-ocean-200 rounded-lg p-3">
                                 <div>
-                                    <p className="text-xs text-ocean-600 font-semibold mb-1">Saldo Wallet</p>
-                                    <p className="text-lg font-extrabold text-ocean-700">
+                                    <p className="text-xs text-ocean-600 font-semibold mb-0.5">Saldo Wallet</p>
+                                    <p className="text-base font-extrabold text-ocean-700">
                                         {summary ? formatCurrency(summary.walletBalance) : '—'}
                                     </p>
                                 </div>
@@ -156,10 +156,10 @@ export default function ProfilePage() {
                         )}
 
                         {roles.includes('SELLER') && (
-                            <div className="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded-xl p-4">
+                            <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-lg p-3">
                                 <div>
-                                    <p className="text-xs text-emerald-600 font-semibold mb-1">Pendapatan Toko</p>
-                                    <p className="text-lg font-extrabold text-emerald-700">
+                                    <p className="text-xs text-emerald-600 font-semibold mb-0.5">Pendapatan Toko</p>
+                                                    <p className="text-base font-extrabold text-emerald-700">
                                         {summary ? formatCurrency(summary.sellerIncome) : '—'}
                                     </p>
                                 </div>
@@ -168,10 +168,10 @@ export default function ProfilePage() {
                         )}
 
                         {roles.includes('DRIVER') && (
-                            <div className="flex items-center justify-between bg-orange-50 border border-orange-100 rounded-xl p-4">
+                            <div className="flex items-center justify-between bg-orange-50 border border-orange-200 rounded-lg p-3">
                                 <div>
-                                    <p className="text-xs text-orange-500 font-semibold mb-1">Penghasilan Driver</p>
-                                    <p className="text-lg font-extrabold text-orange-700">
+                                    <p className="text-xs text-orange-500 font-semibold mb-0.5">Penghasilan Driver</p>
+                                                    <p className="text-base font-extrabold text-orange-700">
                                         {summary ? formatCurrency(summary.driverEarnings) : '—'}
                                     </p>
                                 </div>

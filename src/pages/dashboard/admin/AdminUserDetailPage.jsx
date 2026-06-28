@@ -60,8 +60,8 @@ export default function AdminUserDetailPage() {
                 </div>
             ) : (
                 <div className="space-y-4 max-w-lg mx-auto animate-slide-up">
-                    <div className="card p-6">
-                        <div className="flex items-center gap-4 mb-6">
+                    <div className="card-hover p-4">
+                        <div className="flex items-center gap-4 mb-4">
                             <div className="w-16 h-16 rounded-full ocean-gradient flex items-center justify-center text-white text-2xl font-bold shadow-card">
                                 {user.username.charAt(0).toUpperCase()}
                             </div>
@@ -91,24 +91,24 @@ export default function AdminUserDetailPage() {
                         </div>
                     </div>
 
-                    <div className="card p-6">
-                        <h2 className="font-bold text-slate-800 mb-4"><Wallet size={24} strokeWidth={1.5} className="inline-flex mr-2" /> Informasi Keuangan</h2>
+                    <div className="card-hover p-4">
+                        <h2 className="font-bold text-slate-800 mb-3 text-sm"><Wallet size={20} strokeWidth={1.5} className="inline-flex mr-1" /> Informasi Keuangan</h2>
                         <div className="space-y-4 text-sm">
                             <div className="border-b border-slate-100 pb-3">
                                 <p className="text-xs font-semibold text-slate-400 uppercase">Saldo Wallet</p>
-                                <p className="text-xl font-bold text-slate-800 mt-1">{formatCurrency(wallet?.balance)}</p>
+                                <p className="text-base font-bold text-slate-800 mt-1">{formatCurrency(wallet?.balance)}</p>
                                 <p className="text-xs text-slate-400 mt-0.5">Real balance berdasarkan aktivitas akun</p>
                             </div>
                             {(user.roles || []).includes('SELLER') && (
                                 <div className="border-b border-slate-100 pb-3">
                                     <p className="text-xs font-semibold text-slate-400 uppercase">Pendapatan sebagai Seller</p>
-                                    <p className="text-lg font-bold text-emerald-600 mt-1">{formatCurrency(financial?.sellerIncome)}</p>
+                                    <p className="text-base font-bold text-emerald-600 mt-1">{formatCurrency(financial?.sellerIncome)}</p>
                                 </div>
                             )}
                             {(user.roles || []).includes('DRIVER') && (
                                 <div>
                                     <p className="text-xs font-semibold text-slate-400 uppercase">Pendapatan sebagai Driver</p>
-                                    <p className="text-lg font-bold text-ocean-600 mt-1">{formatCurrency(financial?.driverEarnings)}</p>
+                                    <p className="text-base font-bold text-ocean-600 mt-1">{formatCurrency(financial?.driverEarnings)}</p>
                                 </div>
                             )}
                         </div>
