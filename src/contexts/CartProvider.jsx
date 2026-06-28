@@ -18,7 +18,6 @@ export function CartProvider({ children }) {
             const res = await getCart()
             setCart(res.data.data)
         } catch {
-            // Buyer belum login atau belum ada cart, jadi tidak perlu error fatal
         } finally {
             setLoading(false)
         }

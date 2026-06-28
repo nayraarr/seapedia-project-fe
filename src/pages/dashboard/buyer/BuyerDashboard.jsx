@@ -33,7 +33,7 @@ export default function BuyerDashboard() {
                 setWallet(walletRes.data.data)
                 const topUps = txRes.data.data.filter(tx => tx.type === 'TOPUP')
                 if (topUps.length > 0) setLastTopUp(topUps[0])
-            } catch { /* empty */ } finally {
+            } catch { } finally {
                 setLoading(false)
             }
         }

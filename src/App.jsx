@@ -19,6 +19,7 @@ import IncomeReportPage from './pages/dashboard/seller/IncomeReportPage'
 import HomePage from './pages/public/HomePage'
 import ProductsPage from './pages/public/ProductsPage'
 import ProductDetailPage from './pages/public/ProductDetailPage'
+import SearchResultsPage from './pages/public/SearchResultsPage'
 import LoginPage from './pages/public/LoginPage'
 import RegisterPage from './pages/public/RegisterPage'
 
@@ -64,7 +65,7 @@ export default function App() {
 
   return (
       <BrowserRouter>
-        <Toast message={toast?.message} type={toast?.type} onClose={dismissToast} />
+        <Toast message={toast?.message} type={toast?.type} title={toast?.title} onClose={dismissToast} />
         <Routes>
           {/* public */}
           <Route path="/" element={<HomePage />} />
@@ -74,6 +75,7 @@ export default function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/stores" element={<StoresPage />} />
           <Route path="/stores/:id" element={<StoreDetailPage />} />
+          <Route path="/search" element={<SearchResultsPage />} />
 
           {/* role selection */}
           <Route path="/select-role" element={
@@ -82,7 +84,7 @@ export default function App() {
 
           {/* dashboards */}
           <Route path="/dashboard/buyer" element={
-            <ProtectedRoute requiredRole="BUYER"><BuyerDashboard /></ProtectedRoute>
+            <ProtectedRoute requiredRole="BUYER"><Navigate to="/" replace /></ProtectedRoute>
           } />
           <Route path="/dashboard/buyer/cart" element={
             <ProtectedRoute requiredRole="BUYER"><CartPage /></ProtectedRoute>
