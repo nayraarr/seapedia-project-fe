@@ -148,9 +148,9 @@ export default function ProductFormPage() {
                     </h1>
                 </div>
 
-                <div className="bg-white border border-emerald-100 rounded-2xl p-6 shadow-sm">
+                <div className="card-hover p-4">
                     {error && (
-                        <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm mb-5 flex items-center gap-2">
+                        <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg px-3 py-2.5 text-sm mb-4 flex items-center gap-2">
                             <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86l-8.2 14A2 2 0 003.82 21h16.36a2 2 0 001.73-3.14l-8.2-14a2 2 0 00-3.42 0z"/>
                             </svg>
@@ -168,7 +168,7 @@ export default function ProductFormPage() {
                             </label>
 
                             <label className="relative cursor-pointer block">
-                                <div className={`border-2 border-dashed rounded-xl transition-all overflow-hidden ${
+                                <div className={`border-2 border-dashed rounded-lg transition-all overflow-hidden ${
                                     imageError
                                         ? 'border-red-300 bg-red-50'
                                         : imagePreview
@@ -201,7 +201,7 @@ export default function ProductFormPage() {
                                         </div>
                                     ) : (
                                         <div className="h-44 flex flex-col items-center justify-center gap-3 text-slate-400 px-4">
-                                            <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center">
+                                            <div className="w-14 h-14 rounded-lg bg-slate-100 flex items-center justify-center">
                                                 <svg className="w-7 h-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                                                           d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -255,7 +255,7 @@ export default function ProductFormPage() {
                             error={fieldErrors.name}
                         />
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <Input
                                 label="Harga (Rp) *"
                                 type="number"
@@ -281,7 +281,7 @@ export default function ProductFormPage() {
                                 onChange={e => setForm(prev => ({ ...prev, description: e.target.value }))}
                                 rows={4}
                                 placeholder="Deskripsi produk..."
-                                className="border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/40 focus:border-emerald-400 transition resize-none hover:border-slate-300"
+                                className="border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400/40 focus:border-emerald-400 transition resize-none hover:border-slate-300"
                             />
                         </div>
 

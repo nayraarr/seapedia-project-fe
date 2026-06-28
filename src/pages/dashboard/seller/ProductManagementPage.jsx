@@ -77,7 +77,7 @@ export default function ProductManagementPage() {
             </div>
 
             {noStore ? (
-                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center animate-fade-in">
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center animate-fade-in">
                     <div className="flex justify-center mb-3"><TriangleAlert size={48} strokeWidth={1.5} /></div>
                     <p className="text-amber-700 font-semibold mb-1">Kamu belum punya toko</p>
                     <p className="text-amber-500 text-sm mb-4">Buat toko dulu sebelum mengelola produk</p>
@@ -99,7 +99,7 @@ export default function ProductManagementPage() {
                     {products.map(p => {
                         const hasImage = p.imageUrl && !p._imgError
                         return (
-                            <div key={p.id} className="card-hover p-5 flex items-center justify-between">
+                            <div key={p.id} className="card-hover p-4 flex items-center justify-between">
                                 <Link to={`/products/${p.id}`} className="flex items-center gap-4 min-w-0 flex-1">
                                     <div className="w-14 h-14 rounded-xl flex-shrink-0 bg-ocean-50 flex items-center justify-center text-ocean-300 overflow-hidden">
                                         {hasImage ? (

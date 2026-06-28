@@ -75,16 +75,16 @@ export default function DriverIncomeReportPage() {
                 <div className="animate-slide-up">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                         {summaryCards.map(card => (
-                            <div key={card.label} className="card p-5">
-                                <p className="text-2xl mb-2">{card.icon}</p>
-                                <p className="text-2xl font-bold text-slate-800">{card.value}</p>
-                                <p className="text-xs text-slate-400 mt-1">{card.label}</p>
+                            <div key={card.label} className="card-hover p-4">
+                                <p className="text-lg mb-1">{card.icon}</p>
+                                <p className="text-lg font-bold text-slate-800">{card.value}</p>
+                                <p className="text-[11px] text-slate-500 mt-0.5">{card.label}</p>
                             </div>
                         ))}
                     </div>
 
-                    <div className="card p-5">
-                        <h2 className="font-bold text-slate-800 mb-4">Riwayat Job Selesai</h2>
+                    <div className="card-hover p-4">
+                        <h2 className="font-bold text-slate-800 mb-3 text-sm">Riwayat Job Selesai</h2>
                         {history.length === 0 ? (
                             <p className="text-sm text-slate-400 text-center py-8">
                                 Belum ada job yang selesai.
@@ -95,7 +95,7 @@ export default function DriverIncomeReportPage() {
                                     <Link
                                         key={job.deliveryJobId}
                                         to={`/dashboard/driver/jobs/${job.deliveryJobId}`}
-                                        className="block card card-hover p-4"
+                                        className="block card-hover p-3"
                                         style={{ animationDelay: `${i * 0.05}s` }}
                                     >
                                         <div className="flex justify-between items-start gap-4">

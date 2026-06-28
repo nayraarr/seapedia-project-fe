@@ -68,7 +68,9 @@ export default function LoginPage() {
                 <div className="text-center mb-8 animate-fade-in">
                     <Link to="/" className="inline-flex items-center gap-3">
                         <img src="/logo.png" alt="SEAPEDIA" className="h-10 w-auto" />
-                        <span className="text-2xl font-extrabold tracking-tight text-gradient">SEAPEDIA</span>
+                        <span className="text-3xl font-extrabold tracking-tight text-ocean-600">
+                            SEA<span className="text-ocean-300">PEDIA</span>
+                        </span>
                     </Link>
                 </div>
 

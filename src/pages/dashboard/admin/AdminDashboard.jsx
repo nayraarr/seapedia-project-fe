@@ -68,7 +68,7 @@ function DataPreview({ title, count, columns, rows, loading, onViewAll, emptyMes
     const hasMore = count > 10
     return (
         <div className="card overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100">
+            <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-100">
                 <h3 className="font-bold text-slate-700 text-sm">
                     {title} <span className="text-slate-400 font-normal">({count})</span>
                 </h3>
@@ -302,7 +302,7 @@ function MonitoringTab({ data, onNavigate }) {
             <div>
                 <SectionTitle><><TriangleAlert size={16} className="inline-block mr-1" strokeWidth={1.5} /> Pesanan Overdue ({data.overdueOrders})</></SectionTitle>
                 {overdueList.length === 0 ? (
-                    <div className="badge-emerald px-5 py-4 text-sm font-medium rounded-2xl">
+                    <div className="badge-emerald px-4 py-3 text-sm font-medium rounded-lg">
                         <CheckCircle size={16} className="inline-block mr-1" strokeWidth={1.5} /> Tidak ada pesanan overdue saat ini.
                     </div>
                 ) : (
@@ -754,7 +754,7 @@ export default function AdminDashboard() {
             </div>
 
             {message.text && (
-                <div className={`mb-4 text-sm rounded-xl px-4 py-3 border animate-fade-in ${
+                <div className={`mb-4 text-sm rounded-lg px-3 py-2.5 border animate-fade-in ${
                     message.type === 'success'
                         ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
                         : 'bg-red-50 border-red-200 text-red-600'
@@ -762,7 +762,7 @@ export default function AdminDashboard() {
             )}
 
             {/* Time Simulation Panel */}
-            <div className="ocean-gradient-subtle border border-ocean-200 rounded-2xl p-4 mb-6 animate-slide-up">
+            <div className="border border-ocean-200 rounded-lg p-4 mb-6 animate-slide-up">
                 <div className="flex flex-wrap items-center gap-3">
                     <span className="text-sm font-bold text-ocean-700">⏰ Simulasi Waktu</span>
                     {simulationOffset > 0 ? (
@@ -805,12 +805,12 @@ export default function AdminDashboard() {
             </div>
 
             {/* Tabs */}
-            <div className="flex gap-1 mb-6 bg-red-50 rounded-xl p-1 w-fit animate-fade-in">
+            <div className="flex gap-1 mb-6 bg-red-100 rounded-lg p-1 w-fit animate-fade-in overflow-x-auto">
                 {tabs.map(t => (
                     <button key={t.key}
                             onClick={() => { setActiveTab(t.key); setMessage({ type: '', text: '' }); setFieldErrors({}) }}
-                            className={`px-5 py-2 text-sm font-semibold rounded-lg transition ${
-                                activeTab === t.key ? 'bg-white text-red-700 shadow-sm' : 'text-red-500 hover:text-red-700'
+                            className={`px-5 py-2 text-sm font-semibold rounded-md transition ${
+                                activeTab === t.key ? 'bg-white text-red-800 shadow-sm' : 'text-red-600 hover:text-red-800'
                             }`}
                     >
                         {t.label}
@@ -827,8 +827,8 @@ export default function AdminDashboard() {
             {activeTab === 'vouchers' && (
                 listLoading ? <div className="text-center py-16 text-slate-400">Memuat data...</div> : (
                     <div className="space-y-6 animate-slide-up">
-                        <div className="card p-6">
-                            <h2 className="font-bold text-slate-700 text-lg mb-4">Buat Voucher Baru</h2>
+                        <div className="card-hover p-4">
+                            <h2 className="font-bold text-slate-700 text-base mb-3">Buat Voucher Baru</h2>
                             <form onSubmit={handleCreateVoucher} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <div><label className="block text-xs font-semibold text-slate-500 mb-1">Kode Voucher</label><input name="code" value={voucherForm.code} onChange={handleVoucherChange} required className={`${inputClass} ${fieldErrors.code ? 'input-error' : ''}`} placeholder="CONTOH50" />{fieldErrors.code && <p className="text-xs text-red-500 mt-0.5">{fieldErrors.code}</p>}</div>
                                 <div><label className="block text-xs font-semibold text-slate-500 mb-1">Tipe Diskon</label><select name="discountType" value={voucherForm.discountType} onChange={handleVoucherChange} className={inputClass}><option value="PERCENTAGE">Persen (%)</option><option value="FIXED">Nominal (Rp)</option></select></div>
@@ -844,8 +844,8 @@ export default function AdminDashboard() {
                             </form>
                         </div>
 
-                        <div className="card p-6">
-                            <h2 className="font-bold text-slate-700 text-lg mb-4">Daftar Voucher</h2>
+                        <div className="card-hover p-4">
+                            <h2 className="font-bold text-slate-700 text-base mb-3">Daftar Voucher</h2>
                             {vouchers.length === 0 ? (
                                 <p className="text-sm text-slate-400 text-center py-8">Belum ada voucher.</p>
                             ) : (
@@ -878,8 +878,8 @@ export default function AdminDashboard() {
             {activeTab === 'promos' && (
                 listLoading ? <div className="text-center py-16 text-slate-400">Memuat data...</div> : (
                     <div className="space-y-6 animate-slide-up">
-                        <div className="card p-6">
-                            <h2 className="font-bold text-slate-700 text-lg mb-4">Buat Promo Baru</h2>
+                            <div className="card-hover p-4">
+                            <h2 className="font-bold text-slate-700 text-base mb-3">Buat Promo Baru</h2>
                             <form onSubmit={handleCreatePromo} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <div><label className="block text-xs font-semibold text-slate-500 mb-1">Kode Promo</label><input name="code" value={promoForm.code} onChange={handlePromoChange} required className={`${inputClass} ${fieldErrors.code ? 'input-error' : ''}`} placeholder="PROMO60" />{fieldErrors.code && <p className="text-xs text-red-500 mt-0.5">{fieldErrors.code}</p>}</div>
                                 <div><label className="block text-xs font-semibold text-slate-500 mb-1">Tipe Diskon</label><select name="discountType" value={promoForm.discountType} onChange={handlePromoChange} className={inputClass}><option value="PERCENTAGE">Persen (%)</option><option value="FIXED">Nominal (Rp)</option></select></div>
@@ -894,8 +894,8 @@ export default function AdminDashboard() {
                             </form>
                         </div>
 
-                        <div className="card p-6">
-                            <h2 className="font-bold text-slate-700 text-lg mb-4">Daftar Promo</h2>
+                            <div className="card-hover p-4">
+                            <h2 className="font-bold text-slate-700 text-base mb-3">Daftar Promo</h2>
                             {promos.length === 0 ? (
                                 <p className="text-sm text-slate-400 text-center py-8">Belum ada promo.</p>
                             ) : (

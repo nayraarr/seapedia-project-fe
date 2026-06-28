@@ -63,7 +63,7 @@ export default function SellerDashboard() {
             <div className="grid md:grid-cols-3 gap-4 animate-slide-up">
                 <Link
                     to="/dashboard/seller/store"
-                    className="card-hover p-6 block"
+                    className="card-hover p-4 block"
                 >
                     <div className="text-3xl mb-3"><Store size={28} strokeWidth={1.5} /></div>
                     <h3 className="font-semibold text-slate-700 mb-1">Toko Saya</h3>
@@ -72,7 +72,7 @@ export default function SellerDashboard() {
 
                 <div
                     onClick={() => navigate(store ? '/dashboard/seller/products' : '/dashboard/seller/store')}
-                    className="card-hover p-6 cursor-pointer"
+                    className="card-hover p-4 cursor-pointer"
                 >
                     <div className="text-3xl mb-3"><ClipboardList size={28} strokeWidth={1.5} /></div>
                     <h3 className="font-semibold text-slate-700 mb-1">Kelola Produk</h3>
@@ -81,19 +81,19 @@ export default function SellerDashboard() {
 
                 <div
                     onClick={() => navigate('/dashboard/seller/orders/incoming')}
-                    className="card-hover p-6 cursor-pointer"
+                    className="card-hover p-4 cursor-pointer"
                 >
                     <div className="text-3xl mb-3"><Inbox size={28} strokeWidth={1.5} /></div>
                     <h3 className="font-semibold text-slate-700 mb-1">Pesanan Masuk</h3>
                     <p className="text-slate-400 text-sm">Proses pesanan dari pembeli</p>
-                    <span className="badge-emerald mt-3 inline-flex">
+                        <span className="badge-emerald mt-2 inline-flex">
                         Lihat daftar
                     </span>
                 </div>
 
                 <div
                     onClick={() => navigate('/dashboard/seller/report')}
-                    className="card-hover p-6 cursor-pointer"
+                    className="card-hover p-4 cursor-pointer"
                 >
                     <div className="text-3xl mb-3"><BarChart3 size={28} strokeWidth={1.5} /></div>
                     <h3 className="font-semibold text-slate-700 mb-1">Laporan Pendapatan</h3>

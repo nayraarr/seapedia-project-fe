@@ -3,25 +3,25 @@
 @theme {
   --font-inter: 'Inter', sans-serif;
 
-  --color-ocean-50: #eff6ff;
-  --color-ocean-100: #dbeafe;
-  --color-ocean-200: #bfdbfe;
-  --color-ocean-300: #93c5fd;
-  --color-ocean-400: #60a5fa;
-  --color-ocean-500: #3b82f6;
-  --color-ocean-600: #2563eb;
-  --color-ocean-700: #1d4ed8;
-  --color-ocean-800: #1e40af;
+  --color-ocean-50: #e8f0fe;
+  --color-ocean-100: #c8ddfa;
+  --color-ocean-200: #90bdf8;
+  --color-ocean-300: #5a9cf5;
+  --color-ocean-400: #3b82f6;
+  --color-ocean-500: #2563eb;
+  --color-ocean-600: #1d4ed8;
+  --color-ocean-700: #1e40af;
+  --color-ocean-800: #1e3a8a;
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
 
-  --shadow-card: 0 1px 3px 0 rgb(59 130 246 / 0.08), 0 1px 2px -1px rgb(59 130 246 / 0.06);
-  --shadow-card-hover: 0 4px 12px -2px rgb(59 130 246 / 0.15), 0 2px 4px -2px rgb(59 130 246 / 0.1);
-  --shadow-elevated: 0 8px 24px -4px rgb(59 130 246 / 0.12), 0 4px 8px -4px rgb(59 130 246 / 0.08);
+  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-card-hover: 0 4px 12px -2px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+  --shadow-elevated: 0 8px 24px -4px rgb(0 0 0 / 0.1), 0 4px 8px -4px rgb(0 0 0 / 0.06);
   --shadow-modal: 0 20px 60px -8px rgb(15 23 42 / 0.2);
 }
 
@@ -33,7 +33,7 @@
   }
 
   *:focus-visible {
-    outline: 2px solid var(--color-ocean-400);
+    outline: 2px solid var(--color-ocean-500);
     outline-offset: 2px;
     border-radius: 4px;
   }
@@ -45,59 +45,59 @@
 
 @layer components {
   .skeleton {
-    @apply bg-gradient-to-r from-slate-100 via-blue-50 to-slate-100 bg-[length:200%_100%] animate-pulse rounded-lg;
+    @apply bg-gradient-to-r from-slate-100 via-blue-50 to-slate-100 bg-[length:200%_100%] animate-pulse rounded-md;
   }
 
   .badge {
-    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none;
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold leading-none;
   }
 
   .badge-blue {
-    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none bg-ocean-100 text-ocean-700;
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold leading-none bg-ocean-600 text-white;
   }
 
   .badge-emerald {
-    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none bg-emerald-100 text-emerald-700;
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold leading-none bg-emerald-600 text-white;
   }
 
   .badge-orange {
-    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none bg-orange-100 text-orange-600;
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold leading-none bg-orange-500 text-white;
   }
 
   .badge-red {
-    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none bg-red-100 text-red-600;
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold leading-none bg-red-600 text-white;
   }
 
   .badge-slate {
-    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold leading-none bg-slate-100 text-slate-600;
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold leading-none bg-slate-700 text-white;
   }
 
   .card {
-    @apply bg-white rounded-xl border border-ocean-100 shadow-card transition-all duration-200;
+    @apply bg-white rounded-lg border border-slate-200 transition-all duration-200;
   }
 
   .card-hover {
-    @apply bg-white rounded-xl border border-ocean-100 shadow-card transition-all duration-200 hover:shadow-card-hover hover:border-ocean-200;
+    @apply bg-white rounded-lg border border-slate-200 transition-all duration-200 hover:shadow-card-hover hover:border-slate-300;
   }
 
   .card-elevated {
-    @apply bg-white rounded-xl border border-ocean-100 shadow-card transition-all duration-200 shadow-elevated;
+    @apply bg-white rounded-lg border border-slate-200 shadow-card transition-all duration-200;
   }
 
   .input-field {
-    @apply w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm bg-white
-           focus:outline-none focus:ring-2 focus:ring-ocean-300 focus:border-transparent
+    @apply w-full border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white
+           focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500
            transition placeholder:text-slate-400 disabled:opacity-50 disabled:bg-slate-50;
   }
 
   .input-error {
-    @apply w-full border-red-300 rounded-xl px-4 py-2.5 text-sm bg-red-50/30
-           focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-transparent
+    @apply w-full border-red-400 rounded-lg px-3 py-2 text-sm bg-red-50/30
+           focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500
            transition placeholder:text-slate-400 disabled:opacity-50 disabled:bg-slate-50;
   }
 
   .ocean-gradient {
-    @apply bg-gradient-to-br from-ocean-500 via-ocean-600 to-ocean-800;
+    @apply bg-gradient-to-br from-ocean-500 via-ocean-600 to-ocean-700;
   }
 
   .ocean-gradient-subtle {
@@ -106,6 +106,14 @@
 
   .text-gradient {
     @apply bg-gradient-to-r from-ocean-600 to-ocean-400 bg-clip-text text-transparent;
+  }
+
+  .discount-badge {
+    @apply absolute top-0 left-0 bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-br-md;
+  }
+
+  .promo-strip {
+    @apply bg-ocean-600 text-white text-[11px] text-center py-1 font-medium;
   }
 
   .wave-divider {
@@ -118,9 +126,9 @@
     bottom: -1px;
     left: 0;
     right: 0;
-    height: 6px;
+    height: 4px;
     background: linear-gradient(90deg, var(--color-ocean-400), var(--color-ocean-600), var(--color-ocean-400));
-    border-radius: 0 0 3px 3px;
+    border-radius: 0 0 2px 2px;
   }
 
   .status-tracker {

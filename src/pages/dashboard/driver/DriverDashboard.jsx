@@ -23,7 +23,7 @@ export default function DriverDashboard() {
                 {cards.map((card) => {
                     const content = (
                         <>
-                            <div className="mb-3 flex justify-center">{card.icon}</div>
+                            <div className="mb-2 text-center">{card.icon}</div>
                             <h3 className="font-semibold text-slate-700 mb-1">{card.label}</h3>
                             <p className="text-slate-400 text-sm">{card.desc}</p>
                             {card.link ? (
@@ -42,12 +42,12 @@ export default function DriverDashboard() {
                         <Link
                             key={card.label}
                             to={card.link}
-                            className="card card-hover p-6 cursor-pointer"
+                            className="card card-hover p-4 cursor-pointer"
                         >
                             {content}
                         </Link>
                     ) : (
-                        <div key={card.label} className="card p-6">
+                        <div key={card.label} className="card-hover p-4">
                             {content}
                         </div>
                     )

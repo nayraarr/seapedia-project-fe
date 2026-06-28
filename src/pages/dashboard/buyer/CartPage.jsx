@@ -230,7 +230,7 @@ export default function CartPage() {
                 )}
             </div>
 
-            <div className="mb-4 ocean-gradient-subtle border border-ocean-200 rounded-xl px-4 py-3 flex items-start gap-3 text-sm text-ocean-700">
+            <div className="mb-4 border border-ocean-200 rounded-lg px-3 py-2.5 flex items-start gap-3 text-sm text-ocean-700">
                 <span className="text-lg flex-shrink-0"><Info size={18} strokeWidth={1.5} /></span>
                 <p>
                     Keranjang SEAPEDIA hanya dapat memuat produk dari <strong>satu toko</strong> sekaligus.
@@ -239,13 +239,13 @@ export default function CartPage() {
             </div>
 
             {error && (
-                <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">
                     {error}
                 </div>
             )}
 
             {success && (
-                <div className="mb-4 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
+                <div className="mb-4 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2.5">
                     {success}
                 </div>
             )}
@@ -324,7 +324,7 @@ export default function CartPage() {
                                     </button>
                                 </div>
 
-                                <div className="text-right flex-shrink-0 hidden sm:block">
+                                <div className="text-right flex-shrink-0">
                                     <p className="text-xs text-slate-400">Subtotal</p>
                                     <p className="font-bold text-slate-700 text-sm">
                                         {formatRupiah(item.subtotal)}
@@ -348,7 +348,7 @@ export default function CartPage() {
                     </div>
 
                     <div className="lg:col-span-1">
-                        <div className="card p-5 sticky top-24 space-y-4">
+                        <div className="card-hover p-4 sticky top-24 space-y-4">
                             <div>
                                 <h2 className="font-bold text-slate-800 text-base">Checkout</h2>
                                 <p className="text-xs text-slate-400 mt-1">
@@ -357,13 +357,13 @@ export default function CartPage() {
                             </div>
 
                             {addresses.length > 0 && !selectedAddressId && (
-                                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2.5">
+                                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5">
                                     Pilih alamat pengiriman untuk melanjutkan checkout.
                                 </div>
                             )}
 
                             {addresses.length === 0 && (
-                                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-3 space-y-2">
+                                <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-3 space-y-2">
                                     <p>Tambahkan alamat pengiriman terlebih dahulu untuk checkout.</p>
                                     <Link
                                         to="/dashboard/buyer/addresses"
@@ -410,7 +410,7 @@ export default function CartPage() {
                                                 key={option.value}
                                                 type="button"
                                                 onClick={() => { setDeliveryMethod(option.value); setCheckoutError('') }}
-                                                className={`flex items-center justify-between rounded-xl border px-4 py-3 text-sm transition text-left ${
+                                                className={`flex items-center justify-between rounded-lg border px-4 py-3 text-sm transition text-left ${
                                                     deliveryMethod === option.value
                                                         ? 'border-ocean-500 bg-ocean-50 text-ocean-700'
                                                         : 'border-slate-200 hover:border-ocean-300 text-slate-600'
@@ -449,7 +449,7 @@ export default function CartPage() {
                                         </Button>
                                     </div>
                                     {discountCheck && (
-                                        <div className={`mt-2 rounded-xl px-3 py-2 text-xs border ${
+                                        <div className={`mt-2 rounded-lg px-3 py-2 text-xs border ${
                                             discountCheck.valid
                                                 ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
                                                 : 'bg-red-50 border-red-200 text-red-600'
@@ -539,7 +539,7 @@ export default function CartPage() {
                                 <div className="border-t border-ocean-50 pt-3 space-y-1">
                                     <div className="flex justify-between items-center">
                                         <span className="font-bold text-slate-700">Subtotal <span className="text-xs font-normal text-slate-400">(sebelum diskon & PPN)</span></span>
-                                        <span className="text-lg font-extrabold text-ocean-600">
+                                        <span className="text-base font-extrabold text-ocean-700">
                                             {formatRupiah(cart.grandTotal)}
                                         </span>
                                     </div>
@@ -552,7 +552,7 @@ export default function CartPage() {
                                 </div>
 
                                 {checkoutError && (
-                                    <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                                    <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">
                                         {checkoutError}
                                     </div>
                                 )}
@@ -567,7 +567,7 @@ export default function CartPage() {
                                 </Button>
 
                                 {wallet && (
-                                    <div className={`rounded-xl px-4 py-3 text-sm border ${
+                                    <div className={`rounded-lg px-3 py-2.5 text-sm border ${
                                         previewData?.walletSufficient === false
                                             ? 'bg-red-50 border-red-200 text-red-700'
                                             : 'bg-emerald-50 border-emerald-200 text-emerald-700'
@@ -592,8 +592,8 @@ export default function CartPage() {
 
             {checkoutModalOpen && previewData && (
                 <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4 animate-fade-in">
-                    <div className="bg-white rounded-2xl shadow-modal border border-ocean-100 w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-scale-in">
-                        <div className="p-6 border-b border-slate-100">
+                    <div className="bg-white rounded-lg shadow-modal border border-slate-200 w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-scale-in">
+                        <div className="p-4 border-b border-slate-100">
                             <div className="flex items-start justify-between gap-4">
                                 <div>
                                     <h3 className="text-xl font-bold text-slate-800">Ringkasan Checkout</h3>
@@ -610,11 +610,11 @@ export default function CartPage() {
                             </div>
                         </div>
 
-                        <div className="p-6 grid md:grid-cols-2 gap-6">
+                        <div className="p-4 grid md:grid-cols-2 gap-4">
                             <div className="space-y-4">
                                 <div>
                                     <p className="text-xs font-semibold text-slate-400 uppercase mb-2">Alamat</p>
-                                    <div className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+                                    <div className="rounded-lg border border-slate-200 p-3 text-sm text-slate-600">
                                         <p className="font-semibold text-slate-800">{previewData.address?.recipientName}</p>
                                         <p>{previewData.address?.phone}</p>
                                         <p className="mt-2">{previewData.address?.fullAddress}</p>
@@ -624,7 +624,7 @@ export default function CartPage() {
 
                                 <div>
                                     <p className="text-xs font-semibold text-slate-400 uppercase mb-2">Metode Pengiriman</p>
-                                    <div className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+                                    <div className="rounded-lg border border-slate-200 p-3 text-sm text-slate-600">
                                         <p className="font-semibold text-slate-800">
                                             <DeliveryMethodLabel value={previewData.deliveryMethod} />
                                         </p>
@@ -636,7 +636,7 @@ export default function CartPage() {
                                     <p className="text-xs font-semibold text-slate-400 uppercase mb-2">Item</p>
                                     <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
                                         {previewData.items.map(item => (
-                                            <div key={item.productId} className="rounded-xl border border-slate-200 p-3 text-sm">
+                                            <div key={item.productId} className="rounded-lg border border-slate-200 p-3 text-sm">
                                                 <div className="flex justify-between gap-3">
                                                     <p className="font-semibold text-slate-800">{item.productName}</p>
                                                     <p className="text-slate-600">{item.quantity}x</p>
@@ -652,7 +652,7 @@ export default function CartPage() {
                             </div>
 
                             <div className="space-y-3">
-                                <div className="rounded-2xl border border-ocean-200 bg-ocean-50 p-4 text-sm space-y-2">
+                                <div className="rounded-lg border border-ocean-200 bg-ocean-50 p-4 text-sm space-y-2">
                                     <div className="flex justify-between">
                                         <span>Subtotal</span>
                                         <span className="font-semibold">{formatRupiah(previewData.subtotal)}</span>
@@ -685,7 +685,7 @@ export default function CartPage() {
                                     </p>
                                 </div>
 
-                                <div className={`rounded-2xl border p-4 text-sm ${
+                                <div className={`rounded-lg border p-4 text-sm ${
                                     previewData.walletSufficient
                                         ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
                                         : 'border-red-200 bg-red-50 text-red-700'
@@ -723,7 +723,7 @@ export default function CartPage() {
 
             {clearConfirm && (
                 <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4 animate-fade-in">
-                    <div className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-modal animate-scale-in">
+                    <div className="bg-white rounded-lg p-4 max-w-sm w-full shadow-modal animate-scale-in">
                         <p className="text-slate-800 font-bold text-lg mb-2">Kosongkan Keranjang?</p>
                         <p className="text-slate-500 text-sm mb-6">
                             Semua item akan dihapus dari keranjang. Tindakan ini tidak bisa dibatalkan.

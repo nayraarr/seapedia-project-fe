@@ -103,13 +103,13 @@ export default function StoreManagementPage() {
         <MainLayout>
             <div className="max-w-2xl mx-auto animate-fade-in">
 
-                <div className="card-hover p-6">
-                    <h2 className="text-lg font-bold text-slate-700 mb-5">
+                <div className="card-hover p-4">
+                    <h2 className="text-base font-bold text-slate-700 mb-4">
                         {store ? 'Edit Toko' : 'Buat Toko Baru'}
                     </h2>
 
                     {error && (
-                        <div className="bg-red-50 border border-red-200 text-red-600 rounded-xl px-4 py-3 text-sm mb-5">
+                        <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg px-3 py-2.5 text-sm mb-4">
                             {error}
                         </div>
                     )}
@@ -157,9 +157,9 @@ export default function StoreManagementPage() {
             <div className="max-w-2xl mx-auto space-y-5 animate-fade-in">
 
                 {}
-                <div className="card-hover p-6">
-                    <div className="flex items-start gap-5">
-                        <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-3xl flex-shrink-0">
+                <div className="card-hover p-4">
+                    <div className="flex items-start gap-4">
+                        <div className="w-14 h-14 rounded-lg bg-emerald-100 flex items-center justify-center text-2xl flex-shrink-0">
                             <Store size={28} strokeWidth={1.5} />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -194,8 +194,8 @@ export default function StoreManagementPage() {
                 </div>
 
                 {}
-                <div className="card-hover p-6">
-                    <h2 className="text-base font-bold text-slate-700 mb-4">Informasi Toko</h2>
+                <div className="card-hover p-4">
+                    <h2 className="text-sm font-bold text-slate-700 mb-3">Informasi Toko</h2>
                     <div className="space-y-3">
                         <div className="flex justify-between items-center py-2 border-b border-slate-50">
                             <span className="text-sm text-slate-400">Nama Toko</span>
@@ -219,9 +219,9 @@ export default function StoreManagementPage() {
                 </div>
 
                 {}
-                <div className="card-hover p-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-base font-bold text-slate-700">
+                <div className="card-hover p-4">
+                    <div className="flex items-center justify-between mb-3">
+                        <h2 className="text-sm font-bold text-slate-700">
                             Produk Toko
                             <span className="ml-2 text-xs font-normal text-slate-400">({products.length} produk)</span>
                         </h2>
@@ -233,11 +233,11 @@ export default function StoreManagementPage() {
                         </Button>
                     </div>
                     {products.length === 0 ? (
-                        <div className="bg-emerald-50 rounded-xl p-6 text-center">
+                        <div className="bg-emerald-50 rounded-lg p-4 text-center">
                             <p className="text-emerald-300 text-sm font-medium">Belum ada produk di toko ini</p>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {products.map(product => (
                                 <ProductCard key={product.id} product={product} />
                             ))}
