@@ -54,6 +54,10 @@ export function CartProvider({ children }) {
         setToast(null)
     }, [])
 
+    const notify = useCallback((message, type, title) => {
+        setToast({ message, type: type || 'info', title })
+    }, [])
+
     const add = useCallback(async (productId, quantity = 1, storeId) => {
         setError(null)
         if (storeId && cart?.storeId && cart?.items?.length > 0 && cart.storeId !== storeId) {
@@ -114,8 +118,8 @@ export function CartProvider({ children }) {
     const itemCount = cart?.totalItems ?? 0
 
     const value = useMemo(
-        () => ({ cart, loading, error, toast, itemCount, fetchCart, add, update, remove, clear, dismissToast }),
-        [cart, loading, error, toast, itemCount, fetchCart, add, update, remove, clear, dismissToast]
+        () => ({ cart, loading, error, toast, itemCount, fetchCart, add, update, remove, clear, dismissToast, notify }),
+        [cart, loading, error, toast, itemCount, fetchCart, add, update, remove, clear, dismissToast, notify]
     )
 
     return <CartContext.Provider value={value}>{children}</CartContext.Provider>
