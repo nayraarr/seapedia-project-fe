@@ -1,22 +1,28 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
 import Button from '../../components/ui/Button'
 import BackButton from '../../components/ui/BackButton'
 import api from '../../services/api'
 import { useAuth } from '../../contexts/useAuth'
 import { useCart } from '../../contexts/useCart'
+import { getMyStore } from '../../services/storeApi'
 
 export default function ProductDetailPage() {
     const { id } = useParams()
     const { token, activeRole } = useAuth()
     const { add } = useCart()
+    const navigate = useNavigate()
     const [product, setProduct] = useState(null)
     const [loading, setLoading] = useState(true)
     const [notFound, setNotFound] = useState(false)
     const [quantity, setQuantity] = useState(1)
     const [adding, setAdding] = useState(false)
     const [message, setMessage] = useState(null)
+    const [imgError, setImgError] = useState(false)
+    const [prevId, setPrevId] = useState(id)
+    const [myStoreId, setMyStoreId] = useState(null)
+    if (id !== prevId) { setPrevId(id); setImgError(false) }
 
     const formatPrice = (price) =>
         new Intl.NumberFormat('id-ID', {
@@ -31,6 +37,14 @@ export default function ProductDetailPage() {
             .catch(() => setNotFound(true))
             .finally(() => setLoading(false))
     }, [id])
+
+    useEffect(() => {
+        if (token && activeRole === 'SELLER') {
+            getMyStore()
+                .then(res => setMyStoreId(res.data.data?.id))
+                .catch(() => {})
+        }
+    }, [token, activeRole])
 
     const handleAddToCart = async () => {
         setAdding(true)
@@ -54,7 +68,7 @@ export default function ProductDetailPage() {
     if (notFound) return (
         <MainLayout>
             <BackButton className="mb-3" />
-            <div className="text-center py-24 animate-fade-in">
+            <div className="text-center py-24">
                 <div className="w-20 h-20 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-5">
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -67,32 +81,55 @@ export default function ProductDetailPage() {
         </MainLayout>
     )
 
+    const showImage = product.imageUrl && !imgError
+
     return (
         <MainLayout>
             <BackButton className="mb-3" />
 
-            <div className="card p-6 sm:p-8 md:flex gap-8 animate-fade-in">
-                <div className="ocean-gradient-subtle rounded-2xl w-full md:w-80 h-72 flex flex-col items-center justify-center text-ocean-300 flex-shrink-0 mb-6 md:mb-0 border border-ocean-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-20 h-20 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span className="text-sm mt-2 text-ocean-300 font-medium">Belum ada gambar</span>
+            <div className="card p-6 sm:p-8 md:flex gap-8">
+                {/* Product image */}
+                <div className={`rounded-2xl w-full md:w-80 h-72 flex-shrink-0 mb-6 md:mb-0 overflow-hidden border ${
+                    showImage ? 'border-slate-100 bg-slate-50' : 'border-blue-100 bg-gradient-to-br from-blue-50 to-blue-100'
+                }`}>
+                    {showImage ? (
+                        <img
+                            src={product.imageUrl}
+                            alt={product.name}
+                            className="w-full h-full object-cover"
+                            onError={() => setImgError(true)}
+                        />
+                    ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center text-blue-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-20 h-20 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span className="text-sm mt-2 font-medium">Belum ada gambar</span>
+                        </div>
+                    )}
                 </div>
 
+                {/* Product info */}
                 <div className="flex-1">
                     <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-3 tracking-tight">{product.name}</h1>
-                    <p className="text-3xl sm:text-4xl font-extrabold text-gradient mb-5">{formatPrice(product.price)}</p>
+                    <p className="text-3xl sm:text-4xl font-extrabold text-blue-600 mb-5">{formatPrice(product.price)}</p>
 
                     <div className="flex flex-wrap items-center gap-3 mb-5">
-                        <span className={`badge ${product.stock > 0 ? 'badge-emerald' : 'badge-red'}`}>
+                        <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${
+                            product.stock > 0
+                                ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+                                : 'bg-red-100 text-red-600 border border-red-200'
+                        }`}>
                             {product.stock > 0 ? `Stok: ${product.stock}` : 'Habis'}
                         </span>
                         {product.storeName && (
-                            <span className="badge-orange">{product.storeName}</span>
+                            <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
+                                {product.storeName}
+                            </span>
                         )}
                     </div>
 
-                    <p className="text-slate-500 text-sm leading-relaxed mb-6 border-l-2 border-ocean-200 pl-4">
+                    <p className="text-slate-500 text-sm leading-relaxed mb-6 border-l-2 border-blue-200 pl-4">
                         {product.description || 'Tidak ada deskripsi untuk produk ini.'}
                     </p>
 
@@ -116,8 +153,18 @@ export default function ProductDetailPage() {
                         </Link>
                     )}
 
+                    {myStoreId && product.storeId === myStoreId && (
+                        <Button
+                            variant="outline"
+                            onClick={() => navigate(`/dashboard/seller/products/edit/${product.id}`)}
+                            className="w-full mb-4"
+                        >
+                            Edit Produk
+                        </Button>
+                    )}
+
                     {!token && (
-                        <div className="bg-gradient-to-r from-ocean-50 to-ocean-50/30 border border-ocean-200 rounded-xl p-4 text-sm text-ocean-700">
+                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-700">
                             <Link to="/login" className="font-bold hover:underline">Masuk</Link>{' '}
                             atau{' '}
                             <Link to="/register" className="font-bold hover:underline">daftar</Link>{' '}
@@ -126,7 +173,7 @@ export default function ProductDetailPage() {
                     )}
 
                     {token && activeRole === 'BUYER' && (
-                        <div className="card bg-ocean-50/40 border-ocean-100 p-5">
+                        <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-5">
                             <div className="flex flex-col sm:flex-row sm:items-end gap-4">
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-500 mb-1.5">Jumlah</label>
@@ -134,7 +181,7 @@ export default function ProductDetailPage() {
                                         <button
                                             onClick={() => setQuantity(Math.max(1, quantity - 1))}
                                             disabled={quantity <= 1}
-                                            className="w-9 h-9 rounded-lg border-2 border-ocean-200 text-ocean-600 font-bold text-lg hover:bg-ocean-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                            className="w-9 h-9 rounded-lg border-2 border-blue-200 text-blue-600 font-bold text-lg hover:bg-blue-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
                                         >
                                             −
                                         </button>
@@ -143,11 +190,11 @@ export default function ProductDetailPage() {
                                             min="1"
                                             value={quantity}
                                             onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
-                                            className="w-16 text-center border-2 border-ocean-200 rounded-lg px-2 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-ocean-300"
+                                            className="w-16 text-center border-2 border-blue-200 rounded-lg px-2 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
                                         />
                                         <button
                                             onClick={() => setQuantity(quantity + 1)}
-                                            className="w-9 h-9 rounded-lg border-2 border-ocean-200 text-ocean-600 font-bold text-lg hover:bg-ocean-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                            className="w-9 h-9 rounded-lg border-2 border-blue-200 text-blue-600 font-bold text-lg hover:bg-blue-100 transition"
                                         >
                                             +
                                         </button>

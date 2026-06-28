@@ -85,13 +85,13 @@ export default function WalletPage() {
                 </div>
             ) : (
                 <div className="grid md:grid-cols-2 gap-6 animate-slide-up">
-                    <div className="ocean-gradient rounded-2xl p-6 text-white shadow-card">
-                        <p className="text-sm opacity-80 mb-1">Saldo Saat Ini</p>
-                        <p className="text-4xl font-bold tracking-tight">
+                    <div className="ocean-gradient rounded-2xl p-8 sm:p-10 text-white shadow-card flex flex-col justify-center min-h-[200px]">
+                        <p className="text-base opacity-80 mb-2">Saldo Saat Ini</p>
+                        <p className="text-4xl sm:text-5xl font-bold tracking-tight">
                             {wallet ? formatRupiah(wallet.balance) : 'Rp0'}
                         </p>
                         {wallet?.updatedAt && (
-                            <p className="text-xs opacity-60 mt-2">
+                            <p className="text-sm opacity-60 mt-3">
                                 Diperbarui: {formatDate(wallet.updatedAt)}
                             </p>
                         )}

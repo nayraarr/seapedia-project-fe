@@ -106,7 +106,7 @@ export default function IncomingOrdersPage() {
                 </div>
             ) : displayedOrders.length === 0 ? (
                 <div className="text-center py-20 card animate-fade-in">
-                    <p className="text-4xl mb-3">{filterTab === 'incoming' ? <Inbox size={48} strokeWidth={1.5} /> : <Package size={48} strokeWidth={1.5} />}</p>
+                    <div className="flex justify-center mb-3">{filterTab === 'incoming' ? <Inbox size={48} strokeWidth={1.5} /> : <Package size={48} strokeWidth={1.5} />}</div>
                     <p className="font-semibold text-slate-700">
                         {filterTab === 'incoming' ? 'Belum ada pesanan masuk.' : 'Belum ada pesanan diproses.'}
                     </p>
