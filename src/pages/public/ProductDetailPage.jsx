@@ -2,16 +2,25 @@ import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
 import Button from '../../components/ui/Button'
-import BackButton from '../../components/ui/BackButton'
 import api from '../../services/api'
 import { useAuth } from '../../contexts/useAuth'
 import { useCart } from '../../contexts/useCart'
 import { getMyStore } from '../../services/storeApi'
+import BackButton from '../../components/ui/BackButton'
+import ProductCard from '../../components/ui/ProductCard'
+import ReviewSection from '../../components/ui/ReviewSection'
+import Breadcrumb from '../../components/ui/Breadcrumb'
+import { Star, Heart, Share2 } from 'lucide-react'
+
+const infoTabs = [
+    { key: 'detail', label: 'Detail Produk' },
+    { key: 'info', label: 'Info Penting' },
+]
 
 export default function ProductDetailPage() {
     const { id } = useParams()
-    const { token, activeRole } = useAuth()
-    const { add } = useCart()
+    const { token, activeRole, roles, login } = useAuth()
+    const { add, notify } = useCart()
     const navigate = useNavigate()
     const [product, setProduct] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -22,6 +31,10 @@ export default function ProductDetailPage() {
     const [imgError, setImgError] = useState(false)
     const [prevId, setPrevId] = useState(id)
     const [myStoreId, setMyStoreId] = useState(null)
+    const [activeInfoTab, setActiveInfoTab] = useState('detail')
+    const [storeProducts, setStoreProducts] = useState([])
+    const [similarProducts, setSimilarProducts] = useState([])
+    const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 })
     if (id !== prevId) { setPrevId(id); setImgError(false) }
 
     const formatPrice = (price) =>
@@ -39,6 +52,20 @@ export default function ProductDetailPage() {
     }, [id])
 
     useEffect(() => {
+        if (!product) return
+        api.get(`/products/store/${product.storeId}`)
+            .then(res => setStoreProducts((res.data.data || []).filter(p => p.id !== product.id)))
+            .catch(() => {})
+        api.get('/products')
+            .then(res => {
+                const others = (res.data.data || []).filter(p => p.id !== product.id)
+                const shuffled = others.sort(() => Math.random() - 0.5).slice(0, 8)
+                setSimilarProducts(shuffled)
+            })
+            .catch(() => {})
+    }, [product])
+
+    useEffect(() => {
         if (token && activeRole === 'SELLER') {
             getMyStore()
                 .then(res => setMyStoreId(res.data.data?.id))
@@ -54,191 +81,328 @@ export default function ProductDetailPage() {
         setAdding(false)
     }
 
+    const handleSwitchToBuyer = async () => {
+        try {
+            const res = await api.post('/auth/select-role', { role: 'BUYER' })
+            login(res.data.data.token)
+        } catch {
+            alert('Gagal mengganti role.')
+        }
+    }
+
     if (loading) return (
         <MainLayout>
-            <BackButton className="mb-3" />
             <div className="animate-pulse space-y-4">
-                <div className="skeleton rounded-2xl h-72" />
-                <div className="skeleton rounded-xl h-8 w-1/2" />
-                <div className="skeleton rounded-xl h-4 w-1/4" />
+                <div className="skeleton h-8 w-24" />
+                <div className="grid md:grid-cols-2 gap-6">
+                    <div className="skeleton aspect-square rounded-lg" />
+                    <div className="space-y-3">
+                        <div className="skeleton h-8 w-3/4" />
+                        <div className="skeleton h-10 w-1/3" />
+                        <div className="skeleton h-5 w-1/2" />
+                        <div className="skeleton h-24" />
+                        <div className="skeleton h-12" />
+                    </div>
+                </div>
             </div>
         </MainLayout>
     )
 
     if (notFound) return (
         <MainLayout>
-            <BackButton className="mb-3" />
             <div className="text-center py-24">
-                <div className="w-20 h-20 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-5">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-red-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-                <h2 className="text-xl font-bold text-slate-700 mb-2">Produk tidak ditemukan</h2>
-                <p className="text-slate-400 text-sm mb-6">Produk mungkin telah dihapus atau tidak tersedia.</p>
-                <BackButton to="/products" label="Kembali ke produk" />
+                <h2 className="text-lg font-bold text-slate-700 mb-1">Produk tidak ditemukan</h2>
+                <p className="text-sm text-slate-400 mb-5">Produk mungkin telah dihapus atau tidak tersedia.</p>
+                <Button onClick={() => navigate('/products')} variant="primary" size="sm">Kembali ke produk</Button>
             </div>
         </MainLayout>
     )
 
     const showImage = product.imageUrl && !imgError
+    const isOwner = myStoreId && product.storeId === myStoreId
 
     return (
         <MainLayout>
-            <BackButton className="mb-3" />
+            <BackButton className="mb-4" />
+            {product && (
+                <Breadcrumb
+                    className="mb-6"
+                    items={[
+                        { label: 'Home', to: '/' },
+                        ...(product.storeId && product.storeName
+                            ? [{ label: product.storeName, to: `/stores/${product.storeId}` }]
+                            : []),
+                        { label: product.name },
+                    ]}
+                />
+            )}
 
-            <div className="card p-6 sm:p-8 md:flex gap-8">
-                {/* Product image */}
-                <div className={`rounded-2xl w-full md:w-80 h-72 flex-shrink-0 mb-6 md:mb-0 overflow-hidden border ${
-                    showImage ? 'border-slate-100 bg-slate-50' : 'border-blue-100 bg-gradient-to-br from-blue-50 to-blue-100'
-                }`}>
-                    {showImage ? (
-                        <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            className="w-full h-full object-cover"
-                            onError={() => setImgError(true)}
-                        />
-                    ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-blue-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-20 h-20 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            <span className="text-sm mt-2 font-medium">Belum ada gambar</span>
+            <div className="grid md:grid-cols-5 gap-6">
+                {/* Left - Image Gallery */}
+                <div className="md:col-span-2">
+                    <div
+                        className={`rounded-lg border overflow-hidden bg-slate-50 aspect-square ${!showImage ? 'flex items-center justify-center' : 'cursor-zoom-in'}`}
+                        onMouseMove={e => {
+                            const rect = e.currentTarget.getBoundingClientRect()
+                            const x = ((e.clientX - rect.left) / rect.width) * 100
+                            const y = ((e.clientY - rect.top) / rect.height) * 100
+                            setZoomOrigin({ x, y })
+                        }}
+                    >
+                        {showImage ? (
+                            <img
+                                src={product.imageUrl}
+                                alt={product.name}
+                                className="w-full h-full object-cover transition-transform duration-200 ease-out"
+                                style={{ transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%` }}
+                                onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.5)' }}
+                                onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; setZoomOrigin({ x: 50, y: 50 }) }}
+                                onError={() => setImgError(true)}
+                            />
+                        ) : (
+                            <div className="flex flex-col items-center justify-center text-slate-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
+                                </svg>
+                                <span className="text-sm mt-2 font-medium">Belum ada gambar</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {showImage && (
+                        <div className="flex gap-2 mt-2">
+                            <div className="w-16 h-16 rounded border-2 border-ocean-500 overflow-hidden flex-shrink-0">
+                                <img src={product.imageUrl} alt="" className="w-full h-full object-cover" />
+                            </div>
                         </div>
                     )}
                 </div>
 
-                {/* Product info */}
-                <div className="flex-1">
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-800 mb-3 tracking-tight">{product.name}</h1>
-                    <p className="text-3xl sm:text-4xl font-extrabold text-blue-600 mb-5">{formatPrice(product.price)}</p>
+                {/* Right - Product Info */}
+                <div className="md:col-span-3">
+                    <div className="md:sticky md:top-20">
+                        <h1 className="text-xl sm:text-2xl font-bold text-slate-800 leading-snug">{product.name}</h1>
 
-                    <div className="flex flex-wrap items-center gap-3 mb-5">
-                        <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${
-                            product.stock > 0
-                                ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
-                                : 'bg-red-100 text-red-600 border border-red-200'
-                        }`}>
-                            {product.stock > 0 ? `Stok: ${product.stock}` : 'Habis'}
-                        </span>
-                        {product.storeName && (
-                            <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
-                                {product.storeName}
+                        <div className="flex items-center gap-3 mt-2 text-sm text-slate-500">
+                            {product.rating !== null && product.rating !== undefined && (
+                                <span className="flex items-center gap-1">
+                                    <Star size={14} className="text-amber-400" fill="#fbbf24" strokeWidth={1.5} />
+                                    {product.rating}
+                                </span>
+                            )}
+                            {product.soldCount !== null && product.soldCount !== undefined && product.soldCount > 0 && (
+                                <span>Terjual {product.soldCount}</span>
+                            )}
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded ${
+                                product.stock > 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-600'
+                            }`}>
+                                {product.stock > 0 ? `Stok: ${product.stock}` : 'Habis'}
                             </span>
-                        )}
-                    </div>
-
-                    <p className="text-slate-500 text-sm leading-relaxed mb-6 border-l-2 border-blue-200 pl-4">
-                        {product.description || 'Tidak ada deskripsi untuk produk ini.'}
-                    </p>
-
-                    {product.storeId && (
-                        <Link
-                            to={`/stores/${product.storeId}`}
-                            className="flex items-center gap-3 bg-gradient-to-r from-emerald-50 to-emerald-50/50 border border-emerald-200 rounded-xl p-4 mb-6 hover:from-emerald-100 hover:to-emerald-50 transition group"
-                        >
-                            <div className="w-11 h-11 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs text-emerald-500 font-medium">Dijual oleh</p>
-                                <p className="text-sm font-bold text-slate-800 truncate">{product.storeName}</p>
-                            </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-emerald-400 flex-shrink-0 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                        </Link>
-                    )}
-
-                    {myStoreId && product.storeId === myStoreId && (
-                        <Button
-                            variant="outline"
-                            onClick={() => navigate(`/dashboard/seller/products/edit/${product.id}`)}
-                            className="w-full mb-4"
-                        >
-                            Edit Produk
-                        </Button>
-                    )}
-
-                    {!token && (
-                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-700">
-                            <Link to="/login" className="font-bold hover:underline">Masuk</Link>{' '}
-                            atau{' '}
-                            <Link to="/register" className="font-bold hover:underline">daftar</Link>{' '}
-                            untuk membeli produk ini.
                         </div>
-                    )}
 
-                    {token && activeRole === 'BUYER' && (
-                        <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-5">
-                            <div className="flex flex-col sm:flex-row sm:items-end gap-4">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-500 mb-1.5">Jumlah</label>
-                                    <div className="flex items-center gap-1">
-                                        <button
-                                            onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                            disabled={quantity <= 1}
-                                            className="w-9 h-9 rounded-lg border-2 border-blue-200 text-blue-600 font-bold text-lg hover:bg-blue-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
-                                        >
-                                            −
-                                        </button>
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            value={quantity}
-                                            onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
-                                            className="w-16 text-center border-2 border-blue-200 rounded-lg px-2 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-300 transition"
-                                        />
-                                        <button
-                                            onClick={() => setQuantity(quantity + 1)}
-                                            className="w-9 h-9 rounded-lg border-2 border-blue-200 text-blue-600 font-bold text-lg hover:bg-blue-100 transition"
-                                        >
-                                            +
-                                        </button>
-                                    </div>
-                                </div>
+                        <div className="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200">
+                            <p className="text-2xl sm:text-3xl font-extrabold text-slate-800">{formatPrice(product.price)}</p>
+                        </div>
+
+                        <div className="mt-4">
+                            <p className="text-xs font-semibold text-slate-500 mb-2">Jumlah</p>
+                            <div className="flex items-center gap-1">
+                                <button
+                                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                    disabled={quantity <= 1}
+                                    className="w-9 h-9 rounded-lg border border-slate-300 text-slate-700 font-bold text-lg hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                                >
+                                    −
+                                </button>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(Math.max(1, Number(e.target.value) || 1))}
+                                    className="w-14 text-center border border-slate-300 rounded-lg px-2 py-1.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500 transition"
+                                />
+                                <button
+                                    onClick={() => setQuantity(quantity + 1)}
+                                    className="w-9 h-9 rounded-lg border border-slate-300 text-slate-700 font-bold text-lg hover:bg-slate-100 transition"
+                                >
+                                    +
+                                </button>
+                            </div>
+                        </div>
+
+                        {token && activeRole === 'BUYER' && product.stock > 0 && (
+                            <div className="mt-4 flex flex-col sm:flex-row gap-2">
+                                <Button
+                                    variant="outline"
+                                    onClick={handleAddToCart}
+                                    disabled={adding}
+                                    className="flex-1"
+                                >
+                                    {adding ? 'Menambahkan...' : '+ Keranjang'}
+                                </Button>
                                 <Button
                                     variant="primary"
                                     onClick={handleAddToCart}
-                                    disabled={adding || product.stock <= 0}
-                                    className="flex-1 sm:flex-none"
+                                    disabled={adding}
+                                    className="flex-1"
                                 >
-                                    {adding ? (
-                                        <span className="flex items-center gap-2">
-                                            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                                            </svg>
-                                            Menambahkan...
-                                        </span>
-                                    ) : (
-                                        <span className="flex items-center gap-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 4h13m-6 0a1 1 0 100 2 1 1 0 000-2zm7 0a1 1 0 100 2 1 1 0 000-2z" />
-                                            </svg>
-                                            Tambah ke Keranjang
-                                        </span>
-                                    )}
+                                    Beli Langsung
                                 </Button>
                             </div>
-                            <p className="text-xs text-slate-400 mt-3 flex items-center gap-1">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                Keranjang buyer hanya bisa berisi produk dari satu toko.
+                        )}
+
+                        {isOwner && (
+                            <div className="mt-3">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => navigate(`/dashboard/seller/products/edit/${product.id}`)}
+                                    fullWidth
+                                    size="sm"
+                                >
+                                    Edit Produk
+                                </Button>
+                            </div>
+                        )}
+
+                        {token && activeRole && activeRole !== 'BUYER' && roles.includes('BUYER') && (
+                            <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
+                                Role saat ini adalah <span className="font-bold">{activeRole}</span>.{' '}
+                                <button onClick={handleSwitchToBuyer} className="font-bold hover:underline text-ocean-600">
+                                    Ganti ke Pembeli
+                                </button>{' '}
+                                untuk membeli produk ini.
+                            </div>
+                        )}
+
+                        {token && activeRole && activeRole !== 'BUYER' && !roles.includes('BUYER') && (
+                            <div className="mt-4 bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm text-slate-600">
+                                Akun ini tidak memiliki role Pembeli, sehingga tidak dapat membeli produk.
+                            </div>
+                        )}
+
+                        {!token && (
+                            <div className="mt-4 bg-ocean-50 border border-ocean-200 rounded-lg p-3 text-sm text-ocean-700">
+                                <Link to="/login" className="font-bold hover:underline">Masuk</Link>{' '}
+                                atau{' '}
+                                <Link to="/register" className="font-bold hover:underline">daftar</Link>{' '}
+                                untuk membeli produk ini.
+                            </div>
+                        )}
+
+                        {message && (
+                            <p className={`text-sm mt-3 font-semibold ${message.includes('ditambahkan') ? 'text-emerald-600' : 'text-red-500'}`}>
+                                {message}
                             </p>
-                            {message && (
-                                <p className={`text-sm mt-3 font-semibold ${message.includes('ditambahkan') ? 'text-emerald-600' : 'text-red-500'}`}>
-                                    {message}
-                                </p>
-                            )}
+                        )}
+
+                        <div className="flex items-center gap-2 mt-4 text-slate-400">
+                            <button
+                                onClick={() => notify('Fitur wishlist sedang dikembangkan', 'info')}
+                                className="flex items-center gap-1 text-xs hover:text-ocean-600 transition p-1.5 rounded hover:bg-slate-50"
+                            >
+                                <Heart size={15} strokeWidth={1.5} /> Wishlist
+                            </button>
+                            <button className="flex items-center gap-1 text-xs hover:text-ocean-600 transition p-1.5 rounded hover:bg-slate-50">
+                                <Share2 size={15} strokeWidth={1.5} /> Share
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Info Tabs */}
+            <div className="mt-8 rounded-lg border border-slate-200">
+                <div className="flex border-b border-slate-200">
+                    {infoTabs.map(tab => (
+                        <button
+                            key={tab.key}
+                            onClick={() => setActiveInfoTab(tab.key)}
+                            className={`px-5 py-3 text-sm font-semibold border-b-2 transition ${
+                                activeInfoTab === tab.key
+                                    ? 'text-ocean-600 border-ocean-600'
+                                    : 'text-slate-500 border-transparent hover:text-slate-700'
+                            }`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </div>
+                <div className="p-5">
+                    {activeInfoTab === 'detail' && (
+                        <div>
+                            <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
+                                {product.description || 'Tidak ada deskripsi untuk produk ini.'}
+                            </p>
+                        </div>
+                    )}
+                    {activeInfoTab === 'info' && (
+                        <div className="text-sm text-slate-600 space-y-2">
+                            <p><span className="font-semibold text-slate-700">Berat:</span> -</p>
+                            <p><span className="font-semibold text-slate-700">Kondisi:</span> Baru</p>
+                            <p><span className="font-semibold text-slate-700">Kategori:</span> -</p>
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* Store Card */}
+            {product.storeId && (
+                <div className="mt-4 rounded-lg border border-slate-200 p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-ocean-100 flex items-center justify-center text-ocean-700 font-bold text-sm flex-shrink-0">
+                            {product.storeName?.charAt(0) || 'T'}
+                        </div>
+                        <div>
+                            <p className="font-bold text-sm text-slate-800">{product.storeName}</p>
+                            <p className="text-xs text-slate-400">Toko</p>
+                        </div>
+                    </div>
+                    <Link
+                        to={`/stores/${product.storeId}`}
+                        className="text-ocean-600 text-sm font-semibold border border-ocean-300 px-4 py-1.5 rounded-lg hover:bg-ocean-50 transition"
+                    >
+                        Lihat Toko
+                    </Link>
+                </div>
+            )}
+
+            {/* Review */}
+            <section className="mt-8">
+                <ReviewSection />
+            </section>
+
+            {/* Lainnya di toko ini */}
+            {storeProducts.length > 0 && (
+                <section className="mt-8">
+                    <h2 className="text-sm font-bold text-slate-700 mb-3">Lainnya di toko ini</h2>
+                    <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-thin">
+                        {storeProducts.map(p => (
+                            <div key={p.id} className="flex-shrink-0 w-40">
+                                <ProductCard product={p} />
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* Produk Serupa */}
+            {similarProducts.length > 0 && (
+                <section className="mt-8">
+                    <h2 className="text-sm font-bold text-slate-700 mb-3">Produk Serupa</h2>
+                    <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-thin">
+                        {similarProducts.map(p => (
+                            <div key={p.id} className="flex-shrink-0 w-40">
+                                <ProductCard product={p} />
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
         </MainLayout>
     )
 }
