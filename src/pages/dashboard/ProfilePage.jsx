@@ -91,7 +91,7 @@ export default function ProfilePage() {
         <MainLayout>
             <BackButton className="mb-3" />
             <div className="max-w-2xl mx-auto space-y-5">
-                <div className="card-hover p-4 animate-fade-in">
+                <div className="rounded-lg border border-slate-200 p-5">
                     <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full ocean-gradient flex items-center justify-center text-2xl font-extrabold text-white shadow-md flex-shrink-0">
                             {(profile?.fullName || profile?.username || '')?.charAt(0).toUpperCase()}
@@ -141,7 +141,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="card-hover p-4 animate-fade-in">
+                <div className="rounded-lg border border-slate-200 p-5">
                     <h2 className="text-sm font-bold text-slate-700 mb-3">Role Aktif</h2>
                     {activeRole ? (
                         <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${roleInfo[activeRole]?.badge || 'badge-slate'}`}>
@@ -153,7 +153,7 @@ export default function ProfilePage() {
                     )}
                 </div>
 
-                <div className="card-hover p-4 animate-fade-in">
+                <div className="rounded-lg border border-slate-200 p-5">
                     <h2 className="text-sm font-bold text-slate-700 mb-3">Role yang Dimiliki</h2>
                     <div className="space-y-3">
                         {roles.map(role => {
@@ -191,46 +191,26 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="card-hover p-4 animate-fade-in">
-                    <div className="mb-4">
-                        <h2 className="text-sm font-bold text-slate-700">Ringkasan Keuangan</h2>
-                        <p className="text-xs text-slate-400 mt-0.5">Saldo real berdasarkan aktivitas akun</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-3">
+                <div className="rounded-lg border border-slate-200 p-5">
+                    <h2 className="font-bold text-slate-800 mb-3 text-sm"><Wallet size={20} strokeWidth={1.5} className="inline-flex mr-1" /> Informasi Keuangan</h2>
+                    <div className="space-y-4 text-sm">
                         {roles.includes('BUYER') && (
-                            <div className="flex items-center justify-between bg-ocean-50 border border-ocean-200 rounded-lg p-3">
-                                <div>
-                                    <p className="text-xs text-ocean-600 font-semibold mb-0.5">Saldo Wallet</p>
-                                    <p className="text-base font-extrabold text-ocean-700">
-                                        {summary ? formatCurrency(summary.walletBalance) : '—'}
-                                    </p>
-                                </div>
-                                <Wallet size={24} strokeWidth={1.5} className="flex-shrink-0" />
+                            <div className="border-b border-slate-100 pb-3">
+                                <p className="text-xs font-semibold text-slate-400 uppercase">Saldo Wallet</p>
+                                <p className="text-base font-bold text-slate-800 mt-1">{formatCurrency(summary?.walletBalance)}</p>
+                                <p className="text-xs text-slate-400 mt-0.5">Real balance berdasarkan aktivitas akun</p>
                             </div>
                         )}
-
                         {roles.includes('SELLER') && (
-                            <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-lg p-3">
-                                <div>
-                                    <p className="text-xs text-emerald-600 font-semibold mb-0.5">Pendapatan Toko</p>
-                                                    <p className="text-base font-extrabold text-emerald-700">
-                                        {summary ? formatCurrency(summary.sellerIncome) : '—'}
-                                    </p>
-                                </div>
-                                <Store size={24} strokeWidth={1.5} className="flex-shrink-0" />
+                            <div className={roles.includes('DRIVER') ? 'border-b border-slate-100 pb-3' : ''}>
+                                <p className="text-xs font-semibold text-slate-400 uppercase">Pendapatan sebagai Seller</p>
+                                <p className="text-base font-bold text-emerald-600 mt-1">{formatCurrency(summary?.sellerIncome)}</p>
                             </div>
                         )}
-
                         {roles.includes('DRIVER') && (
-                            <div className="flex items-center justify-between bg-orange-50 border border-orange-200 rounded-lg p-3">
-                                <div>
-                                    <p className="text-xs text-orange-500 font-semibold mb-0.5">Penghasilan Driver</p>
-                                                    <p className="text-base font-extrabold text-orange-700">
-                                        {summary ? formatCurrency(summary.driverEarnings) : '—'}
-                                    </p>
-                                </div>
-                                <Truck size={24} strokeWidth={1.5} className="flex-shrink-0" />
+                            <div>
+                                <p className="text-xs font-semibold text-slate-400 uppercase">Pendapatan sebagai Driver</p>
+                                <p className="text-base font-bold text-ocean-600 mt-1">{formatCurrency(summary?.driverEarnings)}</p>
                             </div>
                         )}
                     </div>

@@ -8,7 +8,7 @@ import { createStore, getMyStore, updateStore } from '../../../services/storeApi
 import { getMyProducts } from '../../../services/productApi'
 import { useAuth } from '../../../contexts/useAuth'
 import BackButton from '../../../components/ui/BackButton'
-import { Store } from 'lucide-react'
+import { Store, Package } from 'lucide-react'
 
 export default function StoreManagementPage() {
     const [store, setStore] = useState(null)
@@ -64,6 +64,7 @@ export default function StoreManagementPage() {
                 ? await updateStore(form)
                 : await createStore(form)
             setStore(res.data.data)
+            setNotFound(false)
             setShowForm(false)
         } catch (err) {
             const data = err.response?.data
@@ -88,22 +89,26 @@ export default function StoreManagementPage() {
 
     if (notFound && !showForm) return (
         <MainLayout>
-            <div className="max-w-2xl mx-auto text-center animate-fade-in">
-                <p className="text-5xl mb-4"><Store size={48} strokeWidth={1.5} /></p>
-                <p className="text-slate-600 font-semibold text-lg mb-2">Kamu belum punya toko</p>
-                <p className="text-slate-400 text-sm mb-6">Buat toko dulu supaya bisa menjual produk.</p>
-                <Button onClick={() => setShowForm(true)}>
-                    Buat Toko
-                </Button>
+            <BackButton className="mb-3" />
+            <div className="card text-center py-20 animate-fade-in">
+                <Store size={48} strokeWidth={1.5} className="mb-3 mx-auto text-slate-300" />
+                <p className="font-semibold text-slate-700">Kamu belum punya toko</p>
+                <p className="text-sm text-slate-400 mt-1">Buat toko dulu supaya bisa menjual produk.</p>
+                <div className="mt-4">
+                    <Button onClick={() => setShowForm(true)}>
+                        Buat Toko
+                    </Button>
+                </div>
             </div>
         </MainLayout>
     )
 
     if (showForm) return (
         <MainLayout>
+            <BackButton className="mb-3" />
             <div className="max-w-2xl mx-auto animate-fade-in">
 
-                <div className="card-hover p-4">
+                <div className="rounded-lg border border-slate-200 p-5">
                     <h2 className="text-base font-bold text-slate-700 mb-4">
                         {store ? 'Edit Toko' : 'Buat Toko Baru'}
                     </h2>
@@ -152,100 +157,89 @@ export default function StoreManagementPage() {
 
     return (
         <MainLayout>
-            <BackButton className="mb-3" />
+            <BackButton className="mb-4" />
 
-            <div className="max-w-2xl mx-auto space-y-5 animate-fade-in">
-
-                {}
-                <div className="card-hover p-4">
-                    <div className="flex items-start gap-4">
-                        <div className="w-14 h-14 rounded-lg bg-emerald-100 flex items-center justify-center text-2xl flex-shrink-0">
-                            <Store size={28} strokeWidth={1.5} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-4">
-                                <div>
-                                    <h1 className="text-2xl font-bold text-slate-800">{store.name}</h1>
-                                    <p className="text-slate-400 text-sm mt-1 leading-relaxed">
-                                        {store.description || 'Belum ada deskripsi toko.'}
-                                    </p>
-                                    <div className="flex items-center gap-3 mt-3">
-                                        <span className="badge-emerald">
-                                            Toko Aktif
-                                        </span>
-                                        <span className="text-slate-300 text-xs">
-                                            Seller: {decoded?.username}
-                                        </span>
-                                    </div>
+            <div className="rounded-lg border border-slate-200 p-5">
+                <div className="flex items-start gap-4">
+                    <div className="w-14 h-14 rounded-lg bg-ocean-100 flex items-center justify-center flex-shrink-0">
+                        <Store size={26} className="text-ocean-600" strokeWidth={1.5} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-4">
+                            <div>
+                                <h1 className="text-xl sm:text-2xl font-bold text-slate-800 tracking-tight">{store.name}</h1>
+                                <p className="text-sm text-slate-500 mt-1 leading-relaxed">
+                                    {store.description || 'Belum ada deskripsi toko.'}
+                                </p>
+                                <div className="flex items-center gap-3 mt-3">
+                                    <span className="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">Toko Aktif</span>
+                                    <span className="text-xs text-slate-400">Seller: {decoded?.username}</span>
                                 </div>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => {
-                                        setForm({ name: store.name, description: store.description || '' })
-                                        setShowForm(true)
-                                    }}
-                                >
-                                    Edit
-                                </Button>
                             </div>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                    setForm({ name: store.name, description: store.description || '' })
+                                    setShowForm(true)
+                                }}
+                            >
+                                Edit
+                            </Button>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {}
-                <div className="card-hover p-4">
-                    <h2 className="text-sm font-bold text-slate-700 mb-3">Informasi Toko</h2>
-                    <div className="space-y-3">
-                        <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                            <span className="text-sm text-slate-400">Nama Toko</span>
-                            <span className="text-sm font-semibold text-slate-700">{store.name}</span>
-                        </div>
-                        <div className="flex justify-between items-center py-2 border-b border-slate-50">
-                            <span className="text-sm text-slate-400">Penjual</span>
-                            <span className="text-sm font-semibold text-slate-700">{decoded?.username}</span>
-                        </div>
-                        <div className="flex justify-between items-center py-2">
-                            <span className="text-sm text-slate-400">Bergabung sejak</span>
-                            <span className="text-sm font-semibold text-slate-700">
-                                {store.createdAt
-                                    ? new Date(store.createdAt).toLocaleDateString('id-ID', {
-                                        day: 'numeric', month: 'long', year: 'numeric'
-                                    })
-                                    : '-'}
-                            </span>
-                        </div>
+            <div className="mt-4 rounded-lg border border-slate-200">
+                <div className="flex border-b border-slate-200">
+                    <div className="px-5 py-3 text-sm font-semibold text-ocean-600 border-b-2 border-ocean-600">
+                        Informasi Toko
                     </div>
                 </div>
-
-                {}
-                <div className="card-hover p-4">
-                    <div className="flex items-center justify-between mb-3">
-                        <h2 className="text-sm font-bold text-slate-700">
-                            Produk Toko
-                            <span className="ml-2 text-xs font-normal text-slate-400">({products.length} produk)</span>
-                        </h2>
-                        <Button
-                            size="sm"
-                            onClick={() => navigate('/dashboard/seller/products/new')}
-                        >
-                            + Tambah Produk
-                        </Button>
-                    </div>
-                    {products.length === 0 ? (
-                        <div className="bg-emerald-50 rounded-lg p-4 text-center">
-                            <p className="text-emerald-300 text-sm font-medium">Belum ada produk di toko ini</p>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {products.map(product => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                        </div>
-                    )}
+                <div className="p-5 space-y-3">
+                    <InfoRow label="Nama Toko" value={store.name} />
+                    <InfoRow label="Penjual" value={decoded?.username} />
+                    <InfoRow label="Bergabung sejak" value={store.createdAt
+                        ? new Date(store.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
+                        : '-'
+                    } />
                 </div>
+            </div>
 
+            <div className="mt-4 rounded-lg border border-slate-200 p-5">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-sm font-bold text-slate-700 flex items-center gap-2">
+                        <Package size={16} strokeWidth={1.5} className="text-ocean-500" />
+                        Produk Toko
+                        <span className="ml-1 text-xs font-normal text-slate-400">({products.length} produk)</span>
+                    </h2>
+                    <Button size="sm" onClick={() => navigate('/dashboard/seller/products/new')}>
+                        + Tambah Produk
+                    </Button>
+                </div>
+                {products.length === 0 ? (
+                    <div className="text-center py-12 bg-slate-50 rounded-lg">
+                        <Package size={28} className="text-slate-300 mx-auto mb-2" strokeWidth={1.5} />
+                        <p className="text-sm font-medium text-slate-500">Belum ada produk di toko ini</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {products.map(product => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
+                    </div>
+                )}
             </div>
         </MainLayout>
+    )
+}
+
+function InfoRow({ label, value }) {
+    return (
+        <div className="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
+            <span className="text-sm text-slate-500">{label}</span>
+            <span className="text-sm font-semibold text-slate-700">{value}</span>
+        </div>
     )
 }

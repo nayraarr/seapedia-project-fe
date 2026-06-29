@@ -151,7 +151,7 @@ export default function ProductFormPage() {
                     </h1>
                 </div>
 
-                <div className="card-hover p-4">
+                <div className="rounded-lg border border-slate-200 p-5">
                     {error && (
                         <div className="bg-red-50 border border-red-200 text-red-600 rounded-lg px-3 py-2.5 text-sm mb-4 flex items-center gap-2">
                             <svg className="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -160,7 +160,7 @@ export default function AddressManagementPage() {
             )}
 
             {showForm && (
-                <div className="card-hover p-4 mb-6 animate-slide-up">
+                <div className="rounded-lg border border-slate-200 p-5 mb-6 animate-slide-up">
                     <h2 className="font-bold text-slate-700 mb-4 text-sm">
                         {editTarget ? 'Edit Alamat' : 'Tambah Alamat Baru'}
                     </h2>
@@ -255,10 +255,10 @@ export default function AddressManagementPage() {
                     {addresses.map(addr => (
                         <div
                             key={addr.id}
-                            className={`card-hover p-4 transition
+                            className={`rounded-lg border p-5 transition
                                 ${addr.isDefault
                                 ? 'border-ocean-400 ring-1 ring-ocean-200'
-                                : ''}`}
+                                : 'border-slate-200'}`}
                         >
                             <div className="flex items-start justify-between mb-2">
                                 <div className="flex items-center gap-2">
