@@ -749,7 +749,7 @@ export default function AdminDashboard() {
         <MainLayout>
             <div className="mb-6 animate-fade-in">
                 <span className="text-xs font-bold text-red-500 uppercase tracking-widest">Dashboard</span>
-                <h1 className="text-2xl font-bold text-slate-800 mt-1">Halo, {decoded?.username}!</h1>
+                <h1 className="text-2xl font-bold text-slate-800 mt-1">Halo, {decoded?.fullName || decoded?.username}!</h1>
                 <p className="text-slate-400 text-sm mt-1">Monitoring &amp; Manajemen Diskon</p>
             </div>
 

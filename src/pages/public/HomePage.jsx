@@ -26,14 +26,14 @@ const banners = [
 ]
 
 const categories = [
-    { label: 'Fashion', icon: Shirt },
-    { label: 'Elektronik', icon: Smartphone },
-    { label: 'Rumah Tangga', icon: Home },
-    { label: 'Buku', icon: BookOpen },
-    { label: 'Game', icon: Gamepad2 },
-    { label: 'Makanan', icon: Utensils },
-    { label: 'Hadiah', icon: Gift },
-    { label: 'Lainnya', icon: Sparkles },
+    { label: 'Fashion', icon: Shirt, category: 'FASHION' },
+    { label: 'Elektronik', icon: Smartphone, category: 'ELEKTRONIK' },
+    { label: 'Rumah Tangga', icon: Home, category: 'RUMAH_TANGGA' },
+    { label: 'Buku', icon: BookOpen, category: 'BUKU' },
+    { label: 'Game', icon: Gamepad2, category: 'GAME' },
+    { label: 'Makanan', icon: Utensils, category: 'MAKANAN' },
+    { label: 'Hadiah', icon: Gift, category: 'HADIAH' },
+    { label: 'Lainnya', icon: Sparkles, category: 'LAINNYA' },
 ]
 
 const productTabs = [
@@ -134,17 +134,18 @@ export default function HomePage() {
 
             {/* Categories */}
             <section className="mb-6">
-                <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-thin">
+                <h2 className="text-xl font-bold text-slate-800 tracking-tight mb-4 text-center">Kategori Produk</h2>
+                <div className="flex flex-wrap justify-center gap-3">
                     {categories.map(cat => (
                         <Link
                             key={cat.label}
-                            to={`/products?search=${cat.label}`}
-                            className="flex flex-col items-center gap-1 flex-shrink-0 w-16"
+                            to={`/products?category=${cat.category}`}
+                            className="flex flex-col items-center gap-1 w-20"
                         >
-                            <div className="w-12 h-12 rounded-full bg-ocean-50 flex items-center justify-center text-ocean-600 hover:bg-ocean-100 transition">
-                                <cat.icon size={20} strokeWidth={1.5} />
+                            <div className="w-14 h-14 rounded-full bg-ocean-50 flex items-center justify-center text-ocean-600 hover:bg-ocean-100 hover:text-ocean-700 transition">
+                                <cat.icon size={22} strokeWidth={1.5} />
                             </div>
-                            <span className="text-[10px] font-medium text-slate-600 text-center leading-tight">{cat.label}</span>
+                            <span className="text-[11px] font-medium text-slate-600 text-center leading-tight">{cat.label}</span>
                         </Link>
                     ))}
                 </div>
@@ -176,7 +177,7 @@ export default function HomePage() {
                     <p className="text-xs font-medium opacity-80 uppercase tracking-wide">Promo Bulanan</p>
                     <h3 className="text-xl font-extrabold mt-1">Diskon Spesial Hingga 50%</h3>
                     <p className="text-sm opacity-80 mt-1 mb-3">Setiap pembelian produk favorit kamu</p>
-                    <Link to="/products" className="inline-block bg-white text-ocean-700 text-sm font-bold px-4 py-2 rounded-lg hover:bg-ocean-50 transition">
+                    <Link to="/promos" className="inline-block bg-white text-ocean-700 text-sm font-bold px-4 py-2 rounded-lg hover:bg-ocean-50 transition">
                         Lihat Promo
                     </Link>
                 </div>

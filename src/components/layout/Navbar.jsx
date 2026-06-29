@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/useAuth'
 import { useCart } from '../../contexts/useCart'
-import { ShoppingBag, Store, Truck, Settings, Search, Bell, MessageCircle, ChevronDown } from 'lucide-react'
+import { ShoppingBag, Store, Truck, Settings, Search, Bell, MessageCircle, ChevronDown, Tag } from 'lucide-react'
 
 export default function Navbar() {
     const { token, activeRole, decoded, logout } = useAuth()
@@ -49,7 +49,7 @@ export default function Navbar() {
     return (
         <>
             <div className="promo-strip">
-                Free Ongkir &bull; Promo Spesial &bull; Belanja Aman di SEAPEDIA
+                Produk Lengkap &bull; Promo Spesial &bull; Belanja Aman di SEAPEDIA
             </div>
 
             <nav className="w-full bg-white border-b border-slate-200 px-4 sm:px-6 sticky top-0 z-50">
@@ -80,6 +80,10 @@ export default function Navbar() {
                         </Link>
                         <Link to="/stores" className="px-3 py-2 text-sm font-medium text-slate-500 hover:text-ocean-600 rounded-lg transition">
                             Toko
+                        </Link>
+                        <Link to="/promos" className="px-3 py-2 text-sm font-medium text-slate-500 hover:text-ocean-600 rounded-lg transition flex items-center gap-1">
+                            <Tag size={14} strokeWidth={1.5} />
+                            Promo
                         </Link>
 
                         {token ? (
@@ -117,9 +121,9 @@ export default function Navbar() {
                                         className="flex items-center gap-1.5 ml-1 pl-2 pr-1.5 py-1.5 rounded-lg hover:bg-slate-50 transition"
                                     >
                                         <div className="w-7 h-7 rounded-full ocean-gradient flex items-center justify-center text-white text-[11px] font-bold">
-                                            {decoded?.username?.charAt(0).toUpperCase()}
+                                            {(decoded?.fullName || decoded?.username || '')?.charAt(0).toUpperCase()}
                                         </div>
-                                        <span className="text-sm font-semibold text-slate-700 max-w-[120px] truncate">{decoded?.username}</span>
+                                        <span className="text-sm font-semibold text-slate-700 max-w-[120px] truncate">{decoded?.fullName || decoded?.username}</span>
                                         <ChevronDown size={14} className="text-slate-400" strokeWidth={2} />
                                     </button>
 
@@ -202,6 +206,7 @@ export default function Navbar() {
                     <div className="md:hidden border-t border-slate-100 px-0 pb-4 flex flex-col gap-1 animate-slide-down bg-white">
                         <MobileLink to="/products" onClick={() => setMenuOpen(false)}>Produk</MobileLink>
                         <MobileLink to="/stores" onClick={() => setMenuOpen(false)}>Toko</MobileLink>
+                        <MobileLink to="/promos" onClick={() => setMenuOpen(false)}>Promo</MobileLink>
 
                         {!token ? (
                             <>
@@ -245,9 +250,9 @@ export default function Navbar() {
                                     )}
                                     <div className="flex items-center gap-2">
                                         <div className="w-6 h-6 rounded-full ocean-gradient flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
-                                            {decoded?.username?.charAt(0).toUpperCase()}
+                                            {(decoded?.fullName || decoded?.username || '')?.charAt(0).toUpperCase()}
                                         </div>
-                                        <span className="text-sm font-semibold text-slate-700">{decoded?.username}</span>
+                                        <span className="text-sm font-semibold text-slate-700">{decoded?.fullName || decoded?.username}</span>
                                     </div>
                                 </Link>
 

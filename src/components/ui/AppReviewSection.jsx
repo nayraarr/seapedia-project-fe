@@ -27,29 +27,24 @@ export default function AppReviewSection() {
             .finally(() => setLoading(false))
     }, [])
 
-    useEffect(() => {
-        if (formOpen && decoded?.sub) {
-            setForm(prev => ({ ...prev, name: decoded.sub }))
-        }
-    }, [formOpen, decoded])
-
     const handleToggleForm = () => {
         setFormOpen(prev => !prev)
         setErrors({})
         if (!formOpen) {
-            setForm({ rating: 5, comment: '', name: decoded?.sub || '' })
+            setForm({ rating: 5, comment: '', name: '' })
         }
     }
 
     const handleCloseForm = () => {
         setFormOpen(false)
         setErrors({})
-        setForm({ rating: 5, comment: '', name: decoded?.sub || '' })
+        setForm({ rating: 5, comment: '', name: '' })
     }
 
     const validate = () => {
         const errs = {}
         if (form.rating < 1) errs.rating = 'Pilih rating terlebih dahulu'
+        if (!decoded && !form.name.trim()) errs.name = 'Nama tidak boleh kosong'
         if (!form.comment.trim()) errs.comment = 'Ulasan tidak boleh kosong'
         return errs
     }
@@ -62,11 +57,11 @@ export default function AppReviewSection() {
 
         setSubmitting(true)
         try {
-            const res = await createAppReview({
-                reviewerName: form.name || decoded?.sub || 'Pengguna',
-                rating: form.rating,
-                comment: form.comment.trim(),
-            })
+            const payload = { rating: form.rating, comment: form.comment.trim() }
+            if (!decoded) {
+                payload.reviewerName = form.name.trim()
+            }
+            const res = await createAppReview(payload)
             setReviews(prev => [res.data.data, ...prev])
             notify('Ulasan berhasil dikirim!', 'success', 'Ulasan')
             handleCloseForm()
@@ -156,15 +151,16 @@ export default function AppReviewSection() {
                 <div className="mb-5 rounded-lg border border-ocean-200 bg-ocean-50 p-4 animate-slide-up">
                     <h3 className="text-sm font-bold text-slate-700 mb-3">Tulis Ulasan Baru</h3>
                     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                        {!decoded?.sub && (
+                        {!decoded && (
                             <div>
                                 <input
                                     type="text"
                                     placeholder="Nama kamu"
                                     value={form.name}
                                     onChange={e => setForm({ ...form, name: e.target.value })}
-                                    className="input-field text-sm"
+                                    className={`input-field text-sm ${errors.name ? 'input-error' : ''}`}
                                 />
+                                {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
                             </div>
                         )}
                         <div>

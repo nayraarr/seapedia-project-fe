@@ -12,6 +12,17 @@ import ReviewSection from '../../components/ui/ReviewSection'
 import Breadcrumb from '../../components/ui/Breadcrumb'
 import { Star, Heart, Share2 } from 'lucide-react'
 
+const categoryLabels = {
+    FASHION: 'Fashion',
+    ELEKTRONIK: 'Elektronik',
+    RUMAH_TANGGA: 'Rumah Tangga',
+    BUKU: 'Buku',
+    GAME: 'Game',
+    MAKANAN: 'Makanan',
+    HADIAH: 'Hadiah',
+    LAINNYA: 'Lainnya',
+}
+
 const infoTabs = [
     { key: 'detail', label: 'Detail Produk' },
     { key: 'info', label: 'Info Penting' },
@@ -35,7 +46,7 @@ export default function ProductDetailPage() {
     const [storeProducts, setStoreProducts] = useState([])
     const [similarProducts, setSimilarProducts] = useState([])
     const [zoomOrigin, setZoomOrigin] = useState({ x: 50, y: 50 })
-    if (id !== prevId) { setPrevId(id); setImgError(false) }
+    if (id !== prevId) { setPrevId(id); setImgError(false); setLoading(true); setNotFound(false); setProduct(null) }
 
     const formatPrice = (price) =>
         new Intl.NumberFormat('id-ID', {
@@ -45,6 +56,7 @@ export default function ProductDetailPage() {
         }).format(price)
 
     useEffect(() => {
+        window.scrollTo(0, 0)
         api.get(`/products/${id}`)
             .then(res => setProduct(res.data.data))
             .catch(() => setNotFound(true))
@@ -55,21 +67,17 @@ export default function ProductDetailPage() {
         if (!product) return
         api.get(`/products/store/${product.storeId}`)
             .then(res => setStoreProducts((res.data.data || []).filter(p => p.id !== product.id)))
-            .catch(() => {})
-        api.get('/products')
-            .then(res => {
-                const others = (res.data.data || []).filter(p => p.id !== product.id)
-                const shuffled = others.sort(() => Math.random() - 0.5).slice(0, 8)
-                setSimilarProducts(shuffled)
-            })
-            .catch(() => {})
-    }, [product])
+            .catch(() => void 0)
+        api.get(`/products/${id}/similar`)
+            .then(res => setSimilarProducts(res.data.data || []))
+            .catch(() => void 0)
+    }, [product, id])
 
     useEffect(() => {
         if (token && activeRole === 'SELLER') {
             getMyStore()
                 .then(res => setMyStoreId(res.data.data?.id))
-                .catch(() => {})
+                .catch(() => void 0)
         }
     }, [token, activeRole])
 
@@ -307,7 +315,18 @@ export default function ProductDetailPage() {
                             >
                                 <Heart size={15} strokeWidth={1.5} /> Wishlist
                             </button>
-                            <button className="flex items-center gap-1 text-xs hover:text-ocean-600 transition p-1.5 rounded hover:bg-slate-50">
+                            <button
+                                onClick={async () => {
+                                    const url = window.location.href
+                                    if (navigator.share) {
+                                        await navigator.share({ title: product.name, url }).catch(() => void 0)
+                                    } else {
+                                        await navigator.clipboard.writeText(url)
+                                        notify('Link produk disalin!', 'success', 'Share')
+                                    }
+                                }}
+                                className="flex items-center gap-1 text-xs hover:text-ocean-600 transition p-1.5 rounded hover:bg-slate-50"
+                            >
                                 <Share2 size={15} strokeWidth={1.5} /> Share
                             </button>
                         </div>
@@ -344,7 +363,7 @@ export default function ProductDetailPage() {
                         <div className="text-sm text-slate-600 space-y-2">
                             <p><span className="font-semibold text-slate-700">Berat:</span> -</p>
                             <p><span className="font-semibold text-slate-700">Kondisi:</span> Baru</p>
-                            <p><span className="font-semibold text-slate-700">Kategori:</span> -</p>
+                            <p><span className="font-semibold text-slate-700">Kategori:</span> {product.category ? (categoryLabels[product.category] || product.category) : '-'}</p>
                         </div>
                     )}
                 </div>

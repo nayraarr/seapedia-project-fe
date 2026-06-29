@@ -1,15 +1,31 @@
-import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useEffect, useState, useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
 import ProductCard from '../../components/ui/ProductCard'
+import StoreCard from '../../components/ui/StoreCard'
 import api from '../../services/api'
+import { Search, Store } from 'lucide-react'
+
+const sortOptions = [
+    { key: 'relevance', label: 'Paling Sesuai' },
+    { key: 'newest', label: 'Terbaru' },
+    { key: 'cheapest', label: 'Termurah' },
+    { key: 'most_expensive', label: 'Termahal' },
+]
+
+const tabs = [
+    { key: 'produk', label: 'Produk' },
+    { key: 'toko', label: 'Toko' },
+]
 
 export default function SearchResultsPage() {
     const [searchParams] = useSearchParams()
     const q = searchParams.get('q') || ''
-    const [products, setProducts] = useState([])
-    const [stores, setStores] = useState([])
+    const [allProducts, setAllProducts] = useState([])
+    const [allStores, setAllStores] = useState([])
     const [loading, setLoading] = useState(true)
+    const [activeTab, setActiveTab] = useState('produk')
+    const [sortBy, setSortBy] = useState('relevance')
 
     useEffect(() => {
         if (!q.trim()) { setLoading(false); return }
@@ -19,82 +35,172 @@ export default function SearchResultsPage() {
             api.get('/stores'),
         ])
             .then(([productsRes, storesRes]) => {
-                const query = q.toLowerCase()
-                setProducts((productsRes.data.data || []).filter(p =>
-                    p.name?.toLowerCase().includes(query) ||
-                    p.description?.toLowerCase().includes(query)
-                ))
-                setStores((storesRes.data.data || []).filter(s =>
-                    s.name?.toLowerCase().includes(query) ||
-                    s.description?.toLowerCase().includes(query)
-                ))
+                setAllProducts(productsRes.data.data || [])
+                setAllStores(storesRes.data.data || [])
             })
-            .catch(() => {})
+            .catch(() => {
+                setAllProducts([])
+                setAllStores([])
+            })
             .finally(() => setLoading(false))
     }, [q])
 
+    const query = q.toLowerCase().trim()
+
+    const filteredProducts = useMemo(() => {
+        if (!query) return []
+        return allProducts.filter(p =>
+            p.name?.toLowerCase().includes(query) ||
+            p.description?.toLowerCase().includes(query)
+        )
+    }, [allProducts, query])
+
+    const filteredStores = useMemo(() => {
+        if (!query) return []
+        return allStores.filter(s =>
+            s.name?.toLowerCase().includes(query) ||
+            s.description?.toLowerCase().includes(query)
+        )
+    }, [allStores, query])
+
+    const sortedProducts = useMemo(() => {
+        const list = [...filteredProducts]
+        if (sortBy === 'newest') {
+            list.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+        } else if (sortBy === 'cheapest') {
+            list.sort((a, b) => (a.price || 0) - (b.price || 0))
+        } else if (sortBy === 'most_expensive') {
+            list.sort((a, b) => (b.price || 0) - (a.price || 0))
+        }
+        return list
+    }, [filteredProducts, sortBy])
+
+    const storeProductMap = useMemo(() => {
+        const map = {}
+        for (const p of allProducts) {
+            if (!map[p.storeId]) map[p.storeId] = []
+            map[p.storeId].push(p)
+        }
+        return map
+    }, [allProducts])
+
+    const currentCount = activeTab === 'produk' ? sortedProducts.length : filteredStores.length
+
+    const handleTabChange = (key) => {
+        setActiveTab(key)
+        setSortBy('relevance')
+    }
+
+    if (!q.trim()) {
+        return (
+            <MainLayout>
+                <div className="text-center py-24">
+                    <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                        <Search size={24} className="text-slate-400" strokeWidth={1.5} />
+                    </div>
+                    <p className="text-base font-semibold text-slate-600">Masukkan kata kunci pencarian</p>
+                    <p className="text-sm text-slate-400 mt-1">Gunakan kolom pencarian di atas untuk mencari produk atau toko</p>
+                </div>
+            </MainLayout>
+        )
+    }
+
     return (
         <MainLayout>
-            <div className="mb-6">
-                <p className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Pencarian</p>
-                <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1 tracking-tight">
-                    Hasil untuk "{q}"
-                </h1>
-                {!loading && products.length === 0 && stores.length === 0 && (
-                    <p className="text-slate-400 text-sm mt-2">Tidak ada hasil yang ditemukan.</p>
+            {/* Header */}
+            <div className="mb-5">
+                <h1 className="text-xl font-bold text-slate-800 tracking-tight">Hasil Pencarian</h1>
+                <p className="text-sm text-slate-500 mt-0.5">
+                    untuk &ldquo;<span className="font-semibold">{q}</span>&rdquo;
+                </p>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex items-center gap-1 border-b border-slate-200 mb-4">
+                {tabs.map(tab => (
+                    <button
+                        key={tab.key}
+                        onClick={() => handleTabChange(tab.key)}
+                        className={`px-4 py-2.5 text-sm font-semibold border-b-2 transition ${
+                            activeTab === tab.key
+                                ? 'text-ocean-600 border-ocean-600'
+                                : 'text-slate-500 border-transparent hover:text-slate-700'
+                        }`}
+                    >
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
+
+            {/* Info bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                <p className="text-xs text-slate-500">
+                    {loading ? 'Memuat...' : (
+                        currentCount > 0
+                            ? `Menampilkan 1–${currentCount} dari total ${currentCount} untuk "${q}"`
+                            : `Tidak ada ${activeTab === 'produk' ? 'produk' : 'toko'} ditemukan untuk "${q}"`
+                    )}
+                </p>
+                {activeTab === 'produk' && !loading && currentCount > 0 && (
+                    <select
+                        value={sortBy}
+                        onChange={e => setSortBy(e.target.value)}
+                        className="text-sm border border-slate-300 rounded-lg px-3 py-1.5 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500 transition self-start sm:self-auto"
+                    >
+                        {sortOptions.map(opt => (
+                            <option key={opt.key} value={opt.key}>{opt.label}</option>
+                        ))}
+                    </select>
                 )}
             </div>
 
+            {/* Content */}
             {loading ? (
-                <div className="space-y-4">
-                    <div className="skeleton h-6 w-32" />
+                activeTab === 'produk' ? (
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                        {[...Array(4)].map((_, i) => <div key={i} className="skeleton aspect-[3/4]" />)}
+                        {[...Array(8)].map((_, i) => <div key={i} className="skeleton aspect-[3/4]" />)}
                     </div>
-                </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {[...Array(4)].map((_, i) => <div key={i} className="skeleton h-28 rounded-lg" />)}
+                    </div>
+                )
+            ) : activeTab === 'produk' ? (
+                sortedProducts.length === 0 ? (
+                    <div className="text-center py-20">
+                        <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                            <Search size={24} className="text-slate-400" strokeWidth={1.5} />
+                        </div>
+                        <p className="text-base font-semibold text-slate-600 mb-1">Produk tidak ditemukan</p>
+                        <p className="text-sm text-slate-400">Coba kata kunci lain</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {sortedProducts.map(product => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
+                    </div>
+                )
             ) : (
-                <>
-                    {products.length > 0 && (
-                        <section className="mb-8">
-                            <div className="flex items-center justify-between mb-3">
-                                <h2 className="text-sm font-bold text-slate-700">Produk ({products.length})</h2>
-                                <Link to={`/products?search=${encodeURIComponent(q)}`} className="text-ocean-600 text-xs font-semibold hover:underline">
-                                    Lihat Semua
-                                </Link>
-                            </div>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                {products.slice(0, 4).map(p => (
-                                    <ProductCard key={p.id} product={p} />
-                                ))}
-                            </div>
-                        </section>
-                    )}
-
-                    {stores.length > 0 && (
-                        <section className="mb-8">
-                            <h2 className="text-sm font-bold text-slate-700 mb-3">Toko ({stores.length})</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                {stores.map(store => (
-                                    <Link key={store.id} to={`/stores/${store.id}`} className="block group">
-                                        <div className="card-hover p-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-xl bg-ocean-100 flex items-center justify-center text-ocean-600 font-bold flex-shrink-0">
-                                                    {store.name?.charAt(0)}
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <p className="font-semibold text-sm text-slate-800 truncate group-hover:text-ocean-600 transition">
-                                                        {store.name}
-                                                    </p>
-                                                    <p className="text-xs text-slate-400 truncate">{store.description}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                ))}
-                            </div>
-                        </section>
-                    )}
-                </>
+                filteredStores.length === 0 ? (
+                    <div className="text-center py-20">
+                        <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
+                            <Store size={24} className="text-slate-400" strokeWidth={1.5} />
+                        </div>
+                        <p className="text-base font-semibold text-slate-600 mb-1">Toko tidak ditemukan</p>
+                        <p className="text-sm text-slate-400">Coba kata kunci lain</p>
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {filteredStores.map(store => (
+                            <StoreCard
+                                key={store.id}
+                                store={store}
+                                previewProducts={storeProductMap[store.id] || []}
+                            />
+                        ))}
+                    </div>
+                )
             )}
         </MainLayout>
     )
