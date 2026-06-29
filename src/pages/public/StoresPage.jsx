@@ -1,24 +1,44 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState, useMemo } from 'react'
 import MainLayout from '../../components/layout/MainLayout'
+import StoreCard from '../../components/ui/StoreCard'
 import { getAllStores } from '../../services/storeApi'
+import api from '../../services/api'
 import { Search, Store } from 'lucide-react'
 
 export default function StoresPage() {
     const [stores, setStores] = useState([])
+    const [allProducts, setAllProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState('')
 
     useEffect(() => {
-        getAllStores()
-            .then(res => setStores(res.data.data || []))
-            .catch(() => setStores([]))
+        Promise.all([
+            getAllStores(),
+            api.get('/products'),
+        ])
+            .then(([storesRes, productsRes]) => {
+                setStores(storesRes.data.data || [])
+                setAllProducts(productsRes.data.data || [])
+            })
+            .catch(() => {
+                setStores([])
+                setAllProducts([])
+            })
             .finally(() => setLoading(false))
     }, [])
 
     const filtered = stores.filter(s =>
         s.name.toLowerCase().includes(search.toLowerCase())
     )
+
+    const storeProductMap = useMemo(() => {
+        const map = {}
+        for (const p of allProducts) {
+            if (!map[p.storeId]) map[p.storeId] = []
+            map[p.storeId].push(p)
+        }
+        return map
+    }, [allProducts])
 
     return (
         <MainLayout>
@@ -60,21 +80,11 @@ export default function StoresPage() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {filtered.map(store => (
-                        <Link to={`/stores/${store.id}`} key={store.id} className="group block">
-                            <div className="border border-slate-200 rounded-lg p-4 hover:border-ocean-300 hover:shadow-sm transition">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                                        <Store size={22} className="text-emerald-600" strokeWidth={1.5} />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <h2 className="font-bold text-slate-800 truncate group-hover:text-ocean-600 transition-colors">{store.name}</h2>
-                                        <p className="text-slate-400 text-sm truncate">
-                                            {store.description || 'Belum ada deskripsi toko.'}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </Link>
+                        <StoreCard
+                            key={store.id}
+                            store={store}
+                            previewProducts={storeProductMap[store.id] || []}
+                        />
                     ))}
                 </div>
             )}
