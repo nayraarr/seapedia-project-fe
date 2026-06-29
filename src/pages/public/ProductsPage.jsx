@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useEffect, useState, useMemo } from 'react'
+import { useSearchParams, Link } from 'react-router-dom'
 import MainLayout from '../../components/layout/MainLayout'
 import ProductCard from '../../components/ui/ProductCard'
 import api from '../../services/api'
-import { Search } from 'lucide-react'
+import { Search, X } from 'lucide-react'
 
 const sortTabs = [
     { key: '', label: 'Semua' },
@@ -12,9 +12,21 @@ const sortTabs = [
     { key: 'terbaru', label: 'Terbaru' },
 ]
 
+const categoryLabels = {
+    FASHION: 'Fashion',
+    ELEKTRONIK: 'Elektronik',
+    RUMAH_TANGGA: 'Rumah Tangga',
+    BUKU: 'Buku',
+    GAME: 'Game',
+    MAKANAN: 'Makanan',
+    HADIAH: 'Hadiah',
+    LAINNYA: 'Lainnya',
+}
+
 export default function ProductsPage() {
     const [searchParams, setSearchParams] = useSearchParams()
     const initialSearch = searchParams.get('search') || ''
+    const initialCategory = searchParams.get('category') || ''
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState(initialSearch)
@@ -29,14 +41,24 @@ export default function ProductsPage() {
 
     const handleSearch = (e) => {
         e.preventDefault()
-        if (search.trim()) {
-            setSearchParams({ search: search.trim() })
-        } else {
-            setSearchParams({})
-        }
+        const params = {}
+        if (search.trim()) params.search = search.trim()
+        if (initialCategory) params.category = initialCategory
+        setSearchParams(params)
+    }
+
+    const handleClearCategory = () => {
+        const params = {}
+        if (search.trim()) params.search = search.trim()
+        setSearchParams(params)
     }
 
     let filtered = products
+
+    const category = searchParams.get('category') || initialCategory
+    if (category && categoryLabels[category]) {
+        filtered = filtered.filter(p => p.category === category)
+    }
 
     const query = searchParams.get('search') || ''
     if (query) {
@@ -60,7 +82,22 @@ export default function ProductsPage() {
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-5">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Semua Produk</h1>
-                    {query && (
+                    {category && categoryLabels[category] && (
+                        <div className="flex items-center gap-3 mt-2">
+                            <span className="inline-flex items-center gap-2 text-sm font-bold text-ocean-700 bg-ocean-50 border border-ocean-200 px-4 py-2 rounded-lg">
+                                {categoryLabels[category]}
+                                <button onClick={handleClearCategory} className="hover:text-ocean-900">
+                                    <X size={14} strokeWidth={2} />
+                                </button>
+                            </span>
+                            {query && (
+                                <span className="text-sm text-slate-500">
+                                    Hasil untuk "<span className="font-semibold">{query}</span>"
+                                </span>
+                            )}
+                        </div>
+                    )}
+                    {!category && query && (
                         <p className="text-sm text-slate-500 mt-0.5">
                             Hasil untuk "<span className="font-semibold">{query}</span>"
                         </p>

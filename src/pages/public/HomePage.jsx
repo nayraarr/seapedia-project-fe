@@ -26,14 +26,14 @@ const banners = [
 ]
 
 const categories = [
-    { label: 'Fashion', icon: Shirt },
-    { label: 'Elektronik', icon: Smartphone },
-    { label: 'Rumah Tangga', icon: Home },
-    { label: 'Buku', icon: BookOpen },
-    { label: 'Game', icon: Gamepad2 },
-    { label: 'Makanan', icon: Utensils },
-    { label: 'Hadiah', icon: Gift },
-    { label: 'Lainnya', icon: Sparkles },
+    { label: 'Fashion', icon: Shirt, category: 'FASHION' },
+    { label: 'Elektronik', icon: Smartphone, category: 'ELEKTRONIK' },
+    { label: 'Rumah Tangga', icon: Home, category: 'RUMAH_TANGGA' },
+    { label: 'Buku', icon: BookOpen, category: 'BUKU' },
+    { label: 'Game', icon: Gamepad2, category: 'GAME' },
+    { label: 'Makanan', icon: Utensils, category: 'MAKANAN' },
+    { label: 'Hadiah', icon: Gift, category: 'HADIAH' },
+    { label: 'Lainnya', icon: Sparkles, category: 'LAINNYA' },
 ]
 
 const productTabs = [
@@ -139,7 +139,7 @@ export default function HomePage() {
                     {categories.map(cat => (
                         <Link
                             key={cat.label}
-                            to={`/products?search=${cat.label}`}
+                            to={`/products?category=${cat.category}`}
                             className="flex flex-col items-center gap-1 w-20"
                         >
                             <div className="w-14 h-14 rounded-full bg-ocean-50 flex items-center justify-center text-ocean-600 hover:bg-ocean-100 hover:text-ocean-700 transition">

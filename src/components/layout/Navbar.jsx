@@ -49,7 +49,7 @@ export default function Navbar() {
     return (
         <>
             <div className="promo-strip">
-                Free Ongkir &bull; Promo Spesial &bull; Belanja Aman di SEAPEDIA
+                Produk Lengkap &bull; Promo Spesial &bull; Belanja Aman di SEAPEDIA
             </div>
 
             <nav className="w-full bg-white border-b border-slate-200 px-4 sm:px-6 sticky top-0 z-50">

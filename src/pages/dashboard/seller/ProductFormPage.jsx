@@ -13,7 +13,7 @@ export default function ProductFormPage() {
     const navigate = useNavigate()
     const isEdit = Boolean(id)
 
-    const [form, setForm] = useState({ name: '', description: '', price: '', stock: '', imageUrl: '' })
+    const [form, setForm] = useState({ name: '', description: '', price: '', stock: '', imageUrl: '', category: '' })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
     const [fieldErrors, setFieldErrors] = useState({})
@@ -42,6 +42,7 @@ export default function ProductFormPage() {
                     price: found.price,
                     stock: found.stock,
                     imageUrl: found.imageUrl || '',
+                    category: found.category || '',
                 })
                 if (found.imageUrl) setImagePreview(found.imageUrl)
             }
@@ -94,6 +95,7 @@ export default function ProductFormPage() {
         if (!form.name.trim()) errors.name = 'Nama produk tidak boleh kosong'
         if (!form.price || Number(form.price) < 1) errors.price = 'Harga harus lebih dari 0'
         if (form.stock === '' || Number(form.stock) < 0) errors.stock = 'Stok tidak boleh negatif'
+        if (!form.category) errors.category = 'Kategori harus dipilih'
         return errors
     }
 
@@ -121,6 +123,7 @@ export default function ProductFormPage() {
                 price: Number(form.price),
                 stock: Number(form.stock),
                 imageUrl: form.imageUrl || null,
+                category: form.category,
             }
             if (isEdit) await updateProduct(id, payload)
             else await createProduct(payload)
@@ -272,6 +275,30 @@ export default function ProductFormPage() {
                                 placeholder="100"
                                 error={fieldErrors.stock}
                             />
+                        </div>
+
+                        <div className="flex flex-col gap-1.5">
+                            <label className="text-sm font-semibold text-slate-600">Kategori *</label>
+                            <select
+                                value={form.category}
+                                onChange={e => handleChange('category', e.target.value)}
+                                className={`border rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ocean-500 focus:border-ocean-500 transition ${
+                                    fieldErrors.category ? 'border-red-300 bg-red-50' : 'border-slate-200 hover:border-slate-300'
+                                }`}
+                            >
+                                <option value="">Pilih kategori</option>
+                                <option value="FASHION">Fashion</option>
+                                <option value="ELEKTRONIK">Elektronik</option>
+                                <option value="RUMAH_TANGGA">Rumah Tangga</option>
+                                <option value="BUKU">Buku</option>
+                                <option value="GAME">Game</option>
+                                <option value="MAKANAN">Makanan</option>
+                                <option value="HADIAH">Hadiah</option>
+                                <option value="LAINNYA">Lainnya</option>
+                            </select>
+                            {fieldErrors.category && (
+                                <p className="text-xs text-red-500">{fieldErrors.category}</p>
+                            )}
                         </div>
 
                         <div className="flex flex-col gap-1.5">
