@@ -307,7 +307,18 @@ export default function ProductDetailPage() {
                             >
                                 <Heart size={15} strokeWidth={1.5} /> Wishlist
                             </button>
-                            <button className="flex items-center gap-1 text-xs hover:text-ocean-600 transition p-1.5 rounded hover:bg-slate-50">
+                            <button
+                                onClick={async () => {
+                                    const url = window.location.href
+                                    if (navigator.share) {
+                                        try { await navigator.share({ title: product.name, url }) } catch {}
+                                    } else {
+                                        await navigator.clipboard.writeText(url)
+                                        notify('Link produk disalin!', 'success', 'Share')
+                                    }
+                                }}
+                                className="flex items-center gap-1 text-xs hover:text-ocean-600 transition p-1.5 rounded hover:bg-slate-50"
+                            >
                                 <Share2 size={15} strokeWidth={1.5} /> Share
                             </button>
                         </div>
