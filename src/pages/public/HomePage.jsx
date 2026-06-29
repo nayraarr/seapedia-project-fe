@@ -134,17 +134,18 @@ export default function HomePage() {
 
             {/* Categories */}
             <section className="mb-6">
-                <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-thin">
+                <h2 className="text-xl font-bold text-slate-800 tracking-tight mb-4 text-center">Kategori Produk</h2>
+                <div className="flex flex-wrap justify-center gap-3">
                     {categories.map(cat => (
                         <Link
                             key={cat.label}
                             to={`/products?search=${cat.label}`}
-                            className="flex flex-col items-center gap-1 flex-shrink-0 w-16"
+                            className="flex flex-col items-center gap-1 w-20"
                         >
-                            <div className="w-12 h-12 rounded-full bg-ocean-50 flex items-center justify-center text-ocean-600 hover:bg-ocean-100 transition">
-                                <cat.icon size={20} strokeWidth={1.5} />
+                            <div className="w-14 h-14 rounded-full bg-ocean-50 flex items-center justify-center text-ocean-600 hover:bg-ocean-100 hover:text-ocean-700 transition">
+                                <cat.icon size={22} strokeWidth={1.5} />
                             </div>
-                            <span className="text-[10px] font-medium text-slate-600 text-center leading-tight">{cat.label}</span>
+                            <span className="text-[11px] font-medium text-slate-600 text-center leading-tight">{cat.label}</span>
                         </Link>
                     ))}
                 </div>
