@@ -117,9 +117,9 @@ export default function Navbar() {
                                         className="flex items-center gap-1.5 ml-1 pl-2 pr-1.5 py-1.5 rounded-lg hover:bg-slate-50 transition"
                                     >
                                         <div className="w-7 h-7 rounded-full ocean-gradient flex items-center justify-center text-white text-[11px] font-bold">
-                                            {decoded?.username?.charAt(0).toUpperCase()}
+                                            {(decoded?.fullName || decoded?.username || '')?.charAt(0).toUpperCase()}
                                         </div>
-                                        <span className="text-sm font-semibold text-slate-700 max-w-[120px] truncate">{decoded?.username}</span>
+                                        <span className="text-sm font-semibold text-slate-700 max-w-[120px] truncate">{decoded?.fullName || decoded?.username}</span>
                                         <ChevronDown size={14} className="text-slate-400" strokeWidth={2} />
                                     </button>
 
@@ -245,9 +245,9 @@ export default function Navbar() {
                                     )}
                                     <div className="flex items-center gap-2">
                                         <div className="w-6 h-6 rounded-full ocean-gradient flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
-                                            {decoded?.username?.charAt(0).toUpperCase()}
+                                            {(decoded?.fullName || decoded?.username || '')?.charAt(0).toUpperCase()}
                                         </div>
-                                        <span className="text-sm font-semibold text-slate-700">{decoded?.username}</span>
+                                        <span className="text-sm font-semibold text-slate-700">{decoded?.fullName || decoded?.username}</span>
                                     </div>
                                 </Link>
 

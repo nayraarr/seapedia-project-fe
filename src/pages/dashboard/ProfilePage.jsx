@@ -4,7 +4,7 @@ import MainLayout from '../../components/layout/MainLayout'
 import { useAuth } from '../../contexts/useAuth'
 import api from '../../services/api'
 import BackButton from '../../components/ui/BackButton'
-import { ShoppingBag, Store, Truck, Settings, User, Wallet } from 'lucide-react'
+import { ShoppingBag, Store, Truck, Settings, User, Wallet, Pencil } from 'lucide-react'
 
 const roleInfo = {
     BUYER:  { label: 'Pembeli', badge: 'badge-blue', border: 'border-ocean-200 bg-ocean-50/50', desc: 'Belanja produk & kelola pesanan', icon: <ShoppingBag size={20} strokeWidth={1.5} /> },
@@ -21,11 +21,14 @@ const formatCurrency = (amount) =>
     }).format(amount)
 
 export default function ProfilePage() {
-    const { decoded, activeRole, roles, login } = useAuth()
+    const { activeRole, roles, login } = useAuth()
     const navigate = useNavigate()
     const [profile, setProfile] = useState(null)
     const [summary, setSummary] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [editing, setEditing] = useState(false)
+    const [editFullName, setEditFullName] = useState('')
+    const [saving, setSaving] = useState(false)
 
     const fetchData = useCallback(() => {
         Promise.all([
@@ -53,6 +56,26 @@ export default function ProfilePage() {
         }
     }
 
+    const handleSaveFullName = async () => {
+        if (!editFullName.trim()) return
+        setSaving(true)
+        try {
+            const res = await api.patch('/auth/me', { fullName: editFullName.trim() })
+            setProfile(prev => ({ ...prev, fullName: editFullName.trim() }))
+            login(res.data.data.token)
+            setEditing(false)
+        } catch {
+            alert('Gagal menyimpan nama.')
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    const startEditing = () => {
+        setEditFullName(profile?.fullName || '')
+        setEditing(true)
+    }
+
     if (loading) return (
         <MainLayout>
             <BackButton className="mb-3" />
@@ -71,10 +94,42 @@ export default function ProfilePage() {
                 <div className="card-hover p-4 animate-fade-in">
                     <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full ocean-gradient flex items-center justify-center text-2xl font-extrabold text-white shadow-md flex-shrink-0">
-                            {decoded?.username?.charAt(0).toUpperCase()}
+                            {(profile?.fullName || profile?.username || '')?.charAt(0).toUpperCase()}
                         </div>
-                        <div>
-                            <h1 className="text-xl font-extrabold text-slate-800 tracking-tight">{profile?.username}</h1>
+                        <div className="flex-1 min-w-0">
+                            {editing ? (
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="text"
+                                        value={editFullName}
+                                        onChange={e => setEditFullName(e.target.value)}
+                                        className="input-field text-lg font-extrabold text-slate-800 py-1 px-2 flex-1"
+                                        placeholder="Nama lengkap"
+                                        autoFocus
+                                    />
+                                    <button
+                                        onClick={handleSaveFullName}
+                                        disabled={saving || !editFullName.trim()}
+                                        className="text-sm font-semibold bg-ocean-600 text-white px-3 py-1.5 rounded-lg hover:bg-ocean-700 transition disabled:opacity-50"
+                                    >
+                                        {saving ? '...' : 'Simpan'}
+                                    </button>
+                                    <button
+                                        onClick={() => setEditing(false)}
+                                        className="text-sm font-semibold text-slate-400 px-2 py-1.5 rounded-lg hover:bg-slate-50 transition"
+                                    >
+                                        Batal
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-2">
+                                    <h1 className="text-xl font-extrabold text-slate-800 tracking-tight truncate">{profile?.fullName || profile?.username}</h1>
+                                    <button onClick={startEditing} className="text-slate-400 hover:text-ocean-600 transition p-1">
+                                        <Pencil size={14} strokeWidth={2} />
+                                    </button>
+                                </div>
+                            )}
+                            <p className="text-slate-500 text-sm">@{profile?.username}</p>
                             <p className="text-slate-400 text-sm">{profile?.email}</p>
                             <p className="text-slate-300 text-xs mt-1">
                                 Bergabung sejak{' '}

@@ -15,7 +15,7 @@ export default function DriverDashboard() {
         <MainLayout>
             <div className="mb-8 animate-fade-in">
                 <span className="text-xs font-bold text-orange-500 uppercase tracking-widest">Dashboard</span>
-                <h1 className="text-3xl font-bold text-slate-800 mt-1">Halo, {decoded?.username}!</h1>
+                <h1 className="text-3xl font-bold text-slate-800 mt-1">Halo, {decoded?.fullName || decoded?.username}!</h1>
                 <p className="text-slate-400 mt-1">Selamat datang di dashboard Driver</p>
             </div>
 

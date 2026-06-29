@@ -45,6 +45,10 @@ export default function ProductDetailPage() {
         }).format(price)
 
     useEffect(() => {
+        setLoading(true)
+        setNotFound(false)
+        setProduct(null)
+        window.scrollTo(0, 0)
         api.get(`/products/${id}`)
             .then(res => setProduct(res.data.data))
             .catch(() => setNotFound(true))
