@@ -177,7 +177,7 @@ export default function HomePage() {
                     <p className="text-xs font-medium opacity-80 uppercase tracking-wide">Promo Bulanan</p>
                     <h3 className="text-xl font-extrabold mt-1">Diskon Spesial Hingga 50%</h3>
                     <p className="text-sm opacity-80 mt-1 mb-3">Setiap pembelian produk favorit kamu</p>
-                    <Link to="/products" className="inline-block bg-white text-ocean-700 text-sm font-bold px-4 py-2 rounded-lg hover:bg-ocean-50 transition">
+                    <Link to="/promos" className="inline-block bg-white text-ocean-700 text-sm font-bold px-4 py-2 rounded-lg hover:bg-ocean-50 transition">
                         Lihat Promo
                     </Link>
                 </div>

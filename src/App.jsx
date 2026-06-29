@@ -20,6 +20,7 @@ import HomePage from './pages/public/HomePage'
 import ProductsPage from './pages/public/ProductsPage'
 import ProductDetailPage from './pages/public/ProductDetailPage'
 import SearchResultsPage from './pages/public/SearchResultsPage'
+import PromoPage from './pages/public/PromoPage'
 import LoginPage from './pages/public/LoginPage'
 import RegisterPage from './pages/public/RegisterPage'
 
@@ -74,8 +75,9 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/stores" element={<StoresPage />} />
-          <Route path="/stores/:id" element={<StoreDetailPage />} />
-          <Route path="/search" element={<SearchResultsPage />} />
+<Route path="/stores/:id" element={<StoreDetailPage />} />
+<Route path="/search" element={<SearchResultsPage />} />
+<Route path="/promos" element={<PromoPage />} />
 
           {/* role selection */}
           <Route path="/select-role" element={

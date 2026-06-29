@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/useAuth'
 import { useCart } from '../../contexts/useCart'
-import { ShoppingBag, Store, Truck, Settings, Search, Bell, MessageCircle, ChevronDown } from 'lucide-react'
+import { ShoppingBag, Store, Truck, Settings, Search, Bell, MessageCircle, ChevronDown, Tag } from 'lucide-react'
 
 export default function Navbar() {
     const { token, activeRole, decoded, logout } = useAuth()
@@ -80,6 +80,10 @@ export default function Navbar() {
                         </Link>
                         <Link to="/stores" className="px-3 py-2 text-sm font-medium text-slate-500 hover:text-ocean-600 rounded-lg transition">
                             Toko
+                        </Link>
+                        <Link to="/promos" className="px-3 py-2 text-sm font-medium text-slate-500 hover:text-ocean-600 rounded-lg transition flex items-center gap-1">
+                            <Tag size={14} strokeWidth={1.5} />
+                            Promo
                         </Link>
 
                         {token ? (
@@ -202,6 +206,7 @@ export default function Navbar() {
                     <div className="md:hidden border-t border-slate-100 px-0 pb-4 flex flex-col gap-1 animate-slide-down bg-white">
                         <MobileLink to="/products" onClick={() => setMenuOpen(false)}>Produk</MobileLink>
                         <MobileLink to="/stores" onClick={() => setMenuOpen(false)}>Toko</MobileLink>
+                        <MobileLink to="/promos" onClick={() => setMenuOpen(false)}>Promo</MobileLink>
 
                         {!token ? (
                             <>
