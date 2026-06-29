@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
+import BackButton from '../../../components/ui/BackButton'
 import OrderDetailView from '../../../components/ui/OrderDetailView'
 import { getAdminOrderDetail } from '../../../services/adminApi'
 
@@ -25,11 +26,11 @@ export default function AdminOrderDetailPage() {
                     <div className="skeleton h-96" />
                 </div>
             ) : error ? (
-                <div className="card p-8 text-center animate-fade-in">
+                <div className="card-hover p-4 text-center animate-fade-in">
                     <p className="text-red-600 font-semibold">{error}</p>
-                    <Link to="/dashboard/admin" className="inline-block mt-4 text-sm font-semibold text-ocean-600 hover:underline">
-                        ← Kembali ke Dashboard Admin
-                    </Link>
+                    <div className="mt-4 inline-block">
+                        <BackButton to="/dashboard/admin" label="Kembali ke Dashboard Admin" />
+                    </div>
                 </div>
             ) : (
                 <div className="animate-fade-in">

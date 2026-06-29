@@ -18,7 +18,6 @@ export function CartProvider({ children }) {
             const res = await getCart()
             setCart(res.data.data)
         } catch {
-            // Buyer belum login atau belum ada cart, jadi tidak perlu error fatal
         } finally {
             setLoading(false)
         }
@@ -52,6 +51,10 @@ export function CartProvider({ children }) {
 
     const dismissToast = useCallback(() => {
         setToast(null)
+    }, [])
+
+    const notify = useCallback((message, type, title) => {
+        setToast({ message, type: type || 'info', title })
     }, [])
 
     const add = useCallback(async (productId, quantity = 1, storeId) => {
@@ -114,8 +117,8 @@ export function CartProvider({ children }) {
     const itemCount = cart?.totalItems ?? 0
 
     const value = useMemo(
-        () => ({ cart, loading, error, toast, itemCount, fetchCart, add, update, remove, clear, dismissToast }),
-        [cart, loading, error, toast, itemCount, fetchCart, add, update, remove, clear, dismissToast]
+        () => ({ cart, loading, error, toast, itemCount, fetchCart, add, update, remove, clear, dismissToast, notify }),
+        [cart, loading, error, toast, itemCount, fetchCart, add, update, remove, clear, dismissToast, notify]
     )
 
     return <CartContext.Provider value={value}>{children}</CartContext.Provider>

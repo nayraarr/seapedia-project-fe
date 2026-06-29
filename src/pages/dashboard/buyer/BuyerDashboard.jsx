@@ -33,7 +33,7 @@ export default function BuyerDashboard() {
                 setWallet(walletRes.data.data)
                 const topUps = txRes.data.data.filter(tx => tx.type === 'TOPUP')
                 if (topUps.length > 0) setLastTopUp(topUps[0])
-            } catch { /* empty */ } finally {
+            } catch { } finally {
                 setLoading(false)
             }
         }
@@ -88,7 +88,7 @@ export default function BuyerDashboard() {
             <div className="mb-8 animate-fade-in">
                 <span className="text-xs font-bold text-ocean-500 uppercase tracking-widest">Dashboard</span>
                 <h1 className="text-3xl font-bold text-slate-800 mt-1">
-                    Halo, {decoded?.username}!
+                    Halo, {decoded?.fullName || decoded?.username}!
                 </h1>
                 <p className="text-slate-400 mt-1">Selamat datang di dashboard Pembeli</p>
             </div>
@@ -98,10 +98,10 @@ export default function BuyerDashboard() {
                     <div
                         key={card.label}
                         onClick={() => card.path && navigate(card.path)}
-                        className={`card p-6 transition
+                        className={`card p-4 transition
                             ${card.active
                             ? 'card-hover cursor-pointer'
-                            : 'border-ocean-100 opacity-70 cursor-default'}`}
+                            : 'border-slate-200 opacity-70 cursor-default'}`}
                     >
                         <div className="text-3xl mb-3"><card.icon size={28} strokeWidth={1.5} /></div>
                         <h3 className="font-semibold text-slate-700 mb-1">{card.label}</h3>

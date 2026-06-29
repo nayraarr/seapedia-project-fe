@@ -9,9 +9,18 @@
 
 ---
 
-## Getting Started
+## Deployment
+
+| Platform | URL                                   |
+|----------|---------------------------------------|
+| Frontend | https://seapedia-project-fe.vercel.app |
+| Backend  | https://seapedia-project-be-production.up.railway.app |
+| API Documentation | https://ristek.link/SeapediaAPIDocCompfest18 |
 
 ---
+
+## Getting Started
+
 
 ### Environment Variables
 
@@ -21,41 +30,75 @@ Buat file `.env` di root folder frontend:
 VITE_API_URL=http://localhost:8080/api
 ```
 
-### Menjalankan App
+### Menjalankan App (Local)
 
 ```bash
 npm install
 npm run dev
 ```
 
+### Menjalankan dengan Docker (Rekomendasi)
+
+Pastikan Docker Desktop sudah terinstall dan berjalan.
+
+Repository backend (`seapedia-project-be`) dan frontend (`seapedia-project-fe`) harus berada di folder yang sama (sibling).
+
+Jalankan dari folder backend:
+
+```bash
+cd ../seapedia-project-be
+docker compose up --build
+```
+
+Perintah di atas akan menjalankan 3 container: PostgreSQL, Spring Boot (port 8080), dan frontend (port 3000).
+
+Akses aplikasi di `http://localhost:3000`. Pastikan backend sudah siap (seed data berjalan otomatis).
+
 ---
 
 ## Struktur Halaman
 
-| Path                               | Role        | Deskripsi                        |
-|------------------------------------|-------------|----------------------------------|
-| `/`                                | Public      | Halaman utama / produk           |
-| `/login`                           | Public      | Login                            |
-| `/register`                        | Public      | Registrasi                       |
-| `/select-role`                     | Auth        | Pilih role aktif (multi-role)    |
-| `/dashboard/buyer`                 | BUYER       | Dashboard buyer                  |
-| `/dashboard/buyer/cart`            | BUYER       | Keranjang belanja                |
-| `/dashboard/buyer/orders`          | BUYER       | Riwayat order                    |
-| `/dashboard/buyer/orders/:id`      | BUYER       | Detail order                     |
-| `/dashboard/buyer/wallet`          | BUYER       | Wallet                           |
-| `/dashboard/seller`                | SELLER      | Dashboard seller                 |
-| `/dashboard/seller/products`       | SELLER      | Manajemen produk                 |
-| `/dashboard/seller/orders`         | SELLER      | Order masuk                      |
-| `/dashboard/driver`                | DRIVER      | Dashboard driver                 |
-| `/dashboard/driver/jobs/available` | DRIVER      | Daftar job tersedia              |
-| `/dashboard/driver/jobs/active`    | DRIVER      | Job aktif                        |
-| `/dashboard/admin`                 | ADMIN       | Dashboard admin                  |
+| Path                               | Role          | Deskripsi                          |
+|------------------------------------|---------------|------------------------------------|
+| `/`                                | Public        | Halaman utama                      |
+| `/products`                        | Public        | Katalog produk                     |
+| `/products/:id`                    | Public        | Detail produk                      |
+| `/stores`                          | Public        | Daftar toko                        |
+| `/stores/:id`                      | Public        | Detail toko                        |
+| `/search`                          | Public        | Hasil pencarian                    |
+| `/promos`                          | Public        | Promo & voucher                    |
+| `/login`                           | Public        | Login                              |
+| `/register`                        | Public        | Registrasi                         |
+| `/select-role`                     | Auth          | Pilih role aktif (multi-role)      |
+| `/profile`                         | Auth          | Profil & ringkasan keuangan        |
+| `/dashboard/buyer`                 | BUYER         | Dashboard buyer                    |
+| `/dashboard/buyer/cart`            | BUYER         | Keranjang belanja                  |
+| `/dashboard/buyer/orders`          | BUYER         | Riwayat order                      |
+| `/dashboard/buyer/orders/:orderId` | BUYER         | Detail order                       |
+| `/dashboard/buyer/wallet`          | BUYER         | Wallet & top-up                    |
+| `/dashboard/buyer/addresses`       | BUYER         | Kelola alamat kirim                |
+| `/dashboard/buyer/report`          | BUYER         | Laporan pengeluaran                |
+| `/dashboard/seller`                | SELLER        | Dashboard seller                   |
+| `/dashboard/seller/store`          | SELLER        | Kelola toko                        |
+| `/dashboard/seller/products`       | SELLER        | Manajemen produk                   |
+| `/dashboard/seller/products/new`   | SELLER        | Tambah produk baru                 |
+| `/dashboard/seller/products/edit/:id` | SELLER     | Edit produk                        |
+| `/dashboard/seller/orders/incoming`| SELLER        | Order masuk                        |
+| `/dashboard/seller/orders/:orderId`| SELLER        | Detail order masuk                 |
+| `/dashboard/seller/report`         | SELLER        | Laporan pendapatan                 |
+| `/dashboard/driver`                | DRIVER        | Dashboard driver                   |
+| `/dashboard/driver/jobs`           | DRIVER        | Job tersedia                       |
+| `/dashboard/driver/jobs/:jobId`    | DRIVER        | Detail job                         |
+| `/dashboard/driver/active`         | DRIVER        | Job aktif                          |
+| `/dashboard/driver/report`         | DRIVER        | Laporan penghasilan                |
+| `/dashboard/admin`                 | ADMIN         | Dashboard admin                    |
+| `/dashboard/admin/orders/:orderId` | ADMIN         | Detail pesanan                     |
+| `/dashboard/admin/users/:userId`   | ADMIN         | Detail pengguna                    |
 
 ---
 
 ## Autentikasi & Session
 
----
 
 ### Alur Login
 
@@ -83,8 +126,6 @@ Token di-refresh otomatis tanpa interaksi user jika sisa waktu kurang dari 2 men
 
 ## Protected Routes
 
----
-
 ProtectedRoute di App.jsx memiliki dua lapisan perlindungan:
 
 1. Cek token, jika tidak ada atau expired, redirect ke /login.
@@ -96,7 +137,6 @@ Mengubah URL secara manual di browser tidak bisa melewati guard ini karena token
 
 ## Single-Store Checkout
 
----
 
 Cart hanya bisa berisi produk dari satu toko dalam satu waktu.
 
@@ -113,7 +153,6 @@ Enforcement di backend:
 
 ## Checkout & Kalkulasi Harga
 
----
 
 ### Urutan Kalkulasi
 
@@ -146,7 +185,6 @@ Diskon dipotong sebelum PPN sehingga PPN dikenakan pada harga setelah diskon.
 
 ## Testing Guide
 
----
 
 ### Persiapan (lengkapnya untuk backend ada di README backend)
 
@@ -154,7 +192,6 @@ Diskon dipotong sebelum PPN sehingga PPN dikenakan pada harga setelah diskon.
 2. Pastikan database PostgreSQL sudah berjalan dan environment variables sudah dikonfigurasi.
 3. Pastikan user admin sudah ada di database (lihat bagian Admin Setup di README backend).
 
----
 
 ### Skenario 0: Guest bisa melihat katalog & review aplikasi 
 Step di bawah ini dilakukan tanpa login atau register terlebih dahulu:
@@ -165,7 +202,6 @@ Step di bawah ini dilakukan tanpa login atau register terlebih dahulu:
 4. Refresh halaman lalu review yang baru disubmit tampil di antarmuka.
 5. Coba submit review dengan komentar berisi tag HTML/script, contoh: `<script>alert(1)</script>` atau `<b>test</b>`. Frontend menampilkan sebagai text biasa dan tidak dieksekusi sebagai HTML.
 
----
 
 ### Skenario 1: Registrasi dan login multi-Role
 
@@ -174,7 +210,6 @@ Step di bawah ini dilakukan tanpa login atau register terlebih dahulu:
 3. Pilih role SELLER lalu token baru diberikan dengan `activeRole: SELLER`.
 4. Coba akses `/dashboard/buyer` secara manual di URL bar. Platform akan redirect ke `/dashboard/seller` (bukan error).
 
----
 
 ### Skenario 2: Seller bisa melakukan setup toko dan produk
 
@@ -185,7 +220,6 @@ Step di bawah ini dilakukan tanpa login atau register terlebih dahulu:
 5. Buka `/products` (sebagai guest/buyer). Kedua produk yang baru dibuat muncul di katalog publik.
 6. Coba update/edit salah satu produk (ubah harga/stok) dan hapus produk lainnya. Perubahan ini tercermin di katalog publik.
 
----
 
 ### Skenario 3: Buyer melakukan top up, kelola address, dan checkout single-store
 
@@ -200,7 +234,6 @@ Step di bawah ini dilakukan tanpa login atau register terlebih dahulu:
 9. Preview checkout menampilkan subtotal, discountAmount, delivery fee, PPN 12%, dan totalAmount secara terpisah.
 10. Konfirmasi checkout lalu order terbuat dengan status awal Sedang Dikemas. Cek stok produk berkurang dan saldo wallet berkurang.
 
----
 
 ### Skenario 4: Seller melakukan proses order
 
@@ -208,7 +241,6 @@ Step di bawah ini dilakukan tanpa login atau register terlebih dahulu:
 2. Buka Order Masuk, lalu order dari buyer muncul dengan status Sedang Dikemas.
 3. Klik Proses maka status berubah menjadi Menunggu Pengirim, job pengiriman tersedia untuk driver.
 
----
 
 ### Skenario 5: Driver bisa mencari, mengambil dan menyelesaikan Job
 
@@ -219,7 +251,6 @@ Step di bawah ini dilakukan tanpa login atau register terlebih dahulu:
 5. Klik Selesaikan (Konfirmasi Job Selesai) maka status order berubah menjadi `SELESAI`, wallet driver dan seller dikreditkan.
 6. Buka Riwayat & Penghasilan maka job yang baru selesai dan earning-nya tercatat. 
 
----
 
 ### Skenario 6: Buyer bisa melihat riwayat dan status order
 
@@ -227,7 +258,6 @@ Step di bawah ini dilakukan tanpa login atau register terlebih dahulu:
 2. Buka Riwayat Pesanan  maka order yang sudah dibuat tampil dengan status terkini (SELESAI, sesuai dengan Skenario 5).
 3. Klik salah satu order, buka detailnya, maka menampilkan timeline status* (Sedang Dikemas → Menunggu Pengirim → Sedang Dikirim → Selesai) lengkap dengan timestamp tiap perubahan.
 
----
 
 ### Skenario 7: Admin dapat memonitoring, melakukan discount management, dan simulasi overdue
 
@@ -242,4 +272,3 @@ Step di bawah ini dilakukan tanpa login atau register terlebih dahulu:
       - REGULAR: minimal 10.081 menit
    - Trigger Proses Overdue (atau tunggu scheduler otomatis tiap 30 menit).
    - Cek order sebagai Buyer. Maka statusnya berubah menjadi `DIKEMBALIKAN`, saldo wallet buyer kembali ke nilai sebelum checkout, dan stok produk terkait auto-return.
----

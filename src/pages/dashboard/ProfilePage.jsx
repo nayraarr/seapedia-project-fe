@@ -4,7 +4,7 @@ import MainLayout from '../../components/layout/MainLayout'
 import { useAuth } from '../../contexts/useAuth'
 import api from '../../services/api'
 import BackButton from '../../components/ui/BackButton'
-import { ShoppingBag, Store, Truck, Settings, User, Wallet } from 'lucide-react'
+import { ShoppingBag, Store, Truck, Settings, User, Wallet, Pencil } from 'lucide-react'
 
 const roleInfo = {
     BUYER:  { label: 'Pembeli', badge: 'badge-blue', border: 'border-ocean-200 bg-ocean-50/50', desc: 'Belanja produk & kelola pesanan', icon: <ShoppingBag size={20} strokeWidth={1.5} /> },
@@ -21,11 +21,14 @@ const formatCurrency = (amount) =>
     }).format(amount)
 
 export default function ProfilePage() {
-    const { decoded, activeRole, roles, login } = useAuth()
+    const { activeRole, roles, login } = useAuth()
     const navigate = useNavigate()
     const [profile, setProfile] = useState(null)
     const [summary, setSummary] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [editing, setEditing] = useState(false)
+    const [editFullName, setEditFullName] = useState('')
+    const [saving, setSaving] = useState(false)
 
     const fetchData = useCallback(() => {
         Promise.all([
@@ -53,12 +56,32 @@ export default function ProfilePage() {
         }
     }
 
+    const handleSaveFullName = async () => {
+        if (!editFullName.trim()) return
+        setSaving(true)
+        try {
+            const res = await api.patch('/auth/me', { fullName: editFullName.trim() })
+            setProfile(prev => ({ ...prev, fullName: editFullName.trim() }))
+            login(res.data.data.token)
+            setEditing(false)
+        } catch {
+            alert('Gagal menyimpan nama.')
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    const startEditing = () => {
+        setEditFullName(profile?.fullName || '')
+        setEditing(true)
+    }
+
     if (loading) return (
         <MainLayout>
             <BackButton className="mb-3" />
             <div className="max-w-2xl mx-auto space-y-4">
                 {[...Array(4)].map((_, i) => (
-                    <div key={i} className="skeleton rounded-2xl h-32" />
+                    <div key={i} className="skeleton rounded-lg h-32" />
                 ))}
             </div>
         </MainLayout>
@@ -68,13 +91,45 @@ export default function ProfilePage() {
         <MainLayout>
             <BackButton className="mb-3" />
             <div className="max-w-2xl mx-auto space-y-5">
-                <div className="card p-6 animate-fade-in">
-                    <div className="flex items-center gap-5">
+                <div className="rounded-lg border border-slate-200 p-5">
+                    <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full ocean-gradient flex items-center justify-center text-2xl font-extrabold text-white shadow-md flex-shrink-0">
-                            {decoded?.username?.charAt(0).toUpperCase()}
+                            {(profile?.fullName || profile?.username || '')?.charAt(0).toUpperCase()}
                         </div>
-                        <div>
-                            <h1 className="text-xl font-extrabold text-slate-800 tracking-tight">{profile?.username}</h1>
+                        <div className="flex-1 min-w-0">
+                            {editing ? (
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="text"
+                                        value={editFullName}
+                                        onChange={e => setEditFullName(e.target.value)}
+                                        className="input-field text-lg font-extrabold text-slate-800 py-1 px-2 flex-1"
+                                        placeholder="Nama lengkap"
+                                        autoFocus
+                                    />
+                                    <button
+                                        onClick={handleSaveFullName}
+                                        disabled={saving || !editFullName.trim()}
+                                        className="text-sm font-semibold bg-ocean-600 text-white px-3 py-1.5 rounded-lg hover:bg-ocean-700 transition disabled:opacity-50"
+                                    >
+                                        {saving ? '...' : 'Simpan'}
+                                    </button>
+                                    <button
+                                        onClick={() => setEditing(false)}
+                                        className="text-sm font-semibold text-slate-400 px-2 py-1.5 rounded-lg hover:bg-slate-50 transition"
+                                    >
+                                        Batal
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex items-center gap-2">
+                                    <h1 className="text-xl font-extrabold text-slate-800 tracking-tight truncate">{profile?.fullName || profile?.username}</h1>
+                                    <button onClick={startEditing} className="text-slate-400 hover:text-ocean-600 transition p-1">
+                                        <Pencil size={14} strokeWidth={2} />
+                                    </button>
+                                </div>
+                            )}
+                            <p className="text-slate-500 text-sm">@{profile?.username}</p>
                             <p className="text-slate-400 text-sm">{profile?.email}</p>
                             <p className="text-slate-300 text-xs mt-1">
                                 Bergabung sejak{' '}
@@ -86,8 +141,8 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="card p-6 animate-fade-in">
-                    <h2 className="text-base font-bold text-slate-700 mb-4">Role Aktif</h2>
+                <div className="rounded-lg border border-slate-200 p-5">
+                    <h2 className="text-sm font-bold text-slate-700 mb-3">Role Aktif</h2>
                     {activeRole ? (
                         <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold ${roleInfo[activeRole]?.badge || 'badge-slate'}`}>
                             <span className="w-1.5 h-1.5 rounded-full bg-current" />
@@ -98,8 +153,8 @@ export default function ProfilePage() {
                     )}
                 </div>
 
-                <div className="card p-6 animate-fade-in">
-                    <h2 className="text-base font-bold text-slate-700 mb-4">Role yang Dimiliki</h2>
+                <div className="rounded-lg border border-slate-200 p-5">
+                    <h2 className="text-sm font-bold text-slate-700 mb-3">Role yang Dimiliki</h2>
                     <div className="space-y-3">
                         {roles.map(role => {
                             const info = roleInfo[role] || { label: role, badge: 'badge-slate', border: 'border-slate-200', desc: '', icon: <User size={20} strokeWidth={1.5} /> }
@@ -107,8 +162,8 @@ export default function ProfilePage() {
                             return (
                                 <div
                                     key={role}
-                                    className={`flex items-center justify-between p-4 rounded-xl border-2 transition-all ${
-                                        isActive ? info.border : 'border-slate-100 hover:border-ocean-200 hover:bg-ocean-50/30'
+                                    className={`flex items-center justify-between p-3 rounded-lg border-2 transition-all ${
+                                        isActive ? info.border : 'border-slate-200 hover:border-ocean-200 hover:bg-ocean-50/30'
                                     }`}
                                 >
                                     <div className="flex items-center gap-3">
@@ -136,46 +191,26 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                <div className="card p-6 animate-fade-in">
-                    <div className="mb-5">
-                        <h2 className="text-base font-bold text-slate-700">Ringkasan Keuangan</h2>
-                        <p className="text-xs text-slate-400 mt-0.5">Saldo real berdasarkan aktivitas akun</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-3">
+                <div className="rounded-lg border border-slate-200 p-5">
+                    <h2 className="font-bold text-slate-800 mb-3 text-sm"><Wallet size={20} strokeWidth={1.5} className="inline-flex mr-1" /> Informasi Keuangan</h2>
+                    <div className="space-y-4 text-sm">
                         {roles.includes('BUYER') && (
-                            <div className="flex items-center justify-between bg-ocean-50 border border-ocean-100 rounded-xl p-4">
-                                <div>
-                                    <p className="text-xs text-ocean-600 font-semibold mb-1">Saldo Wallet</p>
-                                    <p className="text-lg font-extrabold text-ocean-700">
-                                        {summary ? formatCurrency(summary.walletBalance) : '—'}
-                                    </p>
-                                </div>
-                                <Wallet size={24} strokeWidth={1.5} className="flex-shrink-0" />
+                            <div className="border-b border-slate-100 pb-3">
+                                <p className="text-xs font-semibold text-slate-400 uppercase">Saldo Wallet</p>
+                                <p className="text-base font-bold text-slate-800 mt-1">{formatCurrency(summary?.walletBalance)}</p>
+                                <p className="text-xs text-slate-400 mt-0.5">Real balance berdasarkan aktivitas akun</p>
                             </div>
                         )}
-
                         {roles.includes('SELLER') && (
-                            <div className="flex items-center justify-between bg-emerald-50 border border-emerald-100 rounded-xl p-4">
-                                <div>
-                                    <p className="text-xs text-emerald-600 font-semibold mb-1">Pendapatan Toko</p>
-                                    <p className="text-lg font-extrabold text-emerald-700">
-                                        {summary ? formatCurrency(summary.sellerIncome) : '—'}
-                                    </p>
-                                </div>
-                                <Store size={24} strokeWidth={1.5} className="flex-shrink-0" />
+                            <div className={roles.includes('DRIVER') ? 'border-b border-slate-100 pb-3' : ''}>
+                                <p className="text-xs font-semibold text-slate-400 uppercase">Pendapatan sebagai Seller</p>
+                                <p className="text-base font-bold text-emerald-600 mt-1">{formatCurrency(summary?.sellerIncome)}</p>
                             </div>
                         )}
-
                         {roles.includes('DRIVER') && (
-                            <div className="flex items-center justify-between bg-orange-50 border border-orange-100 rounded-xl p-4">
-                                <div>
-                                    <p className="text-xs text-orange-500 font-semibold mb-1">Penghasilan Driver</p>
-                                    <p className="text-lg font-extrabold text-orange-700">
-                                        {summary ? formatCurrency(summary.driverEarnings) : '—'}
-                                    </p>
-                                </div>
-                                <Truck size={24} strokeWidth={1.5} className="flex-shrink-0" />
+                            <div>
+                                <p className="text-xs font-semibold text-slate-400 uppercase">Pendapatan sebagai Driver</p>
+                                <p className="text-base font-bold text-ocean-600 mt-1">{formatCurrency(summary?.driverEarnings)}</p>
                             </div>
                         )}
                     </div>

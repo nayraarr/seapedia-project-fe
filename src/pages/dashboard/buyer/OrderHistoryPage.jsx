@@ -52,7 +52,7 @@ export default function OrderHistoryPage() {
             </div>
 
             {error && (
-                <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">
                     {error}
                 </div>
             )}
@@ -75,7 +75,7 @@ export default function OrderHistoryPage() {
                         <Link
                             key={order.orderId}
                             to={`/dashboard/buyer/orders/${order.orderId}`}
-                            className="block card-hover p-5"
+                            className="block card-hover p-4"
                         >
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                 <div>
@@ -92,7 +92,7 @@ export default function OrderHistoryPage() {
                                 </div>
                                 <div className="text-left md:text-right">
                                     <p className="text-xs text-slate-400">Total</p>
-                                    <p className="text-lg font-bold text-ocean-700">{formatRupiah(order.totalAmount)}</p>
+                                    <p className="text-base font-bold text-ocean-700">{formatRupiah(order.totalAmount)}</p>
                                 </div>
                             </div>
                         </Link>
