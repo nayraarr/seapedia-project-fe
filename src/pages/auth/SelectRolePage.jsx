@@ -4,9 +4,9 @@ import api from '../../services/api'
 import { ShoppingBag, Store, Truck, Settings, User } from 'lucide-react'
 
 const roleInfo = {
-    BUYER: { label: 'Pembeli', desc: 'Belanja produk, kelola cart dan pesanan', icon: <ShoppingBag size={20} strokeWidth={1.5} />, accent: 'ocean', gradient: 'from-ocean-100 to-ocean-200', ring: 'ring-ocean-500' },
+    BUYER: { label: 'Buyer', desc: 'Belanja produk, kelola cart dan pesanan', icon: <ShoppingBag size={20} strokeWidth={1.5} />, accent: 'ocean', gradient: 'from-ocean-100 to-ocean-200', ring: 'ring-ocean-500' },
     SELLER: { label: 'Penjual', desc: 'Kelola toko, produk, dan pesanan masuk', icon: <Store size={20} strokeWidth={1.5} />, accent: 'emerald', gradient: 'from-emerald-100 to-emerald-200', ring: 'ring-emerald-500' },
-    DRIVER: { label: 'Driver', desc: 'Ambil dan antar pesanan ke pembeli', icon: <Truck size={20} strokeWidth={1.5} />, accent: 'orange', gradient: 'from-orange-100 to-amber-200', ring: 'ring-orange-500' },
+    DRIVER: { label: 'Driver', desc: 'Ambil dan antar pesanan ke Buyer', icon: <Truck size={20} strokeWidth={1.5} />, accent: 'orange', gradient: 'from-orange-100 to-amber-200', ring: 'ring-orange-500' },
     ADMIN: { label: 'Admin', desc: 'Monitor dan kelola seluruh platform', icon: <Settings size={20} strokeWidth={1.5} />, accent: 'red', gradient: 'from-red-100 to-red-200', ring: 'ring-red-500' },
 }
 

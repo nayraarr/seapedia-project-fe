@@ -41,7 +41,7 @@ export default function Toast({ message, type, title, onClose }) {
                         {s.iconSvg}
                     </div>
                     <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-slate-800">{title ?? 'Keranjang'}</p>
+                        <p className="text-sm font-semibold text-slate-800">{title || 'Notifikasi'}</p>
                         <p className="mt-0.5 text-sm leading-5 text-slate-600 break-words">
                             {message}
                         </p>

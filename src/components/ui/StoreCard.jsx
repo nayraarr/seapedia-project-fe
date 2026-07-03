@@ -25,10 +25,10 @@ export default function StoreCard({ store, previewProducts = [] }) {
                     <div className="w-9 h-9 rounded-lg bg-ocean-100 flex items-center justify-center text-ocean-600 font-bold text-sm flex-shrink-0">
                         {store.name?.charAt(0) || 'T'}
                     </div>
-                    <div className="flex-1 min-w-0 flex items-center gap-2">
-                        <span className="font-semibold text-sm text-slate-800 truncate group-hover:text-ocean-600 transition-colors">{store.name}</span>
+                    <div className="flex-1 min-w-0">
+                        <span className="font-semibold text-sm text-slate-800 truncate group-hover:text-ocean-600 transition-colors block">{store.name}</span>
                         {store.description && (
-                            <span className="text-xs text-slate-400 truncate hidden sm:inline">· {store.description}</span>
+                            <p className="text-xs text-slate-400 truncate mt-0.5 leading-tight">{store.description}</p>
                         )}
                     </div>
                     <span className="inline-flex items-center gap-0.5 text-ocean-600 text-xs font-semibold flex-shrink-0">

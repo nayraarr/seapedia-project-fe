@@ -7,7 +7,7 @@ import BackButton from '../../components/ui/BackButton'
 import { ShoppingBag, Store, Truck, Settings, User, Wallet, Pencil } from 'lucide-react'
 
 const roleInfo = {
-    BUYER:  { label: 'Pembeli', badge: 'badge-blue', border: 'border-ocean-200 bg-ocean-50/50', desc: 'Belanja produk & kelola pesanan', icon: <ShoppingBag size={20} strokeWidth={1.5} /> },
+    BUYER:  { label: 'Buyer', badge: 'badge-blue', border: 'border-ocean-200 bg-ocean-50/50', desc: 'Belanja produk & kelola pesanan', icon: <ShoppingBag size={20} strokeWidth={1.5} /> },
     SELLER: { label: 'Penjual', badge: 'badge-emerald', border: 'border-emerald-200 bg-emerald-50/50', desc: 'Kelola toko & produk', icon: <Store size={20} strokeWidth={1.5} /> },
     DRIVER: { label: 'Driver',  badge: 'badge-orange', border: 'border-orange-200 bg-orange-50/50', desc: 'Antar pesanan & lihat penghasilan', icon: <Truck size={20} strokeWidth={1.5} /> },
     ADMIN:  { label: 'Admin',   badge: 'badge-red', border: 'border-red-200 bg-red-50/50', desc: 'Monitor & kelola platform', icon: <Settings size={20} strokeWidth={1.5} /> },

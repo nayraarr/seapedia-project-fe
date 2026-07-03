@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { CreditCard, MapPin, ShoppingCart, Package, BarChart3, CheckCircle } from 'lucide-react'
+import { CreditCard, MapPin, Package, BarChart3, CheckCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import MainLayout from '../../../components/layout/MainLayout'
 import { useAuth } from '../../../contexts/useAuth'
@@ -61,13 +61,6 @@ export default function BuyerDashboard() {
             active: true,
         },
         {
-            label: 'Keranjang',
-            icon: ShoppingCart,
-            desc: 'Ringkasan cart satu toko',
-            path: '/dashboard/buyer/cart',
-            active: true,
-        },
-        {
             label: 'Riwayat Pesanan',
             icon: Package,
             desc: 'Lacak semua transaksimu',
@@ -90,7 +83,7 @@ export default function BuyerDashboard() {
                 <h1 className="text-3xl font-bold text-slate-800 mt-1">
                     Halo, {decoded?.fullName || decoded?.username}!
                 </h1>
-                <p className="text-slate-400 mt-1">Selamat datang di dashboard Pembeli</p>
+                <p className="text-slate-400 mt-1">Selamat datang di dashboard Buyer</p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-4 animate-slide-up">
