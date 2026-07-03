@@ -46,7 +46,7 @@ export function CartProvider({ children }) {
 
     const notifyError = useCallback((message) => {
         setError(message)
-        setToast({ message, type: 'error' })
+        setToast({ message, type: 'error', title: 'Keranjang' })
     }, [])
 
     const dismissToast = useCallback(() => {

@@ -281,7 +281,7 @@ export default function ProductDetailPage() {
                             <div className="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
                                 Role saat ini adalah <span className="font-bold">{activeRole}</span>.{' '}
                                 <button onClick={handleSwitchToBuyer} className="font-bold hover:underline text-ocean-600">
-                                    Ganti ke Pembeli
+                                    Ganti ke Buyer
                                 </button>{' '}
                                 untuk membeli produk ini.
                             </div>
@@ -289,7 +289,7 @@ export default function ProductDetailPage() {
 
                         {token && activeRole && activeRole !== 'BUYER' && !roles.includes('BUYER') && (
                             <div className="mt-4 bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm text-slate-600">
-                                Akun ini tidak memiliki role Pembeli, sehingga tidak dapat membeli produk.
+                                Akun ini tidak memiliki role Buyer, sehingga tidak dapat membeli produk.
                             </div>
                         )}
 
@@ -310,7 +310,7 @@ export default function ProductDetailPage() {
 
                         <div className="flex items-center gap-2 mt-4 text-slate-400">
                             <button
-                                onClick={() => notify('Fitur wishlist sedang dikembangkan', 'info')}
+                                onClick={() => notify('Fitur wishlist sedang dikembangkan', 'info', 'Wishlist')}
                                 className="flex items-center gap-1 text-xs hover:text-ocean-600 transition p-1.5 rounded hover:bg-slate-50"
                             >
                                 <Heart size={15} strokeWidth={1.5} /> Wishlist

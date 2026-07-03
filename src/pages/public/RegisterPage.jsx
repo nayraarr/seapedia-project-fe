@@ -6,7 +6,7 @@ import Input from '../../components/ui/Input'
 import Button from '../../components/ui/Button'
 
 const ROLES = [
-    { key: 'BUYER',  label: 'Pembeli', desc: 'Belanja produk',  gradient: 'from-ocean-100 to-ocean-200', activeRing: 'ring-ocean-500' },
+    { key: 'BUYER',  label: 'Buyer', desc: 'Belanja produk',  gradient: 'from-ocean-100 to-ocean-200', activeRing: 'ring-ocean-500' },
     { key: 'SELLER', label: 'Penjual', desc: 'Jual produk',     gradient: 'from-emerald-100 to-emerald-200', activeRing: 'ring-emerald-500' },
     { key: 'DRIVER', label: 'Driver',  desc: 'Antar pesanan',   gradient: 'from-orange-100 to-amber-200', activeRing: 'ring-orange-500' },
 ]
