@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/useAuth'
 import { useCart } from '../../contexts/useCart'
-import { ShoppingBag, Store, Truck, Settings, Search, Bell, MessageCircle, ChevronDown, Tag } from 'lucide-react'
+import { ShoppingBag, Store, Truck, Settings, Search, Bell, MessageCircle, ChevronDown, Tag, Package, LayoutDashboard, BarChart3, MapPin } from 'lucide-react'
 
 export default function Navbar() {
     const { token, activeRole, decoded, logout } = useAuth()
@@ -75,16 +75,25 @@ export default function Navbar() {
                     </form>
 
                     <div className="hidden md:flex items-center gap-1">
-                        <Link to="/products" className="px-3 py-2 text-sm font-medium text-slate-500 hover:text-ocean-600 rounded-lg transition">
+                        <Link to="/products" className="px-3 py-2 text-sm font-medium text-slate-500 hover:text-ocean-600 rounded-lg transition flex items-center gap-1">
+                            <Package size={14} strokeWidth={1.5} />
                             Produk
                         </Link>
-                        <Link to="/stores" className="px-3 py-2 text-sm font-medium text-slate-500 hover:text-ocean-600 rounded-lg transition">
+                        <Link to="/stores" className="px-3 py-2 text-sm font-medium text-slate-500 hover:text-ocean-600 rounded-lg transition flex items-center gap-1">
+                            <Store size={14} strokeWidth={1.5} />
                             Toko
                         </Link>
                         <Link to="/promos" className="px-3 py-2 text-sm font-medium text-slate-500 hover:text-ocean-600 rounded-lg transition flex items-center gap-1">
                             <Tag size={14} strokeWidth={1.5} />
                             Promo
                         </Link>
+
+                        {token && (
+                            <Link to={getDashboardLink()} className="px-3 py-2 text-sm font-bold text-ocean-600 hover:text-ocean-700 rounded-lg transition flex items-center gap-1">
+                                <LayoutDashboard size={14} strokeWidth={1.5} />
+                                Dashboard
+                            </Link>
+                        )}
 
                         {token ? (
                             <div className="flex items-center gap-0.5 ml-1">
@@ -102,14 +111,14 @@ export default function Navbar() {
                                 )}
 
                                 <button
-                                    onClick={() => notify('Fitur notifikasi sedang dikembangkan', 'info')}
+                                    onClick={() => notify('Fitur notifikasi sedang dikembangkan', 'info', 'Notifikasi')}
                                     className="relative p-2 text-slate-500 hover:text-ocean-600 hover:bg-slate-50 rounded-lg transition"
                                 >
                                     <Bell size={20} strokeWidth={1.5} />
                                 </button>
 
                                 <button
-                                    onClick={() => notify('Fitur chat sedang dikembangkan', 'info')}
+                                    onClick={() => notify('Fitur chat sedang dikembangkan', 'info', 'Chat')}
                                     className="relative p-2 text-slate-500 hover:text-ocean-600 hover:bg-slate-50 rounded-lg transition"
                                 >
                                     <MessageCircle size={20} strokeWidth={1.5} />
@@ -142,8 +151,23 @@ export default function Navbar() {
                                                 <Link to="/profile" onClick={() => setProfileOpen(false)} className="block px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-ocean-600 transition">
                                                     Profil Saya
                                                 </Link>
-                                                <Link to={getDashboardLink()} onClick={() => setProfileOpen(false)} className="block px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-ocean-600 transition">
-                                                    Dashboard
+                                                <div className="border-t border-slate-100" />
+                                                {activeRole === 'BUYER' && (
+                                                    <>
+                                                        <Link to="/dashboard/buyer/orders" onClick={() => setProfileOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-ocean-600 transition">
+                                                            <Package size={14} strokeWidth={1.5} />Riwayat Pesanan
+                                                        </Link>
+                                                        <Link to="/dashboard/buyer/report" onClick={() => setProfileOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-ocean-600 transition">
+                                                            <BarChart3 size={14} strokeWidth={1.5} />Laporan Pengeluaran
+                                                        </Link>
+                                                        <Link to="/dashboard/buyer/addresses" onClick={() => setProfileOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-ocean-600 transition">
+                                                            <MapPin size={14} strokeWidth={1.5} />Alamat Pengiriman
+                                                        </Link>
+                                                        <div className="border-t border-slate-100" />
+                                                    </>
+                                                )}
+                                                <Link to={getDashboardLink()} onClick={() => setProfileOpen(false)} className="flex items-center gap-2 px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 hover:text-ocean-600 transition">
+                                                    <LayoutDashboard size={14} strokeWidth={1.5} />Dashboard
                                                 </Link>
                                                 {decoded?.roles?.length > 1 && (
                                                     <Link to="/select-role" onClick={() => setProfileOpen(false)} className="block px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-ocean-600 transition">
@@ -204,9 +228,9 @@ export default function Navbar() {
 
                 {menuOpen && (
                     <div className="md:hidden border-t border-slate-100 px-0 pb-4 flex flex-col gap-1 animate-slide-down bg-white">
-                        <MobileLink to="/products" onClick={() => setMenuOpen(false)}>Produk</MobileLink>
-                        <MobileLink to="/stores" onClick={() => setMenuOpen(false)}>Toko</MobileLink>
-                        <MobileLink to="/promos" onClick={() => setMenuOpen(false)}>Promo</MobileLink>
+                        <MobileLink to="/products" onClick={() => setMenuOpen(false)}><Package size={14} strokeWidth={1.5} className="inline-block mr-1.5" />Produk</MobileLink>
+                        <MobileLink to="/stores" onClick={() => setMenuOpen(false)}><Store size={14} strokeWidth={1.5} className="inline-block mr-1.5" />Toko</MobileLink>
+                        <MobileLink to="/promos" onClick={() => setMenuOpen(false)}><Tag size={14} strokeWidth={1.5} className="inline-block mr-1.5" />Promo</MobileLink>
 
                         {!token ? (
                             <>
@@ -223,17 +247,18 @@ export default function Navbar() {
                         ) : (
                             <>
                                 {activeRole === 'BUYER' && (
-                                    <MobileLink to="/dashboard/buyer/cart" onClick={() => setMenuOpen(false)}>
-                                        Keranjang {itemCount > 0 ? `(${itemCount})` : ''}
-                                    </MobileLink>
+                                    <MobileLink to="/dashboard/buyer/orders" onClick={() => setMenuOpen(false)}><Package size={14} strokeWidth={1.5} className="inline-block mr-1.5" />Riwayat Pesanan</MobileLink>
                                 )}
                                 {activeRole === 'BUYER' && (
-                                    <MobileLink to="/dashboard/buyer/orders" onClick={() => setMenuOpen(false)}>Pesanan</MobileLink>
+                                    <MobileLink to="/dashboard/buyer/report" onClick={() => setMenuOpen(false)}><BarChart3 size={14} strokeWidth={1.5} className="inline-block mr-1.5" />Laporan Pengeluaran</MobileLink>
+                                )}
+                                {activeRole === 'BUYER' && (
+                                    <MobileLink to="/dashboard/buyer/addresses" onClick={() => setMenuOpen(false)}><MapPin size={14} strokeWidth={1.5} className="inline-block mr-1.5" />Alamat Pengiriman</MobileLink>
                                 )}
                                 {activeRole === 'SELLER' && (
                                     <MobileLink to="/dashboard/seller/orders/incoming" onClick={() => setMenuOpen(false)}>Pesanan Masuk</MobileLink>
                                 )}
-                                <MobileLink to={getDashboardLink()} onClick={() => setMenuOpen(false)}>Dashboard</MobileLink>
+                                <MobileLink to={getDashboardLink()} onClick={() => setMenuOpen(false)}><LayoutDashboard size={14} strokeWidth={1.5} className="inline-block mr-1.5" />Dashboard</MobileLink>
 
                                 <div className="h-px bg-slate-100 my-2" />
 

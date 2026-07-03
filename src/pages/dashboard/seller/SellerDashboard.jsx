@@ -85,7 +85,7 @@ export default function SellerDashboard() {
                 >
                     <div className="text-3xl mb-3"><Inbox size={28} strokeWidth={1.5} /></div>
                     <h3 className="font-semibold text-slate-700 mb-1">Pesanan Masuk</h3>
-                    <p className="text-slate-400 text-sm">Proses pesanan dari pembeli</p>
+                    <p className="text-slate-400 text-sm">Proses pesanan dari Buyer</p>
                         <span className="badge-emerald mt-2 inline-flex">
                         Lihat daftar
                     </span>

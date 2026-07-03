@@ -194,7 +194,7 @@ export default function CartPage() {
                 <BackButton className="mb-3" />
                 <div className="text-center py-24">
                     <p className="text-5xl mb-4"><Ban size={48} strokeWidth={1.5} /></p>
-                    <p className="text-slate-600 font-semibold">Halaman ini hanya untuk Pembeli.</p>
+                    <p className="text-slate-600 font-semibold">Halaman ini hanya untuk Buyer.</p>
                 </div>
             </MainLayout>
         )

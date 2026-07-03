@@ -7,7 +7,7 @@ import api from '../../services/api'
 import { useAuth } from '../../contexts/useAuth'
 import { getWallet } from '../../services/walletApi'
 import AppReviewSection from '../../components/ui/AppReviewSection'
-import { CreditCard, MapPin, ShoppingCart, Package, BarChart3 } from 'lucide-react'
+import { CreditCard, MapPin, Package, BarChart3 } from 'lucide-react'
 import { ChevronLeft, ChevronRight, Shirt, Smartphone, Home, BookOpen, Gamepad2, Utensils, Gift, Sparkles } from 'lucide-react'
 
 function formatRupiah(amount) {
@@ -94,7 +94,6 @@ export default function HomePage() {
     const buyerMenuCards = [
         { label: 'Wallet & Saldo', icon: CreditCard, desc: 'Kelola saldo dan top up', path: '/dashboard/buyer/wallet', extra: walletLoading ? null : <p className="text-ocean-600 font-bold text-lg mt-1">{wallet ? formatRupiah(wallet.balance) : 'Rp0'}</p> },
         { label: 'Alamat Pengiriman', icon: MapPin, desc: 'Kelola alamat pengiriman', path: '/dashboard/buyer/addresses' },
-        { label: 'Keranjang', icon: ShoppingCart, desc: 'Ringkasan cart satu toko', path: '/dashboard/buyer/cart' },
         { label: 'Riwayat Pesanan', icon: Package, desc: 'Lacak semua transaksimu', path: '/dashboard/buyer/orders' },
         { label: 'Laporan Pengeluaran', icon: BarChart3, desc: 'Ringkasan total belanja', path: '/dashboard/buyer/report' },
     ]
